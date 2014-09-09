@@ -1563,7 +1563,7 @@ bool PSIImpl::update()
     }
     for(LinkInfoMap::iterator p = ikLinkInfos.begin(); p != ikLinkInfos.end(); ++p){
         LinkInfo& info = p->second;
-        initializeInterpolation<6, LinkSample, false>(info.samples);
+        initializeInterpolation<6, LinkSample, true>(info.samples);
         info.iter = info.samples.begin();
         if(info.isFootLink){
             initializeInterpolation<1, LinkZSample, false>(info.zSamples);
