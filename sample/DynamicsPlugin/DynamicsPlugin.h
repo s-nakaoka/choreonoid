@@ -19,10 +19,11 @@
 #include <cnoid/Vector3Seq>
 
 #include "Jacobian.h"
+#include <src/Base/exportdecl.h>
 
 using namespace cnoid;
 
-class DynamicsPlugin : public Plugin
+class CNOID_EXPORT DynamicsPlugin : public Plugin
 {
 public:
     

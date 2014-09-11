@@ -18,9 +18,11 @@
 #include <cnoid/Vector3Seq>
 #include <cnoid/LeggedBodyHelper>
 
+#include <src/Base/exportdecl.h>
+
 namespace cnoid{
 
-  class UtilPlugin : public Plugin
+  class CNOID_EXPORT UtilPlugin : public Plugin
   {
   public:
     
