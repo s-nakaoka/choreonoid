@@ -1,7 +1,7 @@
 
-option(BUILD_UTIL_SAMPLE "Building a Util plugin" OFF)
+option(BUILD_UTIL_PLUGIN "Building a Util plugin" OFF)
 
-if(BUILD_UTIL_SAMPLE)
+if(BUILD_UTIL_PLUGIN)
   set(target CnoidUtilPlugin)
   add_cnoid_plugin(${target} SHARED UtilPlugin.cpp)
   target_link_libraries(${target} CnoidBase CnoidBody)

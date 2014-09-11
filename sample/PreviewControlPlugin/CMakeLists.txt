@@ -1,7 +1,7 @@
-option(BUILD_PREVIEWCONTROL "Building a sample plugin \"PreviewControlPlugin\"" OFF)
+option(BUILD_PREVIEWCONTROL_PLUGIN "Building a sample plugin \"PreviewControlPlugin\"" OFF)
 
-if(BUILD_PREVIEWCONTROL)
-  if(NOT BUILD_UTIL_SAMPLE)
+if(BUILD_PREVIEWCONTROL_PLUGIN)
+  if(NOT BUILD_UTIL_PLUGIN)
     message(FATAL_ERROR "PreviewControlPlugin samples need to set BUILD_UTIL_SAMPLE option.")
   endif()
   

@@ -1,6 +1,6 @@
-option(BUILD_UTIL_SAMPLE "Building a Dynamics plugin" OFF)
+option(BUILD_Dynamics_PLUGIN "Building a Dynamics plugin" OFF)
 
-if(BUILD_UTIL_SAMPLE)
+if(BUILD_DYNAMICS_PLUGIN)
   set(target CnoidDynamicsPlugin)
   add_cnoid_plugin(${target} SHARED DynamicsPlugin.cpp)
   target_link_libraries(${target} CnoidBase CnoidBody)
