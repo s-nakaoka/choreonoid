@@ -4,7 +4,7 @@ option(BUILD_UTIL_SAMPLE "Building a Util plugin" OFF)
 if(BUILD_UTIL_SAMPLE)
   set(target CnoidUtilPlugin)
   add_cnoid_plugin(${target} SHARED UtilPlugin.cpp)
-  target_link_libraries(${target} CnoidBase)
+  target_link_libraries(${target} CnoidBase CnoidBody)
   apply_common_setting_for_plugin(${target})
 endif()
 
