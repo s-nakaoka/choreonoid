@@ -19,7 +19,11 @@ set(target CnoidGRobotPlugin)
 
 make_gettext_mofiles(${target} mofiles)
 
-QT4_ADD_RESOURCES(RC_SRCS GRobotPlugin.qrc)
+if (QT)
+  QT4_ADD_RESOURCES(RC_SRCS GRobotPlugin.qrc)
+elseif (QT5)
+  QT5_ADD_RESOURCES(RC_SRCS GRobotPlugin.qrc)
+endif()
 
 add_cnoid_plugin(${target} SHARED
   GRobotPlugin.cpp

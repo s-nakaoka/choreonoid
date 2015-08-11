@@ -146,6 +146,7 @@ std::ostream& cnoid::operator<<(std::ostream& os, const BoundingBox& bb)
 {
     os << "(" << bb.min().x() << ", " << bb.min().y() << ", " << bb.min().z() << ") - (";
     os << bb.max().x() << ", " << bb.max().y() << ", " << bb.max().z() << ")";
+	return os;
 }
 
 
@@ -281,4 +282,5 @@ std::ostream& cnoid::operator<<(std::ostream& os, const BoundingBoxf& bb)
 {
     os << "(" << bb.min().x() << ", " << bb.min().y() << ", " << bb.min().z() << ") - (";
     os << bb.max().x() << ", " << bb.max().y() << ", " << bb.max().z() << ")";
+	return os;
 }

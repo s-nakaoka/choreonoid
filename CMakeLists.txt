@@ -327,13 +327,18 @@ endif()
 
 find_package(Boost 1.36.0 REQUIRED COMPONENTS ${boost_packages})
 
-if(NOT Boost_FOUND)
+if(NOT Boost_INCLUDE_DIRS)
   set(BOOST_ROOT ${BOOST_ROOT} CACHE PATH "set the directory of the boost library")
   message(FATAL_ERROR "Boost cannot be found. Please specify the boost top directory to BOOST_ROOT.")
 endif()
 
 if(Boost_VERSION GREATER "104699")
   find_package(Boost 1.47.0 REQUIRED COMPONENTS chrono)
+endif()
+
+if(NOT Boost_LIBRARY_DIRS)
+	set(BOOST_LIBRARYDIR ${BOOST_LIBRARYDIR} CACHE PATH "set the directory of the boost library")
+	message(FATAL_ERROR "Boost cannot be found. Please specify the boost top directory to BOOST_LIBRARYDIR.")
 endif()
 
 include_directories(${Boost_INCLUDE_DIRS})
@@ -428,8 +433,15 @@ if(ENABLE_GUI)
 	set(CMAKE_LIBRARY_PATH "$ENV{VS110COMNTOOLS}../../../Windows\ Kits/8.0/Lib/win8/um/x86")
       endif()
     endif()
+
+    set(CMAKE_PREFIX_PATH "${QT5_ROOT}")
     find_package(Qt5Core)
     set(QT5 TRUE)
+    
+    if(NOT Qt5Core_DIR)
+	    set(QT5_ROOT ${QT5_ROOT} CACHE PATH "set the top directory of the Qt5")
+	    message(FATAL_ERROR "Qt5Core cannot be found. Please specify the boost top directory to QT5_ROOT.")
+    endif()
     
     add_definitions(-DQT_NO_KEYWORDS -DQT_NO_OPENGL_ES_2)
     set(CMAKE_AUTOMOC ON)

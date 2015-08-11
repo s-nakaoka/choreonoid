@@ -65,7 +65,12 @@ set(headers
   transupp.h
 )
 
-add_library(${JPEG_LIBRARY} STATIC ${sources})
+if (WIN32)
+	add_library(${JPEG_LIBRARY} jpeg ${sources})
+else()
+	add_library(${JPEG_LIBRARY} STATIC ${sources})
+endif()
+
 
 if(WIN32)
   set_target_properties(${JPEG_LIBRARY} PROPERTIES COMPILE_FLAGS -Ob1)

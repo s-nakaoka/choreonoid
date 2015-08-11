@@ -28,3 +28,8 @@ add_cnoid_plugin(${target} SHARED ${sources} ${headers} ${mofiles})
 target_link_libraries(${target} CnoidBodyPlugin CnoidMediaPlugin)
 
 apply_common_setting_for_plugin(${target} "${headers}")
+
+if(QT5)
+  qt5_use_modules(${target} Widgets)
+endif()
+

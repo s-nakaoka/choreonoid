@@ -22,7 +22,12 @@ set(headers
   pngconf.h
 )
 
-add_library(${PNG_LIBRARY} STATIC ${sources})
+if (WIN32)
+  include_directories(../zlib123)
+  add_library(${PNG_LIBRARY} libpng ${sources})
+else()
+  add_library(${PNG_LIBRARY} STATIC ${sources})
+endif()
 
 add_definitions(-DPNG_NO_MMX_CODE -D_CRT_SECURE_NO_WARNINGS)
 
