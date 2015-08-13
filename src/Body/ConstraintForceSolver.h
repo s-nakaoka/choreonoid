@@ -15,15 +15,15 @@ class CFSImpl;
 class WorldBase;
 class CollisionDetector;
 typedef boost::shared_ptr<CollisionDetector> CollisionDetectorPtr;
-	
+
 class CNOID_EXPORT ConstraintForceSolver
 {
     CFSImpl* impl;
-		
+
 public:
     ConstraintForceSolver(WorldBase& world);
     ~ConstraintForceSolver();
-		
+
     void setCollisionDetector(CollisionDetectorPtr detector);
     CollisionDetectorPtr collisionDetector();
 
@@ -33,10 +33,10 @@ public:
 
     void setContactCullingDistance(double thresh);
     double contactCullingDistance() const;
-    
+
     void setContactCullingDepth(double depth);
     double contactCullingDepth();
-    
+
     void setCoefficientOfRestitution(double epsilon);
     double coefficientOfRestitution() const;
 

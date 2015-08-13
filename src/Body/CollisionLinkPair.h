@@ -10,7 +10,7 @@
 #include <cnoid/CollisionDetector>
 
 namespace cnoid {
-    
+
 struct CollisionLinkPair
 {
     CollisionLinkPair() {
@@ -29,12 +29,12 @@ struct CollisionLinkPair
     bool isSelfCollision() const {
         return (body[0] == body[1]);
     }
-        
+
     BodyPtr body[2];
     Link* link[2];
     std::vector<Collision> collisions;
 };
-    
+
 typedef boost::shared_ptr<CollisionLinkPair> CollisionLinkPairPtr;
 }
 
