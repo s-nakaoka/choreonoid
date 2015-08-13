@@ -194,6 +194,7 @@ void exportItems()
             .def("setEpsilon", &AISTSimulatorItem::setEpsilon)
             .def("set2Dmode", &AISTSimulatorItem::set2Dmode)
             .def("setKinematicWalkingEnabled", &AISTSimulatorItem::setKinematicWalkingEnabled)
+            .def("addLinkConnection", &AISTSimulatorItem::addLinkConnection)
             ;
 
         enum_<AISTSimulatorItem::DynamicsMode>("DynamicsMode")

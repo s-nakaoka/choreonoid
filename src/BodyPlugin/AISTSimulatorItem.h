@@ -7,6 +7,7 @@
 #define CNOID_BODYPLUGIN_AIST_SIMULATOR_ITEM_H
 
 #include "SimulatorItem.h"
+#include "BodyItem.h"
 #include <cnoid/EigenTypes>
 #include "exportdecl.h"
 
@@ -40,6 +41,8 @@ public:
     void setEpsilon(double epsilon);
     void set2Dmode(bool on);
     void setKinematicWalkingEnabled(bool on); 
+    void addLinkConnection(BodyItem* body1, Link* link1, Vector3 point1,
+                           BodyItem* body2, Link* link2, Vector3 point2);
 
 protected:
     virtual SimulationBodyPtr createSimulationBody(BodyPtr orgBody);
