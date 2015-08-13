@@ -127,7 +127,7 @@ public:
     WorldBase& world;
 
     bool isConstraintForceOutputMode;
-        
+
     struct ConstraintPoint {
         int globalIndex;
         Vector3 point;
@@ -229,7 +229,7 @@ public:
     //typedef std::map<IdPair<>, LinkPairPtr> GeometryPairToLinkPairMap;
     typedef std::map<IdPair<>, LinkPair> GeometryPairToLinkPairMap;
     GeometryPairToLinkPairMap geometryPairToLinkPairMap;
-        
+
     double defaultStaticFriction;
     double defaultSlipFriction;
     double defaultContactCullingDistance;
@@ -258,7 +258,6 @@ public:
     };
     typedef boost::shared_ptr<Constrain2dLinkPair> Constrain2dLinkPairPtr;
     vector<Constrain2dLinkPairPtr> constrain2dLinkPairs;
-        
 
     std::vector<LinkPair*> constrainedLinkPairs;
 
@@ -275,7 +274,7 @@ public:
 
     typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> MatrixX;
     typedef VectorXd VectorX;
-        
+
     // Mlcp * solution + b   _|_  solution
 
     MatrixX Mlcp;
@@ -425,7 +424,7 @@ CFSImpl::CFSImpl(WorldBase& world) :
     defaultContactCullingDistance = DEFAULT_CONTACT_CULLING_DISTANCE;
     defaultContactCullingDepth = DEFAULT_CONTACT_CULLING_DEPTH;
     defaultCoefficientOfRestitution = 0.0;
-    
+
     maxNumGaussSeidelIteration = DEFAULT_MAX_NUM_GAUSS_SEIDEL_ITERATION;
     numGaussSeidelInitialIteration = DEFAULT_NUM_GAUSS_SEIDEL_INITIAL_ITERATION;
     gaussSeidelErrorCriterion = DEFAULT_GAUSS_SEIDEL_ERROR_CRITERION;
@@ -476,7 +475,7 @@ void CFSImpl::initExtraJoints(int bodyIndex)
             linkPair = boost::make_shared<ExtraJointLinkPair>();
             linkPair->isSameBodyPair = true;
             linkPair->isNonContactConstraint = true;
-        
+
             // generate two vectors orthogonal to the joint axis
             Vector3 u = Vector3::Zero();
             int minElem = 0;
@@ -594,7 +593,7 @@ void CFSImpl::init2Dconstraint(int bodyIndex)
     Constrain2dLinkPairPtr linkPair = boost::make_shared<Constrain2dLinkPair>();
     linkPair->isSameBodyPair = false;
     linkPair->isNonContactConstraint = true;
-    
+
     linkPair->constraintPoints.resize(3);
     for(int i=0; i < 3; ++i){
         ConstraintPoint& constraint = linkPair->constraintPoints[i];
@@ -602,21 +601,21 @@ void CFSImpl::init2Dconstraint(int bodyIndex)
         constraint.globalFrictionIndex = numeric_limits<int>::max();
         linkPair->globalYpositions[i] = (rootLink->R() * local2dConstraintPoints[i] + rootLink->p()).y();
     }
-        
+
     linkPair->bodyIndex[0] = -1;
     linkPair->bodyData[0] = &bodyDataFor2dConstraint;
     linkPair->link[0] = bodyFor2dConstraint->rootLink();
     linkPair->linkData[0] = &bodyDataFor2dConstraint.linksData[0];
-    
+
     linkPair->bodyIndex[1] = bodyIndex;
     linkPair->bodyData[1] = &bodiesData[bodyIndex];
     linkPair->link[1] = rootLink;
     linkPair->linkData[1] = &bodiesData[bodyIndex].linksData[0];
-            
+
     constrain2dLinkPairs.push_back(linkPair);
 }
-        
-    
+
+
 void CFSImpl::initialize(void)
 {
     if(CFS_DEBUG || CFS_MCP_DEBUG){
@@ -754,7 +753,7 @@ void CFSImpl::solve()
         setAccelerationMatrix();
 
         clearSingularPointConstraintsOfClosedLoopConnections();
-		
+
         setConstantVectorAndMuBlock();
 
         if(CFS_DEBUG_VERBOSE){
@@ -816,16 +815,16 @@ void CFSImpl::setConstraintPoints()
 void CFSImpl::extractConstraintPoints(const CollisionPair& collisionPair)
 {
     LinkPair* pLinkPair;
-    
+
     const IdPair<> idPair(collisionPair.geometryId);
     GeometryPairToLinkPairMap::iterator p = geometryPairToLinkPairMap.find(idPair);
-    
+
     if(p != geometryPairToLinkPairMap.end()){
         pLinkPair = &p->second;
         pLinkPair->constraintPoints.clear();
     } else {
         LinkPair& linkPair = geometryPairToLinkPairMap.insert(make_pair(idPair, LinkPair())).first->second;
-        
+
         for(int i=0; i < 2; ++i){
             const int id = collisionPair.geometryId[i];
             const int bodyIndex = geometryIdToBodyIndexMap[id];
@@ -847,7 +846,7 @@ void CFSImpl::extractConstraintPoints(const CollisionPair& collisionPair)
     }
     pLinkPair->bodyData[0]->hasConstrainedLinks = true;
     pLinkPair->bodyData[1]->hasConstrainedLinks = true;
-    
+
     const vector<Collision>& collisions = collisionPair.collisions;
     for(size_t i=0; i < collisions.size(); ++i){
         setContactConstraintPoint(*pLinkPair, collisions[i]);
@@ -895,7 +894,7 @@ bool CFSImpl::setContactConstraintPoint(LinkPair& linkPair, const Collision& col
     if(collision.depth > linkPair.contactCullingDepth){
         return false;
     }
-    
+
     ConstraintPointArray& constraintPoints = linkPair.constraintPoints;
     constraintPoints.push_back(ConstraintPoint());
     ConstraintPoint& contact = constraintPoints.back();
@@ -948,17 +947,17 @@ bool CFSImpl::setContactConstraintPoint(LinkPair& linkPair, const Collision& col
             areThereImpacts = true;
         }
     }
-    
+
     Vector3 v_tangent =
         contact.relVelocityOn0 - contact.normalProjectionOfRelVelocityOn0 * contact.normalTowardInside[1];
-    
+
     contact.globalFrictionIndex = globalNumFrictionVectors;
-    
+
     double vt_square = v_tangent.squaredNorm();
     static const double vsqrthresh = VEL_THRESH_OF_DYNAMIC_FRICTION * VEL_THRESH_OF_DYNAMIC_FRICTION;
     bool isSlipping = (vt_square > vsqrthresh);
     contact.mu = isSlipping ? linkPair.muDynamic : linkPair.muStatic;
-    
+
     if( !ONLY_STATIC_FRICTION_FORMULATION && isSlipping){
         contact.numFrictionVectors = 1;
         double vt_mag = sqrt(vt_square);
@@ -967,7 +966,7 @@ bool CFSImpl::setContactConstraintPoint(LinkPair& linkPair, const Collision& col
         Vector3 t3 = t2.cross(contact.normalTowardInside[1]);
         contact.frictionVector[0][0] = t3.normalized();
         contact.frictionVector[0][1] = -contact.frictionVector[0][0];
-        
+
         // proportional dynamic friction near zero velocity
         if(PROPORTIONAL_DYNAMIC_FRICTION){
             vt_mag *= 10000.0;
@@ -2387,7 +2386,6 @@ void ConstraintForceSolver::set2Dmode(bool on)
 {
     impl->is2Dmode = on;
 }
-
 
 void ConstraintForceSolver::initialize(void)
 {

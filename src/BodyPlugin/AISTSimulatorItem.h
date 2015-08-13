@@ -32,15 +32,15 @@ public:
     void setGravity(const Vector3& gravity);
     void setStaticFriction(double value);
     void setSlipFriction(double value);
-    void setContactCullingDistance(double value);        
-    void setContactCullingDepth(double value);        
-    void setErrorCriterion(double value);        
+    void setContactCullingDistance(double value);
+    void setContactCullingDepth(double value);
+    void setErrorCriterion(double value);
     void setMaxNumIterations(int value);
     void setContactCorrectionDepth(double value);
     void setContactCorrectionVelocityRatio(double value);
     void setEpsilon(double epsilon);
     void set2Dmode(bool on);
-    void setKinematicWalkingEnabled(bool on); 
+    void setKinematicWalkingEnabled(bool on);
     void addLinkConnection(BodyItem* body1, Link* link1, Vector3 point1,
                            BodyItem* body2, Link* link2, Vector3 point2);
 
@@ -54,7 +54,7 @@ protected:
     virtual bool stepSimulation(const std::vector<SimulationBody*>& activeSimBodies);
     virtual void finalizeSimulation();
     virtual CollisionLinkPairListPtr getCollisions();
-        
+
     virtual ItemPtr doDuplicate() const;
     virtual void doPutProperties(PutPropertyFunction& putProperty);
     virtual bool store(Archive& archive);
