@@ -134,6 +134,28 @@ public:
     LinkTraverse traverse;
 };
 
+class LinkConnection
+{
+    public:
+        LinkConnection(Body* body1, Link* link1, Vector3 point1,
+                       Body* body2, Link* link2, Vector3 point2)
+            : body1_(body1),
+              body2_(body2),
+              link1_(link1),
+              link2_(link2),
+              point1_(point1),
+              point2_(point2)
+        {
+        }
+
+        Body* body1_;
+        Body* body2_;
+        Link* link1_;
+        Link* link2_;
+        Vector3 point1_;
+        Vector3 point2_;
+};
+
 }
 
 
@@ -168,6 +190,7 @@ public:
     boost::mutex forcedBodyPositionMutex;
     DyBody* forcedPositionBody;
     Position forcedBodyPosition;
+    std::vector<LinkConnection> linkConnections;
 
     AISTSimulatorItemImpl(AISTSimulatorItem* self);
     AISTSimulatorItemImpl(AISTSimulatorItem* self, const AISTSimulatorItemImpl& org);
@@ -244,7 +267,8 @@ AISTSimulatorItem::AISTSimulatorItem(const AISTSimulatorItem& org)
 AISTSimulatorItemImpl::AISTSimulatorItemImpl(AISTSimulatorItem* self, const AISTSimulatorItemImpl& org)
     : self(self),
       dynamicsMode(org.dynamicsMode),
-      integrationMode(org.integrationMode)
+      integrationMode(org.integrationMode),
+      linkConnections()
 {
     gravity = org.gravity;
     staticFriction = org.staticFriction;
@@ -350,6 +374,16 @@ void AISTSimulatorItem::setKinematicWalkingEnabled(bool on)
     impl->isKinematicWalkingEnabled = on;
 }
 
+void AISTSimulatorItem::addLinkConnection(BodyItem* body1, Link* link1,
+                                          Vector3 point1,
+                                          BodyItem* body2, Link* link2,
+                                          Vector3 point2)
+{
+    LinkConnection lc(body1->body(), link1, point1,
+                      body2->body(), link2, point2);
+    impl->linkConnections.push_back(lc);
+}
+
 
 ItemPtr AISTSimulatorItem::doDuplicate() const
 {
@@ -419,6 +453,17 @@ bool AISTSimulatorItemImpl::initializeSimulation(const std::vector<SimulationBod
     bodyIndexMap.clear();
     for(size_t i=0; i < simBodies.size(); ++i){
         addBody(static_cast<AISTSimBody*>(simBodies[i]));
+    }
+
+    for(std::vector<LinkConnection>::iterator lc = linkConnections.begin();
+        lc != linkConnections.end(); ++lc)
+    {
+        int bodyIndex1 = world.bodyIndex(lc->body1_->name());
+        int bodyIndex2 = world.bodyIndex(lc->body2_->name());
+        cfs.addExtraLinkPair(bodyIndex1, lc->link1_->index(), lc->point1_,
+                             bodyIndex2, lc->link2_->index(), lc->point2_);
+        //cfs.addExtraLinkPair(0, 0, point1,
+        //                     1, 3, point2);
     }
 
     cfs.setFriction(staticFriction, slipFriction);

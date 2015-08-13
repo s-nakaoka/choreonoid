@@ -57,6 +57,9 @@ public:
     void solve();
     void clearExternalForces();
 
+    void addExtraLinkPair(int bodyIndex1, int linkIndex1, Vector3& point1,
+                          int bodyIndex2, int LinkIndex2, Vector3& point2);
+
     CollisionLinkPairListPtr getCollisions();
 };
 
