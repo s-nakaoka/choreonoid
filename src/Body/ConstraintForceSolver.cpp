@@ -182,6 +182,29 @@ public:
 
     std::vector<BodyData> bodiesData;
 
+    class ExtraLinkPair
+    {
+        public:
+            ExtraLinkPair(int bodyIndex1, int linkIndex1,
+                          Vector3(point1),
+                          int bodyIndex2, int linkIndex2,
+                          Vector3(point2))
+            : bodyIndex1_(bodyIndex1),
+              linkIndex1_(linkIndex1),
+              point1_(point1),
+              bodyIndex2_(bodyIndex2),
+              linkIndex2_(linkIndex2),
+              point2_(point2)
+            {
+            }
+            int bodyIndex1_;
+            int linkIndex1_;
+            Vector3 point1_;
+            int bodyIndex2_;
+            int linkIndex2_;
+            Vector3 point2_;
+    };
+
     class LinkPair
     {
     public:
@@ -221,6 +244,8 @@ public:
     };
     typedef boost::shared_ptr<ExtraJointLinkPair> ExtraJointLinkPairPtr;
     vector<ExtraJointLinkPairPtr> extraJointLinkPairs;
+
+    vector<ExtraLinkPair> extraLinkPairs;
 
     bool is2Dmode;
     DyBodyPtr bodyFor2dConstraint;
@@ -285,6 +310,9 @@ public:
 
     void initBody(const DyBodyPtr& body, BodyData& bodyData);
     void initExtraJoints(int bodyIndex);
+    void addExtraLinkPair(int bodyIndex1, int linkIndex1, Vector3& point1,
+                          int bodyIndex2, int linkIndex2, Vector3& point2);
+    void initExtraLinkPair();
     void init2Dconstraint(int bodyIndex);
     void setConstraintPoints();
     void extractConstraintPoints(const CollisionPair& collisionPair);
@@ -463,11 +491,18 @@ void CFSImpl::initExtraJoints(int bodyIndex)
             const Vector3 t1 = axis.cross(u).normalized();
             linkPair->jointConstraintAxes[0] = t1;
             linkPair->jointConstraintAxes[1] = axis.cross(t1).normalized();
-            
+
         } else if(bodyExtraJoint.type == Body::EJ_BALL){
-            
+            linkPair = boost::make_shared<ExtraJointLinkPair>();
+            linkPair->isSameBodyPair = true;
+            linkPair->isNonContactConstraint = true;
+
+            linkPair->constraintPoints.resize(3);
+            linkPair->jointConstraintAxes[0] = Vector3d(1., 0., 0.);
+            linkPair->jointConstraintAxes[1] = Vector3d(0., 1., 0.);
+            linkPair->jointConstraintAxes[2] = Vector3d(0., 0., 1.);
         }
-        
+
         if(linkPair){
             int numConstraints = linkPair->constraintPoints.size();
             for(int k=0; k < numConstraints; ++k){
@@ -486,8 +521,59 @@ void CFSImpl::initExtraJoints(int bodyIndex)
             extraJointLinkPairs.push_back(linkPair);
         }
     }
-}    
+}
 
+void CFSImpl::addExtraLinkPair(int bodyIndex1, int linkIndex1,
+                               Vector3& point1,
+                               int bodyIndex2, int linkIndex2,
+                               Vector3& point2)
+{
+    extraLinkPairs.push_back(ExtraLinkPair(bodyIndex1, linkIndex1, point1,
+                                              bodyIndex2, linkIndex2, point2));
+}
+
+void CFSImpl::initExtraLinkPair()
+{
+    for(std::vector<ExtraLinkPair>::iterator lp = extraLinkPairs.begin();
+        lp != extraLinkPairs.end(); ++lp)
+    {
+        const DyBodyPtr& body1 = world.body(lp->bodyIndex1_);
+        const DyBodyPtr& body2 = world.body(lp->bodyIndex2_);
+
+        BodyData& bodyData1 = bodiesData[lp->bodyIndex1_];
+        BodyData& bodyData2 = bodiesData[lp->bodyIndex2_];
+
+        ExtraJointLinkPairPtr linkPair = boost::make_shared<ExtraJointLinkPair>();
+        linkPair->bodyIndex[0] = lp->bodyIndex1_;
+        linkPair->bodyIndex[1] = lp->bodyIndex2_;
+        linkPair->bodyData[0] = &(bodiesData[lp->bodyIndex1_]);
+        linkPair->bodyData[1] = &(bodiesData[lp->bodyIndex2_]);
+
+        linkPair->link[0] = body1->link(lp->linkIndex1_);
+        linkPair->link[1] = body2->link(lp->linkIndex2_);
+        linkPair->linkData[0] = &(bodyData1.linksData[lp->linkIndex1_]);
+        linkPair->linkData[1] = &(bodyData2.linksData[lp->linkIndex2_]);
+
+        linkPair->isSameBodyPair = false;
+        linkPair->isNonContactConstraint = true;
+
+        linkPair->jointPoint[0] = lp->point1_;
+        linkPair->jointPoint[1] = lp->point2_;
+
+        linkPair->constraintPoints.resize(3);
+        linkPair->jointConstraintAxes[0] = Vector3d(1., 0., 0.);
+        linkPair->jointConstraintAxes[1] = Vector3d(0., 1., 0.);
+        linkPair->jointConstraintAxes[2] = Vector3d(0., 0., 1.);
+
+        for(int k=0; k < 3; ++k){
+            ConstraintPoint& constraint = linkPair->constraintPoints[k];
+            constraint.numFrictionVectors = 0;
+            constraint.globalFrictionIndex = numeric_limits<int>::max();
+        }
+
+        extraJointLinkPairs.push_back(linkPair);
+    }
+}
 
 void CFSImpl::init2Dconstraint(int bodyIndex)
 {
@@ -589,6 +675,8 @@ void CFSImpl::initialize(void)
             init2Dconstraint(bodyIndex);
         }
     }
+
+    initExtraLinkPair();
 
     collisionDetector->makeReady();
 
@@ -2318,6 +2406,14 @@ void ConstraintForceSolver::clearExternalForces()
     impl->clearExternalForces();
 }
 
+void ConstraintForceSolver::addExtraLinkPair(int bodyIndex1, int linkIndex1,
+                                             Vector3& point1,
+                                             int bodyIndex2, int linkIndex2,
+                                             Vector3& point2)
+{
+    impl->addExtraLinkPair(bodyIndex1, linkIndex1, point1,
+                           bodyIndex2, linkIndex2, point2);
+}
 
 CollisionLinkPairListPtr ConstraintForceSolver::getCollisions()
 {
