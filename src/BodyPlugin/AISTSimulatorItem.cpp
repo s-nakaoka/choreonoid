@@ -72,7 +72,7 @@ public:
     virtual double timeStep() const {
         return qseqRef->getTimeStep();
     }
-        
+
     virtual void input() { }
 
     virtual bool control() {
@@ -83,12 +83,12 @@ public:
         }
         return true;
     }
-        
+
     virtual void output() {
 
         int prevFrame = std::max(currentFrame - 1, 0);
         int nextFrame = std::min(currentFrame + 1, lastFrame);
-            
+
         MultiValueSeq::Frame q0 = qseqRef->frame(prevFrame);
         MultiValueSeq::Frame q1 = qseqRef->frame(currentFrame);
         MultiValueSeq::Frame q2 = qseqRef->frame(nextFrame);
@@ -103,7 +103,7 @@ public:
             joint->ddq() = (q2[i] - 2.0 * q1[i] + q0[i]) / dt2;
         }
     }
-        
+
     virtual void stop() { }
 };
 
@@ -471,7 +471,7 @@ bool AISTSimulatorItemImpl::initializeSimulation(const std::vector<SimulationBod
     cfs.setContactCullingDepth(contactCullingDepth.value());
     cfs.setCoefficientOfRestitution(epsilon);
     cfs.setCollisionDetector(self->collisionDetector());
-    
+
     if(is2Dmode){
         cfs.set2Dmode(true);
     }
