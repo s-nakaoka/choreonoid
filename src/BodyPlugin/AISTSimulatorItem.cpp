@@ -466,6 +466,17 @@ bool AISTSimulatorItemImpl::initializeSimulation(const std::vector<SimulationBod
         //                     1, 3, point2);
     }
 
+    for(std::vector<LinkConnection>::iterator lc = linkConnections.begin();
+        lc != linkConnections.end(); ++lc)
+    {
+        int bodyIndex1 = world.bodyIndex(lc->body1_->name());
+        int bodyIndex2 = world.bodyIndex(lc->body2_->name());
+        cfs.addExtraLinkPair(bodyIndex1, lc->link1_->index(), lc->point1_,
+                             bodyIndex2, lc->link2_->index(), lc->point2_);
+        //cfs.addExtraLinkPair(0, 0, point1,
+        //                     1, 3, point2);
+    }
+
     cfs.setFriction(staticFriction, slipFriction);
     cfs.setContactCullingDistance(contactCullingDistance.value());
     cfs.setContactCullingDepth(contactCullingDepth.value());

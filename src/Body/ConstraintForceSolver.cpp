@@ -570,7 +570,6 @@ void CFSImpl::initExtraLinkPair()
             constraint.globalFrictionIndex = numeric_limits<int>::max();
         }
 
-
         linkPair->constraintPoints.resize(3);
         linkPair->jointConstraintAxes[0] = Vector3d(1., 0., 0.);
         linkPair->jointConstraintAxes[1] = Vector3d(0., 1., 0.);
