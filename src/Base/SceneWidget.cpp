@@ -184,6 +184,7 @@ public:
     ostream& os;
 
     SceneWidgetRootPtr sceneRoot;
+    SgGroupPtr systemGroup;
     SgGroup* scene;
     GLSceneRenderer renderer;
     QGLPixelBuffer* buffer;
@@ -239,8 +240,6 @@ public:
 
     SceneWidgetEditable* eventFilter;
     ReferencedPtr eventFilterRef;
-
-    SgGroupPtr systemNodeGroup;
 
     Selection polygonMode;
     bool collisionLinesVisible;
@@ -375,7 +374,9 @@ public:
 SceneWidgetRoot::SceneWidgetRoot(SceneWidget* sceneWidget)
     : sceneWidget_(sceneWidget)
 {
-
+    systemGroup = new SgGroup;
+    systemGroup->setName("System");
+    addChild(systemGroup);
 }
 
 
@@ -432,6 +433,7 @@ SceneWidgetImpl::SceneWidgetImpl(SceneWidget* self)
       self(self),
       os(MessageView::mainInstance()->cout()),
       sceneRoot(new SceneWidgetRoot(self)),
+      systemGroup(sceneRoot->systemGroup),
       renderer(sceneRoot),
       emitSigStateChangedLater(boost::ref(sigStateChanged))
 {
@@ -514,21 +516,17 @@ SceneWidgetImpl::SceneWidgetImpl(SceneWidget* self)
 
     isBuiltinCameraCurrent = true;
     numBuiltinCameras = 2;
-    sceneRoot->addChild(builtinCameraTransform);
+    systemGroup->addChild(builtinCameraTransform);
 
     setup = new SetupDialog(this);
 
     worldLight = new SgDirectionalLight();
     worldLight->setName("WorldLight");
     worldLight->setDirection(Vector3(0.0, 0.0, -1.0));
-    sceneRoot->addChild(worldLight);
+    systemGroup->addChild(worldLight);
     renderer.setAsDefaultLight(worldLight);
 
     updateDefaultLights();
-
-    systemNodeGroup = new SgGroup();
-    systemNodeGroup->setName("SystemGroup");
-    sceneRoot->addChild(systemNodeGroup);
 
     polygonMode.resize(3);
     polygonMode.setSymbol(SceneWidget::FILL_MODE, "fill");
@@ -1404,7 +1402,7 @@ void SceneWidgetImpl::updatePointerPosition()
     updateLatestEventPath();
     
     if(!isEditMode){
-        static boost::format f(_("Position = (%.3f %.3f %.3f)"));
+        static boost::format f(_("Glocal Position = (%.3f %.3f %.3f)"));
         const Vector3& p = latestEvent.point();
         updateIndicator(str(f % p.x() % p.y() % p.z()));
     } else {
@@ -2534,7 +2532,8 @@ bool SceneWidgetImpl::restoreState(const Archive& archive)
         for(int i=0; i < cameraListing.size(); ++i){
             const Mapping& cameraData = *cameraListing[i].toMapping();
             archive.addPostProcess(
-                boost::bind(&SceneWidgetImpl::restoreCameraStates, this, boost::ref(cameraListing)));
+                boost::bind(&SceneWidgetImpl::restoreCameraStates, this, boost::ref(cameraListing)),
+                1);
         }
     } else {
         // for the compatibility to the older versions
@@ -2560,7 +2559,9 @@ bool SceneWidgetImpl::restoreState(const Archive& archive)
             setup->zNearSpin.setValue(cameraData.get("near", static_cast<double>(builtinPersCamera->nearDistance())));
             setup->zFarSpin.setValue(cameraData.get("far", static_cast<double>(builtinPersCamera->farDistance())));
         
-            archive.addPostProcess(boost::bind(&SceneWidgetImpl::restoreCurrentCamera, this, boost::ref(cameraData)));
+            archive.addPostProcess(
+                boost::bind(&SceneWidgetImpl::restoreCurrentCamera, this, boost::ref(cameraData)),
+                1);
         }
     }
 
@@ -2739,9 +2740,9 @@ void SceneWidgetImpl::setupCoordinateAxes()
 void SceneWidgetImpl::activateSystemNode(SgNodePtr node, bool on)
 {
     if(on){
-        systemNodeGroup->addChild(node, true);
+        systemGroup->addChild(node, true);
     } else {
-        systemNodeGroup->removeChild(node, true);
+        systemGroup->removeChild(node, true);
     }
 }
 
