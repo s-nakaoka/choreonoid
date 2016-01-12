@@ -19,6 +19,7 @@
 #include <cnoid/BodyCollisionDetectorUtil>
 #include <cnoid/FloatingNumberString>
 #include <cnoid/EigenUtil>
+#include <cnoid/SceneDrawables>
 #include <cnoid/MeshExtractor>
 #include <cnoid/FileUtil>
 #include <boost/bind.hpp>
