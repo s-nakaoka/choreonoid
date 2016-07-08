@@ -13,6 +13,8 @@
 #define ODESimulatorItem GazeboODESimulatorItem
 #endif
 
+#include <cnoid/VacuumGripper>
+
 namespace cnoid {
 
 class ODESimulatorItemImpl;
@@ -43,6 +45,10 @@ public:
     void setMaxCorrectingVelocity(double vel);
     void setSurfaceLayerDepth(double value);
     void useWorldCollisionDetector(bool on);
+
+    // for VacuumGripper simulation
+    void useVacuumGripper(bool on);
+    void setVacuumGripperParams(const VacuumGripperParams& params);
 
 protected:
         

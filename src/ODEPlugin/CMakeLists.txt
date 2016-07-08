@@ -106,9 +106,13 @@ foreach(version ${versions})
     ODEPlugin.cpp
     ODESimulatorItem.cpp
     ODECollisionDetector.cpp
+    VacuumGripper.cpp
   )
 
   set(headers
+    ODESimulatorItem.h
+    ODECollisionDetector.h
+    VacuumGripper.h
   )
 
   make_gettext_mofiles(${target} mofiles) 
