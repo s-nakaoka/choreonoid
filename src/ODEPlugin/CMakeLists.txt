@@ -113,6 +113,7 @@ foreach(version ${versions})
     ODESimulatorItem.h
     ODECollisionDetector.h
     VacuumGripper.h
+    exportdecl.h
   )
 
   make_gettext_mofiles(${target} mofiles) 
