@@ -145,9 +145,7 @@ public:
     dJointGroupID contactJointGroupID;
     double timeStep;
     CrawlerLinkMap crawlerLinks;
-    bool useVacuumGripper;
     VacuumGripperMap vacuumGripperDevs;
-    VacuumGripperParams vacuumGripperParams;
     vector<ODELink*> geometryIdToLink;
 
     Selection stepMode;
@@ -1038,14 +1036,19 @@ void ODESimulatorItem::useVacuumGripper(bool on)
 {
     MessageView::instance()->putln(boost::format(_("ODESimulatorItemr: *** vacuum gripper %s ***")) % (on ? "ON" : "OFF"));
 
-    if (!impl->vacuumGripperDevs.empty()) {
-	for (VacuumGripperMap::iterator p = impl->vacuumGripperDevs.begin();
-	     p != impl->vacuumGripperDevs.end(); p++) {
-	    VacuumGripper* vacuumGripper = p->second;
-	    vacuumGripper->on(on);
-	}
+    for (VacuumGripperMap::iterator p = impl->vacuumGripperDevs.begin();
+         p != impl->vacuumGripperDevs.end(); p++) {
+        VacuumGripper* vacuumGripper = p->second;
+        vacuumGripper->on(on);
     }
 }
+
+#if 1    /* Experimental. */
+void ODESimulatorItem::useNailDriver(bool on)
+{
+    // TODO
+}
+#endif    /* Experimental. */
 
 void ODESimulatorItem::setAllLinkPositionOutputMode(bool on)
 {
@@ -1128,29 +1131,29 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
     for(size_t i=0; i < simBodies.size(); ++i){
 #if 1    /* Experimental. */
 	ODEBody* odeBody = static_cast<ODEBody*>(simBodies[i]);
-	VacuumGripperParams* params = VacuumGripperParams::findParameter(odeBody->body());
-	if (params) {
+	VacuumGripperParams* vacuumGripperParams = VacuumGripperParams::findParameter(odeBody->body());
+	if (vacuumGripperParams) {
 	    cout << odeBody->body()->name() << " has vacuum gripper." << endl;
-	} else {
-	    cout << odeBody->body()->name() << " not has vacuum gripper." << endl;
 	}
+	NailDriverParams* nailDriverParams = NailDriverParams::findParameter(odeBody->body());
 #endif    /* Experimental. */
         addBody(static_cast<ODEBody*>(simBodies[i]));
 #if 1    /* Experimental. */
-	if (params) {
+	if (vacuumGripperParams) {
 	    for (size_t i=0; i < odeBody->odeLinks.size(); ++i) {
 		ODELinkPtr odeLink = odeBody->odeLinks[i];
-		if (odeLink->link->name().compare(params->targetObject) == 0) {
+		if (odeLink->link->name().compare(vacuumGripperParams->targetObject) == 0) {
 		    VacuumGripper* vacuumGripper = new VacuumGripper();
-		    vacuumGripper->setParam(*params);
+		    vacuumGripper->setParam(*vacuumGripperParams);
 		    vacuumGripper->setLink(odeLink->link);
 		    odeBody->body()->addDevice(vacuumGripper);
 		    vacuumGripperDevs.insert(make_pair(odeLink->bodyID,
 						       vacuumGripper));
-cout << "ODESimulatorItemImpl: odeLink found: " << odeLink->link->name() << endl;
 		    break;
 		}
 	    }
+	    delete vacuumGripperParams;
+	    vacuumGripperParams = 0;
 	}
 #endif    /* Experimental. */
     }
@@ -1229,7 +1232,7 @@ cout << "   maxPullForce limit" << endl;
     // check peel torque
     if (vg->peelTorqueUnlimited == false) {
 	MessageView::instance()->putln("check maxPeelTorque");
-	if (n.dot(ttt) > (dReal)vg->maxPeelTorque) {
+	if (fabs(n.dot(ttt)) > (dReal)vg->maxPeelTorque) {
 	    return true;
 	}
     }
@@ -1330,13 +1333,7 @@ MessageView::instance()->putln("VacuumGripper: *** cannot create joint **");
 			} else {
 			    dJointFeedback* fb = dJointGetFeedback(vacuumGripper->jointID);
 
-			    bool exceeded = false;
-			    if (gripped == body1ID) {
-				exceeded = limitCheck(fb->f1, fb->t1, vacuumGripper);
-			    } else {
-				exceeded = limitCheck(fb->f2, fb->t2, vacuumGripper);
-			    }
-			    if (exceeded) {
+			    if (limitCheck(fb->f2, fb->t2, vacuumGripper)) {
 MessageView::instance()->putln("VacuumGripper: *** joint destroy ***");
 				dJointSetFeedback(vacuumGripper->jointID, 0);
 				dJointDestroy(vacuumGripper->jointID);

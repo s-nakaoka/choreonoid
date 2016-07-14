@@ -23,7 +23,8 @@ using namespace std;
 /**
  * Create Vector3 object from list parameter.
  */
-Vector3 listToVector3(const Listing* list)
+#if 1 // Later define a common function
+static Vector3 listToVector3(const Listing* list)
 {
     MessageView::instance()->putln(boost::format(_("list size=%d")) % list->size());
     double a = (*list)[0].toDouble();
@@ -33,6 +34,7 @@ Vector3 listToVector3(const Listing* list)
     MessageView::instance()->putln(boost::format(_("[%e, %e, %e]")) % a % b % c);
     return Vector3(a, b, c);
 }
+#endif // Later define a common function
 
 /**
  * Get VacuumGripper parameter.
