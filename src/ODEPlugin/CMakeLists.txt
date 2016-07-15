@@ -109,6 +109,7 @@ foreach(version ${versions})
     ODECollisionDetector.cpp
     VacuumGripper.cpp
     NailDriver.cpp
+    NailedObjectManager.cpp
   )
 
   set(headers
@@ -116,6 +117,7 @@ foreach(version ${versions})
     ODECollisionDetector.h
     VacuumGripper.h
     NailDriver.h
+    NailedObjectManager.h
     exportdecl.h
   )
 

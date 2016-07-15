@@ -53,7 +53,7 @@ NailDriverParams* NailDriverParams::findParameter(const Body* body)
     NailDriverParams* params = new NailDriverParams();
 
     std::string targetObject = "";
-    double maxFasteningPower = 0;
+    double maxFasteningForce = 0;
 
     targetObject = m->get("targetObject", targetObject);
     params->targetObject = targetObject;
@@ -69,16 +69,16 @@ NailDriverParams* NailDriverParams::findParameter(const Body* body)
     cout << "normalLine=[" << str(params->normalLine) << "]" << endl;
     MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(params->normalLine));
 
-    if (!m->find("maxFasteningPower")->isValid()) {
-	params->fasteningPowerUnlimited = true;
-	MessageView::instance()->putln("  maxFasteningPower: Unlimited");
+    if (!m->find("maxFasteningForce")->isValid()) {
+	params->fasteningForceUnlimited = true;
+	MessageView::instance()->putln("  maxFasteningForce: Unlimited");
     } else {
-	if (m->read("maxFasteningPower", maxFasteningPower)) {
-	    params->maxFasteningPower = maxFasteningPower;
-	    MessageView::instance()->putln(boost::format(_("  maxFasteningPower: %f")) % maxFasteningPower);
+	if (m->read("maxFasteningForce", maxFasteningForce)) {
+	    params->maxFasteningForce = maxFasteningForce;
+	    MessageView::instance()->putln(boost::format(_("  maxFasteningForce: %f")) % maxFasteningForce);
 	} else {
 	    // todo
-	    MessageView::instance()->putln(" maxFasteningPower is invalid.");
+	    MessageView::instance()->putln(" maxFasteningForce is invalid.");
 	}
     }
 
@@ -92,8 +92,8 @@ NailDriverParams::NailDriverParams()
     targetObject = "";
     position << 0, 0, 0;
     normalLine << 0, 0, 0;
-    fasteningPowerUnlimited = false;
-    maxFasteningPower = 0;
+    fasteningForceUnlimited = false;
+    maxFasteningForce = 0;
 }
 
 /*
@@ -128,7 +128,7 @@ Device* NailDriver::clone() const
 NailDriver::NailDriver()
 {
     on_ = true;
-    jointID = 0;
+    objId = 0;
 }
 
 void NailDriver::copyStateFrom(const NailDriver& other)
@@ -166,6 +166,36 @@ void NailDriver::setParam(const NailDriverParams& param)
     targetObject = param.targetObject;
     position = param.position;
     normalLine = param.normalLine;
-    fasteningPowerUnlimited = param.fasteningPowerUnlimited;
-    maxFasteningPower = param.maxFasteningPower;
+    fasteningForceUnlimited = param.fasteningForceUnlimited;
+    maxFasteningForce = param.maxFasteningForce;
+}
+
+int NailDriver::checkContact(int numContacts, dContact* contacts)
+{
+    Link* link_ = link();
+    Vector3 muzzle = link_->p() + link_->R() * position;
+cout << "NailDriver: muzzle:" << str(muzzle) << endl;
+    int n = 0;
+    for (int i=0; i < numContacts; ++i) {
+	Vector3 pos(contacts[i].geom.pos);
+	Vector3 v(contacts[i].geom.normal);
+cout << "NailDriver: pos:" << str(pos) << endl;
+cout << "NailDriver:   v:" << str(v) << endl;
+
+	float isParallel = (link_->R() * normalLine).dot(v);
+cout << "NailDriver: isParallel: " << isParallel << endl;
+
+	// Distance gripper (P: muzzle) and contact (A:pos)
+	Vector3 pa;
+	pa[0] = pos[0] - muzzle[0];
+	pa[1] = pos[1] - muzzle[1];
+	pa[2] = pos[2] - muzzle[2];
+
+	float distance = fabs(muzzle.dot(pa));
+cout << "NailDriver: distance: " << distance << endl;
+	if (isParallel < -0.9f && distance < 0.04f) {
+	    n++;
+	}
+    }
+    return n;
 }

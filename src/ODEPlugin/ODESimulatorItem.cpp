@@ -133,6 +133,7 @@ namespace cnoid {
   
 typedef std::map<dBodyID, Link*> CrawlerLinkMap;
 typedef std::map<dBodyID, VacuumGripper*> VacuumGripperMap;
+typedef std::map<dBodyID, NailDriver*> NailDriverMap;
 class ODESimulatorItemImpl
 {
 public:
@@ -146,6 +147,8 @@ public:
     double timeStep;
     CrawlerLinkMap crawlerLinks;
     VacuumGripperMap vacuumGripperDevs;
+    NailDriverMap nailDriverDevs;
+    //NailedObjectManager nailedObjectMngr;
     vector<ODELink*> geometryIdToLink;
 
     Selection stepMode;
@@ -262,6 +265,7 @@ void ODELink::createLinkBody(ODESimulatorItemImpl* simImpl, dWorldID worldID, OD
 
     dBodyID parentBodyID = parent ? parent->bodyID : 0;
 
+cout << boost::format("      link: %s jointType: %s (%d)")% link->name()  % link->jointTypeString() % link->jointType() << endl;
     switch(link->jointType()){
         
     case Link::ROTATIONAL_JOINT:
@@ -1040,13 +1044,18 @@ void ODESimulatorItem::useVacuumGripper(bool on)
          p != impl->vacuumGripperDevs.end(); p++) {
         VacuumGripper* vacuumGripper = p->second;
         vacuumGripper->on(on);
+MessageView::instance()->putln(boost::format(_("vacuumGripper->on()=%s")) % (vacuumGripper->on() ? "ON" : "OFF"));
     }
 }
 
 #if 1    /* Experimental. */
 void ODESimulatorItem::useNailDriver(bool on)
 {
-    // TODO
+    for (NailDriverMap::iterator p = impl->nailDriverDevs.begin();
+         p != impl->nailDriverDevs.end(); p++) {
+        NailDriver* nailDriver = p->second;
+        nailDriver->on(on);
+    }
 }
 #endif    /* Experimental. */
 
@@ -1073,6 +1082,8 @@ void ODESimulatorItemImpl::clear()
 
     crawlerLinks.clear();
     vacuumGripperDevs.clear();
+    nailDriverDevs.clear();
+    //nailedObjectMngr.clear();
     geometryIdToLink.clear();
 }    
 
@@ -1081,6 +1092,7 @@ Item* ODESimulatorItem::doDuplicate() const
 {
     return new ODESimulatorItem(*this);
 }
+
 
 
 SimulationBody* ODESimulatorItem::createSimulationBody(Body* orgBody)
@@ -1136,24 +1148,53 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
 	    cout << odeBody->body()->name() << " has vacuum gripper." << endl;
 	}
 	NailDriverParams* nailDriverParams = NailDriverParams::findParameter(odeBody->body());
+	if (nailDriverParams) {
+	    cout << odeBody->body()->name() << " has nail driver." << endl;
+	}
 #endif    /* Experimental. */
         addBody(static_cast<ODEBody*>(simBodies[i]));
 #if 1    /* Experimental. */
-	if (vacuumGripperParams) {
-	    for (size_t i=0; i < odeBody->odeLinks.size(); ++i) {
-		ODELinkPtr odeLink = odeBody->odeLinks[i];
+	for (size_t i=0; i < odeBody->odeLinks.size(); ++i) {
+	    ODELinkPtr odeLink = odeBody->odeLinks[i];
+	    if (vacuumGripperParams) {
 		if (odeLink->link->name().compare(vacuumGripperParams->targetObject) == 0) {
-		    VacuumGripper* vacuumGripper = new VacuumGripper();
+cout << boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripperParams->targetObject << endl;
+MessageView::instance()->putln(boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripperParams->targetObject);
+                    VacuumGripper* vacuumGripper = new VacuumGripper();
 		    vacuumGripper->setParam(*vacuumGripperParams);
 		    vacuumGripper->setLink(odeLink->link);
 		    odeBody->body()->addDevice(vacuumGripper);
 		    vacuumGripperDevs.insert(make_pair(odeLink->bodyID,
 						       vacuumGripper));
-		    break;
+		    delete vacuumGripperParams;
+		    vacuumGripperParams = 0;
 		}
 	    }
+	    if (nailDriverParams) {
+		if (odeLink->link->name().compare(nailDriverParams->targetObject) == 0) {
+cout << boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject << endl;
+MessageView::instance()->putln(boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject);
+		    NailDriver* nailDriver = new NailDriver();
+		    nailDriver->setParam(*nailDriverParams);
+		    nailDriver->setLink(odeLink->link);
+		    odeBody->body()->addDevice(nailDriver);
+		    nailDriverDevs.insert(make_pair(odeLink->bodyID,
+						    nailDriver));
+#if 0
+// NailedObjectManager
+cout << boost::format("NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject << endl;
+MessageView::instance()->putln(boost::format("NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject);
+#endif
+		    delete nailDriverParams;
+		    nailDriverParams = 0;
+		}
+	    }
+	}
+	if (vacuumGripperParams) {
 	    delete vacuumGripperParams;
-	    vacuumGripperParams = 0;
+	}
+	if (nailDriverParams) {
+	    delete nailDriverParams;
 	}
 #endif    /* Experimental. */
     }
@@ -1172,6 +1213,7 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
 void ODESimulatorItemImpl::addBody(ODEBody* odeBody)
 {
     Body& body = *odeBody->body();
+cout << boost::format("ODESimulatorItemImpl::addBody: body.name=%s") % body.name() << endl;
 
     Link* rootLink = body.rootLink();
     rootLink->v().setZero();
@@ -1179,6 +1221,7 @@ void ODESimulatorItemImpl::addBody(ODEBody* odeBody)
     rootLink->w().setZero();
     rootLink->dw().setZero();
 
+cout << boost::format("ODESimulatorItemImpl::addBody: body.numJoints()=%d") % body.numJoints() << endl;
     for(int i=0; i < body.numJoints(); ++i){
         Link* joint = body.joint(i);
         joint->u() = 0.0;
@@ -1201,8 +1244,6 @@ void ODESimulatorItem::initializeSimulationThread()
 #if 1    /* Experimental. */
 static bool limitCheck(dVector3& df, dVector3& dt, VacuumGripper* vg)
 {
-    //Vector3 f   << df[0], df[1], df[2];
-   //Vector3 tau << dt[0], dt[1], dt[2];
    Vector3 f(df);
    Vector3 tau(dt);
 
@@ -1212,27 +1253,50 @@ static bool limitCheck(dVector3& df, dVector3& dt, VacuumGripper* vg)
 
 // check pull force
     if (vg->pullForceUnlimited == false) {
-	MessageView::instance()->putln("check maxPullForce");
+#if 0
+cout << "pull force: n.dot(f)=" << n.dot(f)
+     << " : vg->maxPullForce=" << (dReal)vg->maxPullForce
+     << endl;
+#endif
+//MessageView::instance()->putln("check maxPullForce");
 	if (n.dot(f) + (dReal)vg->maxPullForce < 0) {
+#if 0
 cout << "   maxPullForce limit" << endl;
+#endif
 	    return true;
 	}
     }
 
     // check shear force
     if (vg->shearForceUnlimited == false) {
-	MessageView::instance()->putln("check maxShearForce");
+	//MessageView::instance()->putln("check maxShearForce");
 	double fx = f[0] * f[0];
 	double fy = f[1] * f[1];
+#if 0
+cout << "shear force: fx=" << f[0]
+     << " fy=" << f[1]
+     << " sqrt(fx^2, fy^2)=" << sqrt(fx + fy)
+     << " : vg->maxShearForce=" << (dReal)vg->maxShearForce
+     << endl;
+#endif
 	if (sqrt(fx + fy) > (dReal)vg->maxShearForce) {
+#if 0
+cout << "   maxShearForce limit" << endl;
+#endif
 	    return true;
 	}
     }
 
     // check peel torque
     if (vg->peelTorqueUnlimited == false) {
-	MessageView::instance()->putln("check maxPeelTorque");
+	//MessageView::instance()->putln("check maxPeelTorque");
+#if 0
+cout << "peer torque: tau=" << ttt << " : vg->maxPeelTorque=" << (dReal)vg->maxPeelTorque << endl;
+#endif
 	if (fabs(n.dot(ttt)) > (dReal)vg->maxPeelTorque) {
+#if 0
+cout << "   maxPeerTorque limit" << endl;
+#endif
 	    return true;
 	}
     }
@@ -1285,12 +1349,14 @@ static void nearCallback(void* data, dGeomID g1, dGeomID g2)
 		    vacuumGripper = p->second;
 		    vgid = body1ID;
 		    gripped = body2ID;
+MessageView::instance()->putln("*** vacuum gripper : body1 ***");
                 } else {
 		    p = impl->vacuumGripperDevs.find(body2ID);
 		    if (p != impl->vacuumGripperDevs.end()) {
 			vacuumGripper = p->second;
 			vgid = body2ID;
 			gripped = body1ID;
+MessageView::instance()->putln("*** vacuum gripper : body2 ***");
 		    }
                 }
 		if (vacuumGripper != 0) {
@@ -1327,28 +1393,91 @@ MessageView::instance()->putln(boost::format(_("*** vacuum gripper on() = %d ***
 				dJointSetFeedback(jointID, new dJointFeedback());
 				vacuumGripper->jointID = jointID;
 MessageView::instance()->putln("VacuumGripper: *** joint created **");
+cout << "VacuumGripper: *** joint created **" << endl;
 			    } else {
-MessageView::instance()->putln("VacuumGripper: *** cannot create joint **");
+				;
+//MessageView::instance()->putln("VacuumGripper: *** cannot create joint **");
 			    }
 			} else {
 			    dJointFeedback* fb = dJointGetFeedback(vacuumGripper->jointID);
 
 			    if (limitCheck(fb->f2, fb->t2, vacuumGripper)) {
 MessageView::instance()->putln("VacuumGripper: *** joint destroy ***");
+cout << "VacuumGripper: *** joint destroy **" << endl;
 				dJointSetFeedback(vacuumGripper->jointID, 0);
 				dJointDestroy(vacuumGripper->jointID);
 				vacuumGripper->jointID = 0;
 			    }
 			}
 		    } else {
-MessageView::instance()->putln(boost::format(_("*** vacuum gripper on() = %d ***")) % vacuumGripper->on());
+//MessageView::instance()->putln(boost::format(_("*** vacuum gripper on() = %d ***")) % vacuumGripper->on());
+cout << "VacuumGripper OFF **" << endl;
 			if (vacuumGripper->jointID != 0) {
 			    dJointSetFeedback(vacuumGripper->jointID, 0);
 			    dJointDestroy(vacuumGripper->jointID);
 			    vacuumGripper->jointID = 0;
 MessageView::instance()->putln("VacuumGripper: *** joint destroy ***");
+cout << "VacuumGripper: *** joint destroy **" << endl;
 			}
 		    }
+		}
+	    }
+#endif    /* Experimental. */
+#if 1    /* Experimental. */
+cout << "NailDriver empty = " << impl->nailDriverDevs.empty() << " **" << endl;
+	    if(!impl->nailDriverDevs.empty()){
+		NailedObjectManager* nailedObjMngr = NailedObjectManager::getInstance();
+		NailDriver* nailDriver = 0;
+		dBodyID ndId = 0;
+		dBodyID objId = 0;
+		NailDriverMap::iterator p = impl->nailDriverDevs.find(body1ID);
+                if (p != impl->nailDriverDevs.end()) {
+		    nailDriver = p->second;
+		    ndId = body1ID;
+		    objId = body2ID;
+MessageView::instance()->putln(boost::format(_("NailDriver body1ID=%1%, Object body2ID=%2%")) % ndId % objId);
+                } else {
+		    p = impl->nailDriverDevs.find(body2ID);
+		    if (p != impl->nailDriverDevs.end()) {
+			nailDriver = p->second;
+			ndId = body2ID;
+			objId = body1ID;
+MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object body1ID=%2%")) % ndId % objId);
+		    }
+                }
+		if (nailDriver != 0 && nailDriver->on()) {
+cout << "NailDriver ON **" << endl;
+		    int n = nailDriver->checkContact(numContacts, contacts);
+MessageView::instance()->putln(boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n);
+cout << boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n << endl;
+		    if (n == 0) {
+			nailDriver->objId = 0;
+		    } else {
+			if (nailDriver->objId == 0) {
+			    // TODO check object and other object
+MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) % objId);
+			    if (!nailedObjMngr->find(objId)) {
+				NailedObject* nobj = new NailedObject(objId);
+				// first
+				dJointID jointID = dJointCreateFixed(impl->worldID, 0);
+				dJointAttach(jointID, 0, objId);
+				dJointSetFixed(jointID);
+				dJointSetFeedback(jointID, new dJointFeedback());
+				nobj->setJointID(jointID);
+				nailedObjMngr->addObject(nobj);
+MessageView::instance()->putln("NailDriver: *** joint created **");
+cout << "NailDriver: *** joint created **" << endl;
+			    } else {
+MessageView::instance()->putln("NailDriver: *** joint already created **");
+cout << "NailDriver: *** joint already created **" << endl;
+				// second
+				// TODO
+			    }
+			    nailDriver->objId = objId;
+			} // nailDriver->objId
+		    } // n != 0
+		} else {
+cout << "NailDriver OFF **" << endl;
 		}
 	    }
 #endif    /* Experimental. */
@@ -1474,8 +1603,11 @@ void ODESimulatorItemImpl::collisionCallback(const CollisionPair& collisionPair)
     ODELink* link2 = geometryIdToLink[collisionPair.geometryId[1]];
     const vector<Collision>& collisions = collisionPair.collisions;
 
+cout << "ODESimulatorItemImpl:collisionCallback ***" << endl;
     dBodyID body1ID = link1->bodyID;
     dBodyID body2ID = link2->bodyID;
+cout << "ODESimulatorItemImpl:collisionCallback: body1ID:" << body1ID << endl;
+cout << "ODESimulatorItemImpl:collisionCallback: body2ID:" << body2ID << endl;
     Link* crawlerlink = 0;
     double sign = 1.0;
     if(!crawlerLinks.empty()){

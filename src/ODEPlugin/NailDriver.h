@@ -26,8 +26,8 @@ public:
     std::string targetObject;
     Vector3 position;
     Vector3 normalLine;
-    bool fasteningPowerUnlimited;
-    double maxFasteningPower;
+    bool fasteningForceUnlimited;
+    double maxFasteningForce;
 };
 
 class CNOID_EXPORT NailDriver : public Device
@@ -54,6 +54,8 @@ public:
     void on(bool on) { on_ = on; }
 
     void setParam(const NailDriverParams& param);
+    int checkContact(int numContacts, dContact* contacts);
+
 private:
     bool on_;
 
@@ -61,10 +63,10 @@ public:
     std::string targetObject;
     Vector3 position;
     Vector3 normalLine;
-    bool fasteningPowerUnlimited;
-    double maxFasteningPower;
+    bool fasteningForceUnlimited;
+    double maxFasteningForce;
 
-    dJointID jointID;
+    dBodyID objId;
 };
 
 typedef ref_ptr<NailDriver> NailDriverPtr;

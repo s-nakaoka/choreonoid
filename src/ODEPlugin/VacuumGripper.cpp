@@ -193,6 +193,11 @@ double* VacuumGripper::writeState(double* out_buf) const
     return out_buf + 1;
 }
 
+void VacuumGripper::on(bool on) {
+    MessageView::instance()->putln(boost::format(_("*** VacuumGripper: %s ***")) % (on ? "ON" : "OFF"));
+    on_ = on;
+}
+
 void VacuumGripper::setParam(const VacuumGripperParams& param)
 {
     targetObject = param.targetObject;
