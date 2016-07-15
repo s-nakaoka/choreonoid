@@ -14,6 +14,8 @@
 #endif
 
 #include <cnoid/VacuumGripper>
+#include <cnoid/NailDriver>
+#include <cnoid/NailedObjectManager>
 
 namespace cnoid {
 
@@ -48,7 +50,9 @@ public:
 
     // for VacuumGripper simulation
     void useVacuumGripper(bool on);
-    void setVacuumGripperParams(const VacuumGripperParams& params);
+
+    // for NailDriver simulation
+    void useNailDriver(bool on);
 
 protected:
         

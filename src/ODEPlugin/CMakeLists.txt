@@ -4,6 +4,7 @@
 option(BUILD_ODE_PLUGIN "Building ODEPlugin" OFF)
 option(BUILD_GAZEBO_ODE_PLUGIN "Building Gazebo ODE Plugin" OFF)
 option(USE_ODE_STATIC_LIB "Gazebo ODE Plugin and ODE Plugin use a static library." OFF)
+option(ENABLE_FEATURE_MECANUM_WHEEL_ODE "Enable feature of the macanum wheel" OFF)
 
 if(NOT BUILD_ODE_PLUGIN AND NOT BUILD_GAZEBO_ODE_PLUGIN)
   return()
@@ -107,12 +108,17 @@ foreach(version ${versions})
     ODESimulatorItem.cpp
     ODECollisionDetector.cpp
     VacuumGripper.cpp
+    NailDriver.cpp
+    NailedObjectManager.cpp
   )
 
   set(headers
     ODESimulatorItem.h
     ODECollisionDetector.h
     VacuumGripper.h
+    NailDriver.h
+    NailedObjectManager.h
+    exportdecl.h
   )
 
   make_gettext_mofiles(${target} mofiles) 
@@ -129,7 +135,8 @@ endforeach()
 if(ENABLE_PYTHON)
   add_subdirectory(python)
 endif()
-  
 
-  
-  
+if(ENABLE_FEATURE_MECANUM_WHEEL_ODE)
+  add_definitions(-DMECANUM_WHEEL_ODE)
+endif()
+
