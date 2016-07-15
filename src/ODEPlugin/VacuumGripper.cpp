@@ -7,6 +7,7 @@
 
 #include <cnoid/Device>
 #include <cnoid/EigenUtil>
+#include <cnoid/EigenArchive>
 
 #include <cnoid/ValueTree>
 
@@ -19,22 +20,6 @@
 
 using namespace cnoid;
 using namespace std;
-
-/**
- * Create Vector3 object from list parameter.
- */
-#if 1 // Later define a common function
-static Vector3 listToVector3(const Listing* list)
-{
-    MessageView::instance()->putln(boost::format(_("list size=%d")) % list->size());
-    double a = (*list)[0].toDouble();
-    double b = (*list)[1].toDouble();
-    double c = (*list)[2].toDouble();
-
-    MessageView::instance()->putln(boost::format(_("[%e, %e, %e]")) % a % b % c);
-    return Vector3(a, b, c);
-}
-#endif // Later define a common function
 
 /**
  * Get VacuumGripper parameter.
@@ -61,13 +46,11 @@ VacuumGripperParams* VacuumGripperParams::findParameter(const Body* body)
     params->targetObject = targetObject;
     MessageView::instance()->putln(boost::format(_("  targetObject: %s")) % targetObject);
 
-    const Listing* position = m->findListing("position");
-    params->position = listToVector3(position);
+    read(*m, "position", params->position);
     cout << "position=[" << str(params->position) << "]" << endl;
     MessageView::instance()->putln(boost::format(_("      position: %s")) % str(params->position));
 
-    const Listing* normalLine = m->findListing("normalLine");
-    params->normalLine = listToVector3(normalLine);
+    read(*m, "normalLine", params->normalLine);
     cout << "normalLine=[" << str(params->normalLine) << "]" << endl;
     MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(params->normalLine));
 
