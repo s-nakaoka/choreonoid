@@ -26,7 +26,6 @@ public:
     std::string targetObject;
     Vector3 position;
     Vector3 normalLine;
-    bool fasteningForceUnlimited;
     double maxFasteningForce;
 };
 
@@ -63,7 +62,6 @@ public:
     std::string targetObject;
     Vector3 position;
     Vector3 normalLine;
-    bool fasteningForceUnlimited;
     double maxFasteningForce;
 
     dBodyID objId;

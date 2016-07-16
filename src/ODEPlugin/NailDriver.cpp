@@ -53,7 +53,6 @@ NailDriverParams* NailDriverParams::findParameter(const Body* body)
     MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(params->normalLine));
 
     if (!m->find("maxFasteningForce")->isValid()) {
-	params->fasteningForceUnlimited = true;
 	MessageView::instance()->putln("  maxFasteningForce: Unlimited");
     } else {
 	if (m->read("maxFasteningForce", maxFasteningForce)) {
@@ -75,8 +74,7 @@ NailDriverParams::NailDriverParams()
     targetObject = "";
     position << 0, 0, 0;
     normalLine << 0, 0, 0;
-    fasteningForceUnlimited = false;
-    maxFasteningForce = 0;
+    maxFasteningForce = std::numeric_limits<double>::max();
 }
 
 /*
@@ -149,7 +147,6 @@ void NailDriver::setParam(const NailDriverParams& param)
     targetObject = param.targetObject;
     position = param.position;
     normalLine = param.normalLine;
-    fasteningForceUnlimited = param.fasteningForceUnlimited;
     maxFasteningForce = param.maxFasteningForce;
 }
 
