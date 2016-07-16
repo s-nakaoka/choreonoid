@@ -69,9 +69,6 @@ public:
 private:
     //std::map<dBodyID, NailedObjectPtr> objectMap;
     NailedObjectMap objectMap;
-
-public:
-    double maxFasteningForce;
 };
 
 }
