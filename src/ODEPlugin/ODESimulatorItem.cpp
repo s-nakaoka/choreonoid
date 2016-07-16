@@ -1444,31 +1444,25 @@ cout << "VacuumGripper: *** joint destroy **" << endl;
 		    int n = nailDriver->checkContact(numContacts, contacts);
 		    //MessageView::instance()->putln(boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n);
 		    //cout << boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n << endl;
-		    if (n == 0) {
-			nailDriver->objId = 0;
-		    } else {
-			if (nailDriver->objId == 0) {
-			    // TODO check object and other object
-MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) % objId);
-			    if (!nailedObjMngr->find(objId)) {
-				NailedObject* nobj = new NailedObject(objId);
-				// first
-				dJointID jointID = dJointCreateFixed(impl->worldID, 0);
-				dJointAttach(jointID, 0, objId);
-				dJointSetFixed(jointID);
-				dJointSetFeedback(jointID, new dJointFeedback());
-				nobj->setJointID(jointID);
-				nailedObjMngr->addObject(nobj);
+		    if (n) {
+		        //MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) % objId);
+		        if (!nailedObjMngr->find(objId)) {
+			    NailedObject* nobj = new NailedObject(objId);
+			    // first
+			    dJointID jointID = dJointCreateFixed(impl->worldID, 0);
+			    dJointAttach(jointID, 0, objId);
+			    dJointSetFixed(jointID);
+			    dJointSetFeedback(jointID, new dJointFeedback());
+			    nobj->setJointID(jointID);
+			    nailedObjMngr->addObject(nobj);
 MessageView::instance()->putln("NailDriver: *** joint created **");
 cout << "NailDriver: *** joint created **" << endl;
-			    } else {
-MessageView::instance()->putln("NailDriver: *** joint already created **");
-cout << "NailDriver: *** joint already created **" << endl;
-				// second
-				// TODO
-			    }
-			    nailDriver->objId = objId;
-			} // nailDriver->objId
+			} else {
+			    //MessageView::instance()->putln("NailDriver: *** joint already created **");
+			    //cout << "NailDriver: *** joint already created **" << endl;
+                            // second
+                            // TODO
+			}
 		    } // n != 0
 		} else {
 		    //cout << "NailDriver OFF **" << endl;

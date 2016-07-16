@@ -63,8 +63,6 @@ public:
     Vector3 position;
     Vector3 normalLine;
     double maxFasteningForce;
-
-    dBodyID objId;
 };
 
 typedef ref_ptr<NailDriver> NailDriverPtr;

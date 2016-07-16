@@ -109,7 +109,6 @@ Device* NailDriver::clone() const
 NailDriver::NailDriver()
 {
     on_ = true;
-    objId = 0;
 }
 
 void NailDriver::copyStateFrom(const NailDriver& other)
