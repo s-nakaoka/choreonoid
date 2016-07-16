@@ -1352,19 +1352,19 @@ static void nearCallback(void* data, dGeomID g1, dGeomID g2)
 		    vacuumGripper = p->second;
 		    vgid = body1ID;
 		    gripped = body2ID;
-MessageView::instance()->putln("*** vacuum gripper : body1 ***");
+		    //MessageView::instance()->putln("*** vacuum gripper : body1 ***");
                 } else {
 		    p = impl->vacuumGripperDevs.find(body2ID);
 		    if (p != impl->vacuumGripperDevs.end()) {
 			vacuumGripper = p->second;
 			vgid = body2ID;
 			gripped = body1ID;
-MessageView::instance()->putln("*** vacuum gripper : body2 ***");
+			//MessageView::instance()->putln("*** vacuum gripper : body2 ***");
 		    }
                 }
 		if (vacuumGripper != 0) {
 		    Link* link = vacuumGripper->link();
-MessageView::instance()->putln(boost::format(_("*** vacuum gripper on() = %d ***")) % vacuumGripper->on());
+		    //MessageView::instance()->putln(boost::format(_("*** vacuum gripper on() = %d ***")) % vacuumGripper->on());
 		    if (vacuumGripper->on()) {
 			if (dAreConnected(vgid, gripped) == 0) {
 			    Vector3 vacuumPos = link->p() + link->R() * vacuumGripper->position;
@@ -1427,7 +1427,7 @@ cout << "VacuumGripper: *** joint destroy **" << endl;
 	    }
 #endif    /* Experimental. */
 #if 1    /* Experimental. */
-cout << "NailDriver empty = " << impl->nailDriverDevs.empty() << " **" << endl;
+	    //cout << "NailDriver empty = " << impl->nailDriverDevs.empty() << " **" << endl;
 	    if(!impl->nailDriverDevs.empty()){
 		NailedObjectManager* nailedObjMngr = NailedObjectManager::getInstance();
 		NailDriver* nailDriver = 0;
@@ -1480,7 +1480,7 @@ cout << "NailDriver: *** joint already created **" << endl;
 			} // nailDriver->objId
 		    } // n != 0
 		} else {
-cout << "NailDriver OFF **" << endl;
+		    //cout << "NailDriver OFF **" << endl;
 		}
 	    }
 #endif    /* Experimental. */
