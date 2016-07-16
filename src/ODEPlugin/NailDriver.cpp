@@ -21,42 +21,40 @@
 using namespace cnoid;
 using namespace std;
 
-/**
- * Get NailDriver parameter.
- */
-NailDriverParams* NailDriverParams::findParameter(const Body* body)
+std::vector<NailDriver*> cnoid::createNailDrivers(Body* body)
 {
+    std::vector<NailDriver *> nailDrivers;
     Mapping* m = body->info()->findMapping("nailDriver");
 
     if (!m->isValid()) {
 	MessageView::instance()->putln(boost::format(_("%s not has nail driver")) % body->name());
-	return 0;
+	return nailDrivers;
     }
 
     MessageView::instance()->putln(boost::format(_("%s has nail driver")) % body->name());
 
-    NailDriverParams* params = new NailDriverParams();
+    NailDriver* nailDriver = new NailDriver();
 
     std::string targetObject = "";
     double maxFasteningForce = 0;
 
     targetObject = m->get("targetObject", targetObject);
-    params->targetObject = targetObject;
     MessageView::instance()->putln(boost::format(_("  targetObject: %s")) % targetObject);
+    nailDriver->setLink(body->link(targetObject));
 
-    read(*m, "position", params->position);
-    cout << "position=[" << str(params->position) << "]" << endl;
-    MessageView::instance()->putln(boost::format(_("      position: %s")) % str(params->position));
+    read(*m, "position", nailDriver->position);
+    cout << "position=[" << str(nailDriver->position) << "]" << endl;
+    MessageView::instance()->putln(boost::format(_("      position: %s")) % str(nailDriver->position));
 
-    read(*m, "normalLine", params->normalLine);
-    cout << "normalLine=[" << str(params->normalLine) << "]" << endl;
-    MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(params->normalLine));
+    read(*m, "normalLine", nailDriver->normalLine);
+    cout << "normalLine=[" << str(nailDriver->normalLine) << "]" << endl;
+    MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(nailDriver->normalLine));
 
     if (!m->find("maxFasteningForce")->isValid()) {
 	MessageView::instance()->putln("  maxFasteningForce: Unlimited");
     } else {
 	if (m->read("maxFasteningForce", maxFasteningForce)) {
-	    params->maxFasteningForce = maxFasteningForce;
+	    nailDriver->maxFasteningForce = maxFasteningForce;
 	    MessageView::instance()->putln(boost::format(_("  maxFasteningForce: %f")) % maxFasteningForce);
 	} else {
 	    // todo
@@ -64,24 +62,10 @@ NailDriverParams* NailDriverParams::findParameter(const Body* body)
 	}
     }
 
-    return params;
-}
+    nailDrivers.push_back(nailDriver);
+    body->addDevice(nailDriver);
 
-/*
- */
-NailDriverParams::NailDriverParams()
-{
-    targetObject = "";
-    position << 0, 0, 0;
-    normalLine << 0, 0, 0;
-    maxFasteningForce = std::numeric_limits<double>::max();
-}
-
-/*
- */
-NailDriverParams::~NailDriverParams()
-{
-    ;
+    return nailDrivers;
 }
 
 const char* NailDriver::typeName()
@@ -109,6 +93,9 @@ Device* NailDriver::clone() const
 NailDriver::NailDriver()
 {
     on_ = true;
+    position << 0, 0, 0;
+    normalLine << 0, 0, 0;
+    maxFasteningForce = std::numeric_limits<double>::max();
 }
 
 void NailDriver::copyStateFrom(const NailDriver& other)
@@ -139,14 +126,6 @@ double* NailDriver::writeState(double* out_buf) const
 {
     out_buf[0] = on_ ? 1.0 : 0.0;
     return out_buf + 1;
-}
-
-void NailDriver::setParam(const NailDriverParams& param)
-{
-    targetObject = param.targetObject;
-    position = param.position;
-    normalLine = param.normalLine;
-    maxFasteningForce = param.maxFasteningForce;
 }
 
 int NailDriver::checkContact(int numContacts, dContact* contacts)

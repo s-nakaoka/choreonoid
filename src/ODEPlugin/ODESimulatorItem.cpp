@@ -1150,8 +1150,8 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
 	if (vacuumGripperParams) {
 	    cout << odeBody->body()->name() << " has vacuum gripper." << endl;
 	}
-	NailDriverParams* nailDriverParams = NailDriverParams::findParameter(odeBody->body());
-	if (nailDriverParams) {
+	std::vector<NailDriver*> nailDrivers = createNailDrivers(odeBody->body());
+	if (nailDrivers.size()) {
 	    cout << odeBody->body()->name() << " has nail driver." << endl;
 	}
 #endif    /* Experimental. */
@@ -1173,14 +1173,11 @@ MessageView::instance()->putln(boost::format("Add VacuumGripper: bodyID=%d targe
 		    vacuumGripperParams = 0;
 		}
 	    }
-	    if (nailDriverParams) {
-		if (odeLink->link->name().compare(nailDriverParams->targetObject) == 0) {
-cout << boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject << endl;
-MessageView::instance()->putln(boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject);
-		    NailDriver* nailDriver = new NailDriver();
-		    nailDriver->setParam(*nailDriverParams);
-		    nailDriver->setLink(odeLink->link);
-		    odeBody->body()->addDevice(nailDriver);
+	    for (unsigned int i=0; i<nailDrivers.size(); i++) {
+	        NailDriver *nailDriver = nailDrivers[i];
+		if (odeLink->link == nailDriver->link()) {
+cout << boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriver->link()->name() << endl;
+MessageView::instance()->putln(boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriver->link()->name());
 		    nailDriverDevs.insert(make_pair(odeLink->bodyID,
 						    nailDriver));
 #if 0
@@ -1188,16 +1185,11 @@ MessageView::instance()->putln(boost::format("Add NailDriver: bodyID=%d target=%
 cout << boost::format("NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject << endl;
 MessageView::instance()->putln(boost::format("NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject);
 #endif
-		    delete nailDriverParams;
-		    nailDriverParams = 0;
 		}
 	    }
 	}
 	if (vacuumGripperParams) {
 	    delete vacuumGripperParams;
-	}
-	if (nailDriverParams) {
-	    delete nailDriverParams;
 	}
 #endif    /* Experimental. */
     }

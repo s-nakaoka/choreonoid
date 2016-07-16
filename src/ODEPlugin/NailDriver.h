@@ -15,20 +15,6 @@
 
 namespace cnoid {
 
-class CNOID_EXPORT NailDriverParams
-{
-public:
-    static NailDriverParams* findParameter(const Body* info);
-
-    NailDriverParams();
-    ~NailDriverParams();
-
-    std::string targetObject;
-    Vector3 position;
-    Vector3 normalLine;
-    double maxFasteningForce;
-};
-
 class CNOID_EXPORT NailDriver : public Device
 {
 public:
@@ -52,14 +38,12 @@ public:
     bool on() const { return on_; }
     void on(bool on) { on_ = on; }
 
-    void setParam(const NailDriverParams& param);
     int checkContact(int numContacts, dContact* contacts);
 
 private:
     bool on_;
 
 public:
-    std::string targetObject;
     Vector3 position;
     Vector3 normalLine;
     double maxFasteningForce;
@@ -67,6 +51,7 @@ public:
 
 typedef ref_ptr<NailDriver> NailDriverPtr;
 
+std::vector<NailDriver *> createNailDrivers(Body *body);
 }
 
 #endif
