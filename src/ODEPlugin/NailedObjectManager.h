@@ -58,8 +58,6 @@ private:
     ~NailedObjectManager();
 
 public:
-    void setParam(const NailDriverParams& param);
-
     void addObject(NailedObjectPtr obj);
 
     bool find(dBodyID bodyID);
@@ -73,7 +71,6 @@ private:
     NailedObjectMap objectMap;
 
 public:
-    bool fasteningForceUnlimited;
     double maxFasteningForce;
 };
 

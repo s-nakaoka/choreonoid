@@ -77,8 +77,3 @@ NailedObjectPtr NailedObjectManager::get(dBodyID bodyID)
 }
 
 
-void NailedObjectManager::setParam(const NailDriverParams& param)
-{
-    fasteningForceUnlimited = param.fasteningForceUnlimited;
-    maxFasteningForce = param.maxFasteningForce;
-}
