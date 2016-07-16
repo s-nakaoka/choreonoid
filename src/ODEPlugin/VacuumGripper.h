@@ -26,11 +26,8 @@ public:
     std::string targetObject;
     Vector3 position;
     Vector3 normalLine;
-    bool pullForceUnlimited;
     double maxPullForce;
-    bool shearForceUnlimited;
     double maxShearForce;
-    bool peelTorqueUnlimited;
     double maxPeelTorque;
 };
 
@@ -68,11 +65,8 @@ public:
     std::string targetObject;
     Vector3 position;
     Vector3 normalLine;
-    bool pullForceUnlimited;
     double maxPullForce;
-    bool shearForceUnlimited;
     double maxShearForce;
-    bool peelTorqueUnlimited;
     double maxPeelTorque;
 
     dJointID jointID;

@@ -55,7 +55,6 @@ VacuumGripperParams* VacuumGripperParams::findParameter(const Body* body)
     MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(params->normalLine));
 
     if (!m->find("maxPullForce")->isValid()) {
-	params->pullForceUnlimited = true;
 	MessageView::instance()->putln("  maxPullForce: Unlimited");
     } else {
 	if (m->read("maxPullForce", maxPullForce)) {
@@ -68,7 +67,6 @@ VacuumGripperParams* VacuumGripperParams::findParameter(const Body* body)
     }
 
     if (!m->find("maxShearForce")->isValid()) {
-	params->shearForceUnlimited = true;
 	MessageView::instance()->putln("  maxShearForce: Unlimited");
     } else {
 	if (m->read("maxShearForce", maxShearForce)) {
@@ -81,7 +79,6 @@ VacuumGripperParams* VacuumGripperParams::findParameter(const Body* body)
     }
 
     if (!m->find("maxPeelTorque")->isValid()) {
-	params->peelTorqueUnlimited = true;
 	MessageView::instance()->putln("  maxPeelTorque: Unlimited");
     } else {
 	if (m->read("maxPeelTorque", maxPeelTorque)) {
@@ -103,12 +100,9 @@ VacuumGripperParams::VacuumGripperParams()
     targetObject = "";
     position << 0, 0, 0;
     normalLine << 0, 0, 0;
-    pullForceUnlimited = false;
-    maxPullForce = 0;
-    shearForceUnlimited = false;
-    maxShearForce = 0;
-    peelTorqueUnlimited = false;
-    maxPeelTorque = 0;
+    maxPullForce = std::numeric_limits<double>::max();
+    maxShearForce = std::numeric_limits<double>::max();
+    maxPeelTorque = std::numeric_limits<double>::max();
 }
 
 /*
@@ -186,10 +180,7 @@ void VacuumGripper::setParam(const VacuumGripperParams& param)
     targetObject = param.targetObject;
     position = param.position;
     normalLine = param.normalLine;
-    pullForceUnlimited = param.pullForceUnlimited;
     maxPullForce = param.maxPullForce;
-    shearForceUnlimited = param.shearForceUnlimited;
     maxShearForce = param.maxShearForce;
-    peelTorqueUnlimited = param.peelTorqueUnlimited;
     maxPeelTorque = param.maxPeelTorque;
 }

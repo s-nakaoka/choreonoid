@@ -1255,26 +1255,23 @@ static bool limitCheck(dVector3& df, dVector3& dt, VacuumGripper* vg)
    const Vector3 ttt = tau - p.cross(f);
 
 // check pull force
-    if (vg->pullForceUnlimited == false) {
 #if 0
 cout << "pull force: n.dot(f)=" << n.dot(f)
      << " : vg->maxPullForce=" << (dReal)vg->maxPullForce
      << endl;
 #endif
 //MessageView::instance()->putln("check maxPullForce");
-	if (n.dot(f) + (dReal)vg->maxPullForce < 0) {
+    if (n.dot(f) + (dReal)vg->maxPullForce < 0) {
 #if 0
 cout << "   maxPullForce limit" << endl;
 #endif
-	    return true;
-	}
+        return true;
     }
 
     // check shear force
-    if (vg->shearForceUnlimited == false) {
-	//MessageView::instance()->putln("check maxShearForce");
-	double fx = f[0] * f[0];
-	double fy = f[1] * f[1];
+    //MessageView::instance()->putln("check maxShearForce");
+    double fx = f[0] * f[0];
+    double fy = f[1] * f[1];
 #if 0
 cout << "shear force: fx=" << f[0]
      << " fy=" << f[1]
@@ -1282,26 +1279,23 @@ cout << "shear force: fx=" << f[0]
      << " : vg->maxShearForce=" << (dReal)vg->maxShearForce
      << endl;
 #endif
-	if (sqrt(fx + fy) > (dReal)vg->maxShearForce) {
+    if (sqrt(fx + fy) > (dReal)vg->maxShearForce) {
 #if 0
 cout << "   maxShearForce limit" << endl;
 #endif
-	    return true;
-	}
+        return true;
     }
 
     // check peel torque
-    if (vg->peelTorqueUnlimited == false) {
-	//MessageView::instance()->putln("check maxPeelTorque");
+    //MessageView::instance()->putln("check maxPeelTorque");
 #if 0
 cout << "peer torque: tau=" << ttt << " : vg->maxPeelTorque=" << (dReal)vg->maxPeelTorque << endl;
 #endif
-	if (fabs(n.dot(ttt)) > (dReal)vg->maxPeelTorque) {
+    if (fabs(n.dot(ttt)) > (dReal)vg->maxPeelTorque) {
 #if 0
 cout << "   maxPeerTorque limit" << endl;
 #endif
-	    return true;
-	}
+        return true;
     }
 
     return false;
