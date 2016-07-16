@@ -114,7 +114,6 @@ foreach(version ${versions})
 
   set(headers
     ODESimulatorItem.h
-    ODECollisionDetector.h
     VacuumGripper.h
     NailDriver.h
     exportdecl.h
