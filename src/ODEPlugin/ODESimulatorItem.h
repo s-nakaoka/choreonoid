@@ -13,9 +13,6 @@
 #define ODESimulatorItem GazeboODESimulatorItem
 #endif
 
-#include <cnoid/VacuumGripper>
-#include <cnoid/NailDriver>
-
 namespace cnoid {
 
 class ODESimulatorItemImpl;
