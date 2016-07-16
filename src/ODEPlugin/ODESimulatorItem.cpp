@@ -1425,19 +1425,16 @@ cout << "VacuumGripper: *** joint destroy **" << endl;
 	    if(!impl->nailDriverDevs.empty()){
 		NailedObjectManager* nailedObjMngr = NailedObjectManager::getInstance();
 		NailDriver* nailDriver = 0;
-		dBodyID ndId = 0;
 		dBodyID objId = 0;
 		NailDriverMap::iterator p = impl->nailDriverDevs.find(body1ID);
                 if (p != impl->nailDriverDevs.end()) {
 		    nailDriver = p->second;
-		    ndId = body1ID;
 		    objId = body2ID;
 		    //MessageView::instance()->putln(boost::format(_("NailDriver body1ID=%1%, Object body2ID=%2%")) % ndId % objId);
                 } else {
 		    p = impl->nailDriverDevs.find(body2ID);
 		    if (p != impl->nailDriverDevs.end()) {
 			nailDriver = p->second;
-			ndId = body2ID;
 			objId = body1ID;
 			//MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object body1ID=%2%")) % ndId % objId);
 		    }
