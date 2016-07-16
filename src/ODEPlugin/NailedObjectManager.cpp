@@ -3,7 +3,7 @@
   @author 
 */
 
-#include <cnoid/NailedObjectManager>
+#include "NailedObjectManager.h"
 #include <cnoid/NailDriver>
 
 #include <cnoid/Device>

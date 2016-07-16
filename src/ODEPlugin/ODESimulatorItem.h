@@ -15,7 +15,6 @@
 
 #include <cnoid/VacuumGripper>
 #include <cnoid/NailDriver>
-#include <cnoid/NailedObjectManager>
 
 namespace cnoid {
 

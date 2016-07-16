@@ -20,6 +20,7 @@
 #include <boost/bind.hpp>
 #include <QElapsedTimer>
 #include "gettext.h"
+#include "NailedObjectManager.h"
 
 #ifdef GAZEBO_ODE
 #include <gazebo/ode/ode.h>
