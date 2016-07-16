@@ -1438,21 +1438,21 @@ cout << "VacuumGripper: *** joint destroy **" << endl;
 		    nailDriver = p->second;
 		    ndId = body1ID;
 		    objId = body2ID;
-MessageView::instance()->putln(boost::format(_("NailDriver body1ID=%1%, Object body2ID=%2%")) % ndId % objId);
+		    //MessageView::instance()->putln(boost::format(_("NailDriver body1ID=%1%, Object body2ID=%2%")) % ndId % objId);
                 } else {
 		    p = impl->nailDriverDevs.find(body2ID);
 		    if (p != impl->nailDriverDevs.end()) {
 			nailDriver = p->second;
 			ndId = body2ID;
 			objId = body1ID;
-MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object body1ID=%2%")) % ndId % objId);
+			//MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object body1ID=%2%")) % ndId % objId);
 		    }
                 }
 		if (nailDriver != 0 && nailDriver->on()) {
-cout << "NailDriver ON **" << endl;
+		  //cout << "NailDriver ON **" << endl;
 		    int n = nailDriver->checkContact(numContacts, contacts);
-MessageView::instance()->putln(boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n);
-cout << boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n << endl;
+		    //MessageView::instance()->putln(boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n);
+		    //cout << boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n << endl;
 		    if (n == 0) {
 			nailDriver->objId = 0;
 		    } else {

@@ -157,16 +157,16 @@ int NailDriver::checkContact(int numContacts, dContact* contacts)
 {
     Link* link_ = link();
     Vector3 muzzle = link_->p() + link_->R() * position;
-cout << "NailDriver: muzzle:" << str(muzzle) << endl;
+    //cout << "NailDriver: muzzle:" << str(muzzle) << endl;
     int n = 0;
     for (int i=0; i < numContacts; ++i) {
 	Vector3 pos(contacts[i].geom.pos);
 	Vector3 v(contacts[i].geom.normal);
-cout << "NailDriver: pos:" << str(pos) << endl;
-cout << "NailDriver:   v:" << str(v) << endl;
+	//cout << "NailDriver: pos:" << str(pos) << endl;
+	//cout << "NailDriver:   v:" << str(v) << endl;
 
 	float isParallel = (link_->R() * normalLine).dot(v);
-cout << "NailDriver: isParallel: " << isParallel << endl;
+	//cout << "NailDriver: isParallel: " << isParallel << endl;
 
 	// Distance gripper (P: muzzle) and contact (A:pos)
 	Vector3 pa;
@@ -175,7 +175,7 @@ cout << "NailDriver: isParallel: " << isParallel << endl;
 	pa[2] = pos[2] - muzzle[2];
 
 	float distance = fabs(muzzle.dot(pa));
-cout << "NailDriver: distance: " << distance << endl;
+	//cout << "NailDriver: distance: " << distance << endl;
 	if (isParallel < -0.9f && distance < 0.04f) {
 	    n++;
 	}
