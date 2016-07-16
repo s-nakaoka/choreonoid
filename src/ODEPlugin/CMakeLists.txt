@@ -117,7 +117,6 @@ foreach(version ${versions})
     ODECollisionDetector.h
     VacuumGripper.h
     NailDriver.h
-    NailedObjectManager.h
     exportdecl.h
   )
 
