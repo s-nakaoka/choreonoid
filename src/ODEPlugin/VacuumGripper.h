@@ -15,22 +15,6 @@
 
 namespace cnoid {
 
-class CNOID_EXPORT VacuumGripperParams
-{
-public:
-    static VacuumGripperParams* findParameter(const Body* info);
-
-    VacuumGripperParams();
-    ~VacuumGripperParams();
-
-    std::string targetObject;
-    Vector3 position;
-    Vector3 normalLine;
-    double maxPullForce;
-    double maxShearForce;
-    double maxPeelTorque;
-};
-
 class CNOID_EXPORT VacuumGripper : public Device
 {
 public:
@@ -57,12 +41,10 @@ public:
 #else
     void on(bool on);
 #endif
-    void setParam(const VacuumGripperParams& param);
 private:
     bool on_;
 
 public:
-    std::string targetObject;
     Vector3 position;
     Vector3 normalLine;
     double maxPullForce;
@@ -74,6 +56,7 @@ public:
 
 typedef ref_ptr<VacuumGripper> VacuumGripperPtr;
 
+std::vector<VacuumGripper *> createVacuumGrippers(Body *body);
 }
 
 #endif

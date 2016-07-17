@@ -1146,8 +1146,8 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
     for(size_t i=0; i < simBodies.size(); ++i){
 #if 1    /* Experimental. */
 	ODEBody* odeBody = static_cast<ODEBody*>(simBodies[i]);
-	VacuumGripperParams* vacuumGripperParams = VacuumGripperParams::findParameter(odeBody->body());
-	if (vacuumGripperParams) {
+	std::vector<VacuumGripper *> vacuumGrippers = createVacuumGrippers(odeBody->body());
+	if (vacuumGrippers.size()) {
 	    cout << odeBody->body()->name() << " has vacuum gripper." << endl;
 	}
 	std::vector<NailDriver*> nailDrivers = createNailDrivers(odeBody->body());
@@ -1159,22 +1159,17 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
 #if 1    /* Experimental. */
 	for (size_t i=0; i < odeBody->odeLinks.size(); ++i) {
 	    ODELinkPtr odeLink = odeBody->odeLinks[i];
-	    if (vacuumGripperParams) {
-		if (odeLink->link->name().compare(vacuumGripperParams->targetObject) == 0) {
-cout << boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripperParams->targetObject << endl;
-MessageView::instance()->putln(boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripperParams->targetObject);
-                    VacuumGripper* vacuumGripper = new VacuumGripper();
-		    vacuumGripper->setParam(*vacuumGripperParams);
-		    vacuumGripper->setLink(odeLink->link);
-		    odeBody->body()->addDevice(vacuumGripper);
+	    for (unsigned int j=0; j<vacuumGrippers.size(); j++){
+	        VacuumGripper *vacuumGripper = vacuumGrippers[j];
+		if (odeLink->link == vacuumGripper->link()){
+cout << boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripper->link()->name() << endl;
+MessageView::instance()->putln(boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripper->link()->name());
 		    vacuumGripperDevs.insert(make_pair(odeLink->bodyID,
 						       vacuumGripper));
-		    delete vacuumGripperParams;
-		    vacuumGripperParams = 0;
 		}
 	    }
-	    for (unsigned int i=0; i<nailDrivers.size(); i++) {
-	        NailDriver *nailDriver = nailDrivers[i];
+	    for (unsigned int j=0; j<nailDrivers.size(); j++) {
+	        NailDriver *nailDriver = nailDrivers[j];
 		if (odeLink->link == nailDriver->link()) {
 cout << boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriver->link()->name() << endl;
 MessageView::instance()->putln(boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriver->link()->name());
@@ -1187,9 +1182,6 @@ MessageView::instance()->putln(boost::format("NailDriver: bodyID=%d target=%s")%
 #endif
 		}
 	    }
-	}
-	if (vacuumGripperParams) {
-	    delete vacuumGripperParams;
 	}
 #endif    /* Experimental. */
     }
