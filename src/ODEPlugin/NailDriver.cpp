@@ -24,46 +24,50 @@ using namespace std;
 std::vector<NailDriver*> cnoid::createNailDrivers(Body* body)
 {
     std::vector<NailDriver *> nailDrivers;
-    Mapping* m = body->info()->findMapping("nailDriver");
+    const Listing *l = body->info()->findListing("nailDrivers");
 
-    if (!m->isValid()) {
-	MessageView::instance()->putln(boost::format(_("%s not has nail driver")) % body->name());
+    if (!l->isValid()) {
+	MessageView::instance()->putln(boost::format(_("%s doesn't has nail driver")) % body->name());
 	return nailDrivers;
     }
 
-    MessageView::instance()->putln(boost::format(_("%s has nail driver")) % body->name());
+    MessageView::instance()->putln(boost::format(_("%s has %d nail driver(s)")) % body->name() % l->size());
 
-    NailDriver* nailDriver = new NailDriver();
+    for (unsigned int i=0; i<l->size(); i++){
+        const Mapping *m = l->at(i)->toMapping();
 
-    std::string targetObject = "";
-    double maxFasteningForce = 0;
+	NailDriver* nailDriver = new NailDriver();
 
-    targetObject = m->get("targetObject", targetObject);
-    MessageView::instance()->putln(boost::format(_("  targetObject: %s")) % targetObject);
-    nailDriver->setLink(body->link(targetObject));
+	std::string targetObject = "";
+	double maxFasteningForce = 0;
 
-    read(*m, "position", nailDriver->position);
-    cout << "position=[" << str(nailDriver->position) << "]" << endl;
-    MessageView::instance()->putln(boost::format(_("      position: %s")) % str(nailDriver->position));
+	targetObject = m->get("targetObject", targetObject);
+	MessageView::instance()->putln(boost::format(_("  targetObject: %s")) % targetObject);
+	nailDriver->setLink(body->link(targetObject));
 
-    read(*m, "normalLine", nailDriver->normalLine);
-    cout << "normalLine=[" << str(nailDriver->normalLine) << "]" << endl;
-    MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(nailDriver->normalLine));
+	read(*m, "position", nailDriver->position);
+	cout << "position=[" << str(nailDriver->position) << "]" << endl;
+	MessageView::instance()->putln(boost::format(_("      position: %s")) % str(nailDriver->position));
 
-    if (!m->find("maxFasteningForce")->isValid()) {
-	MessageView::instance()->putln("  maxFasteningForce: Unlimited");
-    } else {
-	if (m->read("maxFasteningForce", maxFasteningForce)) {
-	    nailDriver->maxFasteningForce = maxFasteningForce;
-	    MessageView::instance()->putln(boost::format(_("  maxFasteningForce: %f")) % maxFasteningForce);
+	read(*m, "normalLine", nailDriver->normalLine);
+	cout << "normalLine=[" << str(nailDriver->normalLine) << "]" << endl;
+	MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(nailDriver->normalLine));
+
+	if (!m->find("maxFasteningForce")->isValid()) {
+	    MessageView::instance()->putln("  maxFasteningForce: Unlimited");
 	} else {
-	    // todo
-	    MessageView::instance()->putln(" maxFasteningForce is invalid.");
+	    if (m->read("maxFasteningForce", maxFasteningForce)) {
+	        nailDriver->maxFasteningForce = maxFasteningForce;
+		MessageView::instance()->putln(boost::format(_("  maxFasteningForce: %f")) % maxFasteningForce);
+	    } else {
+	        // todo
+	        MessageView::instance()->putln(" maxFasteningForce is invalid.");
+	    }
 	}
-    }
 
-    nailDrivers.push_back(nailDriver);
-    body->addDevice(nailDriver);
+	nailDrivers.push_back(nailDriver);
+	body->addDevice(nailDriver);
+    }
 
     return nailDrivers;
 }
