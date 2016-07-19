@@ -1041,13 +1041,10 @@ void ODESimulatorItem::useWorldCollisionDetector(bool on)
 
 void ODESimulatorItem::useVacuumGripper(bool on)
 {
-    MessageView::instance()->putln(boost::format(_("ODESimulatorItemr: *** vacuum gripper %s ***")) % (on ? "ON" : "OFF"));
-
     for (VacuumGripperMap::iterator p = impl->vacuumGripperDevs.begin();
          p != impl->vacuumGripperDevs.end(); p++) {
         VacuumGripper* vacuumGripper = p->second;
         vacuumGripper->on(on);
-MessageView::instance()->putln(boost::format(_("vacuumGripper->on()=%s")) % (vacuumGripper->on() ? "ON" : "OFF"));
     }
 }
 
@@ -1239,46 +1236,46 @@ static bool limitCheck(dVector3& df, dVector3& dt, VacuumGripper* vg)
    const Vector3 ttt = tau - p.cross(f);
 
 // check pull force
-#if 0
+#ifdef VACUUM_GRIPPER_DEBUG
 cout << "pull force: n.dot(f)=" << n.dot(f)
      << " : vg->maxPullForce=" << (dReal)vg->maxPullForce
      << endl;
-#endif
+#endif // VACUUM_GRIPPER_DEBUG
 //MessageView::instance()->putln("check maxPullForce");
     if (n.dot(f) + (dReal)vg->maxPullForce < 0) {
-#if 0
+#ifdef VACUUM_GRIPPER_DEBUG
 cout << "   maxPullForce limit" << endl;
-#endif
-        return true;
+#endif // VACUUM_GRIPPER_DEBUG
+	    return true;
     }
 
     // check shear force
     //MessageView::instance()->putln("check maxShearForce");
     double fx = f[0] * f[0];
     double fy = f[1] * f[1];
-#if 0
+#ifdef VACUUM_GRIPPER_DEBUG
 cout << "shear force: fx=" << f[0]
      << " fy=" << f[1]
      << " sqrt(fx^2, fy^2)=" << sqrt(fx + fy)
      << " : vg->maxShearForce=" << (dReal)vg->maxShearForce
      << endl;
-#endif
+#endif // VACUUM_GRIPPER_DEBUG
     if (sqrt(fx + fy) > (dReal)vg->maxShearForce) {
-#if 0
+#ifdef VACUUM_GRIPPER_DEBUG
 cout << "   maxShearForce limit" << endl;
-#endif
+#endif // VACUUM_GRIPPER_DEBUG
         return true;
     }
 
     // check peel torque
     //MessageView::instance()->putln("check maxPeelTorque");
-#if 0
+#ifdef VACUUM_GRIPPER_DEBUG
 cout << "peer torque: tau=" << ttt << " : vg->maxPeelTorque=" << (dReal)vg->maxPeelTorque << endl;
-#endif
+#endif // VACUUM_GRIPPER_DEBUG
     if (fabs(n.dot(ttt)) > (dReal)vg->maxPeelTorque) {
-#if 0
+#ifdef VACUUM_GRIPPER_DEBUG
 cout << "   maxPeerTorque limit" << endl;
-#endif
+#endif // VACUUM_GRIPPER_DEBUG
         return true;
     }
 
@@ -1321,137 +1318,185 @@ static void nearCallback(void* data, dGeomID g1, dGeomID g2)
                 }
             }
 #if 1    /* Experimental. */
-	    if(!impl->vacuumGripperDevs.empty()){
-		VacuumGripper* vacuumGripper = 0;
-		dBodyID vgid = 0;
-		dBodyID gripped = 0;
-		VacuumGripperMap::iterator p = impl->vacuumGripperDevs.find(body1ID);
+            if(!impl->vacuumGripperDevs.empty()){
+                VacuumGripper* vacuumGripper = 0;
+                dBodyID vgid = 0;
+                dBodyID gripped = 0;
+                VacuumGripperMap::iterator p = impl->vacuumGripperDevs.find(body1ID);
                 if (p != impl->vacuumGripperDevs.end()) {
-		    vacuumGripper = p->second;
-		    vgid = body1ID;
-		    gripped = body2ID;
-		    //MessageView::instance()->putln("*** vacuum gripper : body1 ***");
+                    vacuumGripper = p->second;
+                    vgid = body1ID;
+                    gripped = body2ID;
+#ifdef VACUUM_GRIPPER_DEBUG
+MessageView::instance()->putln("*** vacuum gripper : body1 ***");
+#endif // VACUUM_GRIPPER_DEBUG
                 } else {
-		    p = impl->vacuumGripperDevs.find(body2ID);
-		    if (p != impl->vacuumGripperDevs.end()) {
-			vacuumGripper = p->second;
-			vgid = body2ID;
-			gripped = body1ID;
-			//MessageView::instance()->putln("*** vacuum gripper : body2 ***");
-		    }
+                    p = impl->vacuumGripperDevs.find(body2ID);
+                    if (p != impl->vacuumGripperDevs.end()) {
+                        vacuumGripper = p->second;
+                        vgid = body2ID;
+                        gripped = body1ID;
+#ifdef VACUUM_GRIPPER_DEBUG
+MessageView::instance()->putln("*** vacuum gripper : body2 ***");
+#endif // VACUUM_GRIPPER_DEBUG
+                    }
                 }
-		if (vacuumGripper != 0) {
-		    Link* link = vacuumGripper->link();
-		    //MessageView::instance()->putln(boost::format(_("*** vacuum gripper on() = %d ***")) % vacuumGripper->on());
-		    if (vacuumGripper->on()) {
-			if (dAreConnected(vgid, gripped) == 0) {
-			    Vector3 vacuumPos = link->p() + link->R() * vacuumGripper->position;
+                if (vacuumGripper != 0) {
+                    Link* link = vacuumGripper->link();
+                    if (vacuumGripper->on()) {
+                        if (vacuumGripper->jointID != 0) {
+#ifdef VACUUM_GRIPPER_DEBUG
+MessageView::instance()->putln("*** vacuum gripper already gripping ***");
+cout << "*** vacuum gripper already gripping ***" << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+                            if (dAreConnected(vgid, gripped)) {
+                                dJointFeedback* fb = dJointGetFeedback(vacuumGripper->jointID);
 
-			    int n = 0;
-			    for(int i=0; i < numContacts; ++i){
-				Vector3 pos(contacts[i].geom.pos);
-				Vector3 v(contacts[i].geom.normal);
+                                if (limitCheck(fb->f2, fb->t2, vacuumGripper)) {
+#ifdef VACUUM_GRIPPER_DEBUG
+MessageView::instance()->putln("VacuumGripper: *** joint destroy ***");
+cout << "VacuumGripper: *** joint destroy **" << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+                                    dJointSetFeedback(vacuumGripper->jointID, 0);
+                                    dJointDestroy(vacuumGripper->jointID);
+                                    vacuumGripper->jointID = 0;
+                                }
+                            } else {
+#ifdef VACUUM_GRIPPER_DEBUG
+MessageView::instance()->putln(boost::format("VacuumGripper: *** other body jointed %s ***") % gripped);
+cout << boost::format("VacuumGripper: *** other body jointed %s ***") % gripped << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+                                ;
+                            }
+                        } else { // vacuumGripper->jointID == 0
+                            Vector3 vacuumPos = link->p() + link->R() * vacuumGripper->position;
 
-				float isParallel = (link->R() * vacuumGripper->normalLine).dot(v);
+                            int n = 0;
+                            for(int i=0; i < numContacts; ++i){
+                                Vector3 pos(contacts[i].geom.pos);
+                                Vector3 v(contacts[i].geom.normal);
 
-				// Distance gripper (P: vacuumPos) and contact (A:pos)
-				Vector3 pa;
-				pa[0] = pos[0] - vacuumPos[0];
-				pa[1] = pos[1] - vacuumPos[1];
-				pa[2] = pos[2] - vacuumPos[2];
+                                float isParallel = (link->R() * vacuumGripper->normalLine).dot(v);
 
-				float distance = abs(vacuumPos.dot(pa));
-				if (isParallel < -0.9f && distance < 0.01f) {
-				    n++;
-				}
-			    }
+                                // Distance gripper (P: vacuumPos) and contact (A:pos)
+                                Vector3 pa;
+                                pa[0] = pos[0] - vacuumPos[0];
+                                pa[1] = pos[1] - vacuumPos[1];
+                                pa[2] = pos[2] - vacuumPos[2];
+
+                                float distance = abs(vacuumPos.dot(pa));
+                                if (isParallel < -0.9f && distance < 0.01f) {
+                                    n++;
+                                }
+                            }
 //////////////////////////////////////////////////////////////////////
 
-			    if (n != 0) {
-				dJointID jointID = dJointCreateFixed(impl->worldID, 0);
-				dJointAttach(jointID, gripped, vgid);
-				dJointSetFixed(jointID);
-				dJointSetFeedback(jointID, new dJointFeedback());
-				vacuumGripper->jointID = jointID;
+                            if (n != 0) {
+                                dJointID jointID = dJointCreateFixed(impl->worldID, 0);
+                                dJointAttach(jointID, gripped, vgid);
+                                dJointSetFixed(jointID);
+                                dJointSetFeedback(jointID, new dJointFeedback());
+                                vacuumGripper->jointID = jointID;
+#ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("VacuumGripper: *** joint created **");
 cout << "VacuumGripper: *** joint created **" << endl;
-			    } else {
-				;
-//MessageView::instance()->putln("VacuumGripper: *** cannot create joint **");
-			    }
-			} else {
-			    dJointFeedback* fb = dJointGetFeedback(vacuumGripper->jointID);
-
-			    if (limitCheck(fb->f2, fb->t2, vacuumGripper)) {
-MessageView::instance()->putln("VacuumGripper: *** joint destroy ***");
-cout << "VacuumGripper: *** joint destroy **" << endl;
-				dJointSetFeedback(vacuumGripper->jointID, 0);
-				dJointDestroy(vacuumGripper->jointID);
-				vacuumGripper->jointID = 0;
-			    }
-			}
-		    } else {
-//MessageView::instance()->putln(boost::format(_("*** vacuum gripper on() = %d ***")) % vacuumGripper->on());
+#endif // VACUUM_GRIPPER_DEBUG
+                            } else {
+#ifdef VACUUM_GRIPPER_DEBUG
+MessageView::instance()->putln("VacuumGripper: *** cannot create joint **");
+cout << "VacuumGripper: *** cannot create joint **" << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+                                ;
+                            }
+                        } // vacuumGripper->jointID != 0
+                    } else { // vacuumGripper is off
+#ifdef VACUUM_GRIPPER_DEBUG
 cout << "VacuumGripper OFF **" << endl;
-			if (vacuumGripper->jointID != 0) {
-			    dJointSetFeedback(vacuumGripper->jointID, 0);
-			    dJointDestroy(vacuumGripper->jointID);
-			    vacuumGripper->jointID = 0;
+#endif // VACUUM_GRIPPER_DEBUG
+                        if (vacuumGripper->jointID != 0) {
+                            dJointSetFeedback(vacuumGripper->jointID, 0);
+                            dJointDestroy(vacuumGripper->jointID);
+                            vacuumGripper->jointID = 0;
+#ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("VacuumGripper: *** joint destroy ***");
 cout << "VacuumGripper: *** joint destroy **" << endl;
-			}
-		    }
-		}
-	    }
+#endif // VACUUM_GRIPPER_DEBUG
+                        }
+                    } // vacuumGripper->on()
+                } // vacuumGripper != 0
+            }
 #endif    /* Experimental. */
 #if 1    /* Experimental. */
-	    //cout << "NailDriver empty = " << impl->nailDriverDevs.empty() << " **" << endl;
-	    if(!impl->nailDriverDevs.empty()){
-		NailedObjectManager* nailedObjMngr = NailedObjectManager::getInstance();
-		NailDriver* nailDriver = 0;
-		dBodyID objId = 0;
-		NailDriverMap::iterator p = impl->nailDriverDevs.find(body1ID);
+            if(!impl->nailDriverDevs.empty()){
+                NailedObjectManager* nailedObjMngr = NailedObjectManager::getInstance();
+                NailDriver* nailDriver = 0;
+                dBodyID ndId = 0;
+                dBodyID objId = 0;
+                NailDriverMap::iterator p = impl->nailDriverDevs.find(body1ID);
                 if (p != impl->nailDriverDevs.end()) {
-		    nailDriver = p->second;
-		    objId = body2ID;
-		    //MessageView::instance()->putln(boost::format(_("NailDriver body1ID=%1%, Object body2ID=%2%")) % ndId % objId);
+                    nailDriver = p->second;
+                    ndId = body1ID;
+                    objId = body2ID;
+#ifdef NAILDRIVER_DEBUG
+MessageView::instance()->putln(boost::format(_("NailDriver body1ID=%1%, Object body2ID=%2%")) % ndId % objId);
+#endif // NAILDRIVER_DEBUG
                 } else {
-		    p = impl->nailDriverDevs.find(body2ID);
-		    if (p != impl->nailDriverDevs.end()) {
-			nailDriver = p->second;
-			objId = body1ID;
-			//MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object body1ID=%2%")) % ndId % objId);
-		    }
+                    p = impl->nailDriverDevs.find(body2ID);
+                    if (p != impl->nailDriverDevs.end()) {
+                        nailDriver = p->second;
+                        ndId = body2ID;
+                        objId = body1ID;
+#ifdef NAILDRIVER_DEBUG
+MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object body1ID=%2%")) % ndId % objId);
+#endif // NAILDRIVER_DEBUG
+                    }
                 }
-		if (nailDriver != 0 && nailDriver->on()) {
-		  //cout << "NailDriver ON **" << endl;
-		    int n = nailDriver->checkContact(numContacts, contacts);
-		    //MessageView::instance()->putln(boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n);
-		    //cout << boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n << endl;
-		    if (n) {
-		        //MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) % objId);
-		        if (!nailedObjMngr->find(objId)) {
-			    NailedObject* nobj = new NailedObject(objId);
-			    // first
-			    dJointID jointID = dJointCreateFixed(impl->worldID, 0);
-			    dJointAttach(jointID, 0, objId);
-			    dJointSetFixed(jointID);
-			    dJointSetFeedback(jointID, new dJointFeedback());
-			    nobj->setJointID(jointID);
-			    nailedObjMngr->addObject(nobj);
+                if (nailDriver != 0) {
+		    if (nailDriver->on()) {
+#ifdef NAILDRIVER_DEBUG
+cout << "NailDriver ON **" << endl;
+#endif // NAILDRIVER_DEBUG
+			int n = nailDriver->checkContact(numContacts, contacts);
+#ifdef NAILDRIVER_DEBUG
+MessageView::instance()->putln(boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n);
+cout << boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n << endl;
+#endif // NAILDRIVER_DEBUG
+			if (n) {
+				// TODO check object and other object
+#ifdef NAILDRIVER_DEBUG
+MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) % objId);
+#endif // NAILDRIVER_DEBUG
+				if (!nailedObjMngr->find(objId)) {
+				    NailedObject* nobj = new NailedObject(objId);
+				    // first
+				    dJointID jointID = dJointCreateFixed(impl->worldID, 0);
+				    dJointAttach(jointID, 0, objId);
+				    dJointSetFixed(jointID);
+				    dJointSetFeedback(jointID, new dJointFeedback());
+				    nobj->setJointID(jointID);
+				    nailedObjMngr->addObject(nobj);
+#ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("NailDriver: *** joint created **");
 cout << "NailDriver: *** joint created **" << endl;
-			} else {
-			    //MessageView::instance()->putln("NailDriver: *** joint already created **");
-			    //cout << "NailDriver: *** joint already created **" << endl;
-                            // second
-                            // TODO
-			}
-		    } // n != 0
-		} else {
-		    //cout << "NailDriver OFF **" << endl;
-		}
-	    }
+#endif // VACUUM_GRIPPER_DEBUG
+				} else {
+#ifdef NAILDRIVER_DEBUG
+MessageView::instance()->putln("NailDriver: *** joint already created **");
+cout << "NailDriver: *** joint already created **" << endl;
+#endif // NAILDRIVER_DEBUG
+                                    ;
+				    // second
+				    // TODO
+				}
+			} // n != 0
+		    } else {
+#ifdef NAILDRIVER_DEBUG
+cout << "NailDriver OFF **" << endl;
+#endif // NAILDRIVER_DEBUG
+                        ;
+		    }
+                }
+            }
 #endif    /* Experimental. */
 	    for(int i=0; i < numContacts; ++i){
                 dSurfaceParameters& surface = contacts[i].surface;
