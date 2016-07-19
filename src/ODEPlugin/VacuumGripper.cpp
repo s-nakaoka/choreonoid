@@ -27,7 +27,7 @@ std::vector<VacuumGripper *> cnoid::createVacuumGrippers(Body* body)
     const Listing *l = body->info()->findListing("vacuumGrippers");
 
     if (!l->isValid()) {
-	MessageView::instance()->putln(boost::format(_("%s doesn't has vacuum gripper")) % body->name());
+	MessageView::instance()->putln(boost::format(_("%s doesn't have vacuum gripper")) % body->name());
 	return vacuumGrippers;
     }
 

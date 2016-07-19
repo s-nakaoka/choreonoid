@@ -27,7 +27,7 @@ std::vector<NailDriver*> cnoid::createNailDrivers(Body* body)
     const Listing *l = body->info()->findListing("nailDrivers");
 
     if (!l->isValid()) {
-	MessageView::instance()->putln(boost::format(_("%s doesn't has nail driver")) % body->name());
+	MessageView::instance()->putln(boost::format(_("%s doesn't have nail driver")) % body->name());
 	return nailDrivers;
     }
 
