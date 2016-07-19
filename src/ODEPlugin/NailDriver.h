@@ -36,7 +36,7 @@ public:
     virtual double* writeState(double* out_buf) const;
 
     bool on() const { return on_; }
-    void on(bool on) { on_ = on; }
+    void on(bool on);
 
     int checkContact(int numContacts, dContact* contacts);
 

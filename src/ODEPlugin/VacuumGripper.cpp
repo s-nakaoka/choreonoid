@@ -162,6 +162,7 @@ double* VacuumGripper::writeState(double* out_buf) const
 }
 
 void VacuumGripper::on(bool on) {
-    MessageView::instance()->putln(boost::format(_("*** VacuumGripper: %s ***")) % (on ? "ON" : "OFF"));
+    MessageView::instance()->putln(boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF"));
+    cout << boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF") << endl;
     on_ = on;
 }

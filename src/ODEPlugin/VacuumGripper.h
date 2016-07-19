@@ -36,11 +36,7 @@ public:
     virtual double* writeState(double* out_buf) const;
 
     bool on() const { return on_; }
-#if 0
-    void on(bool on) { on_ = on; }
-#else
     void on(bool on);
-#endif
 private:
     bool on_;
 

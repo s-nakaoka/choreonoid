@@ -132,20 +132,32 @@ double* NailDriver::writeState(double* out_buf) const
     return out_buf + 1;
 }
 
+void NailDriver::on(bool on) {
+    MessageView::instance()->putln(boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF"));
+    cout << boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF") << endl;
+    on_ = on;
+}
+
 int NailDriver::checkContact(int numContacts, dContact* contacts)
 {
     Link* link_ = link();
     Vector3 muzzle = link_->p() + link_->R() * position;
-    //cout << "NailDriver: muzzle:" << str(muzzle) << endl;
+#ifdef NAILDRIVER_DEBUG
+cout << "NailDriver: muzzle:" << str(muzzle) << endl;
+#endif // NAILDRIVER_DEBUG
     int n = 0;
     for (int i=0; i < numContacts; ++i) {
 	Vector3 pos(contacts[i].geom.pos);
 	Vector3 v(contacts[i].geom.normal);
-	//cout << "NailDriver: pos:" << str(pos) << endl;
-	//cout << "NailDriver:   v:" << str(v) << endl;
+#ifdef NAILDRIVER_DEBUG
+cout << "NailDriver: pos:" << str(pos) << endl;
+cout << "NailDriver:   v:" << str(v) << endl;
+#endif // NAILDRIVER_DEBUG
 
 	float isParallel = (link_->R() * normalLine).dot(v);
-	//cout << "NailDriver: isParallel: " << isParallel << endl;
+#ifdef NAILDRIVER_DEBUG
+cout << "NailDriver: isParallel: " << isParallel << endl;
+#endif // NAILDRIVER_DEBUG
 
 	// Distance gripper (P: muzzle) and contact (A:pos)
 	Vector3 pa;
@@ -154,7 +166,9 @@ int NailDriver::checkContact(int numContacts, dContact* contacts)
 	pa[2] = pos[2] - muzzle[2];
 
 	float distance = fabs(muzzle.dot(pa));
-	//cout << "NailDriver: distance: " << distance << endl;
+#ifdef NAILDRIVER_DEBUG
+cout << "NailDriver: distance: " << distance << endl;
+#endif // NAILDRIVER_DEBUG
 	if (isParallel < -0.9f && distance < 0.04f) {
 	    n++;
 	}
