@@ -96,10 +96,12 @@ Device* NailDriver::clone() const
  */
 NailDriver::NailDriver()
 {
-    on_ = true;
+    on_ = false;
     position << 0, 0, 0;
     normalLine << 0, 0, 0;
     maxFasteningForce = std::numeric_limits<double>::max();
+
+    resetLatestContact();
 }
 
 void NailDriver::copyStateFrom(const NailDriver& other)
@@ -135,6 +137,11 @@ double* NailDriver::writeState(double* out_buf) const
 void NailDriver::on(bool on) {
     MessageView::instance()->putln(boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF"));
     cout << boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF") << endl;
+    if (on_ == false && on == true) {
+        // By switching from off to on,
+        // it becomes possible to injection of a nail.
+        resetLatestContact();
+    }
     on_ = on;
 }
 

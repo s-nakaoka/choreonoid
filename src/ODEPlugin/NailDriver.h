@@ -40,6 +40,10 @@ public:
 
     int checkContact(int numContacts, dContact* contacts);
 
+    void setLatestContact(const double current) { latestContact = current; }
+    double getLatestContact() { return latestContact; }
+    void resetLatestContact() { latestContact = 0.0; }
+
 private:
     bool on_;
 
@@ -47,6 +51,7 @@ public:
     Vector3 position;
     Vector3 normalLine;
     double maxFasteningForce;
+    double latestContact;
 };
 
 typedef ref_ptr<NailDriver> NailDriverPtr;
