@@ -67,6 +67,12 @@ VacuumGripper::VacuumGripper(const VacuumGripper& org, bool copyStateOnly)
     : Device(org, copyStateOnly)
 {
     copyStateFrom(org);
+    jointID = org.jointID;
+    position = org.position;
+    normalLine = org.normalLine;
+    maxPullForce = org.maxPullForce;
+    maxShearForce = org.maxShearForce;
+    maxPeelTorque = org.maxPeelTorque;
 }
 
 

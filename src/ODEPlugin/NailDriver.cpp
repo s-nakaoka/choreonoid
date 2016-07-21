@@ -64,6 +64,9 @@ NailDriver::NailDriver(const NailDriver& org, bool copyStateOnly)
     : Device(org, copyStateOnly)
 {
     copyStateFrom(org);
+    position = org.position;
+    normalLine = org.normalLine;
+    maxFasteningForce = org.maxFasteningForce;
 }
 
 
