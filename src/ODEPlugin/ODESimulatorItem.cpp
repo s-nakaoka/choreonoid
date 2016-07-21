@@ -1313,7 +1313,7 @@ static bool limitCheck(dVector3& df, dVector3& dt, VacuumGripper* vg)
    Vector3 f(df);
    Vector3 tau(dt);
 
-   const Vector3 n = vg->link()->R() * vg->normalLine;
+   const Vector3 n = vg->link()->R() * vg->normal;
    const Vector3 p = vg->link()->R() * vg->position + vg->link()->p();
    const Vector3 ttt = tau - p.cross(f);
 
@@ -1483,7 +1483,7 @@ cout << boost::format("VacuumGripper: *** other body jointed %s ***") % gripped 
                                 Vector3 pos(contacts[i].geom.pos);
                                 Vector3 v(contacts[i].geom.normal);
 
-                                float isParallel = (link->R() * vacuumGripper->normalLine).dot(v);
+                                float isParallel = (link->R() * vacuumGripper->normal).dot(v);
 
                                 // Distance gripper (P: vacuumPos) and contact (A:pos)
                                 Vector3 pa;

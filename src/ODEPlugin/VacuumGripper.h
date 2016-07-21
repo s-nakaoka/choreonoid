@@ -42,7 +42,7 @@ private:
 
 public:
     Vector3 position;
-    Vector3 normalLine;
+    Vector3 normal;
     double maxPullForce;
     double maxShearForce;
     double maxPeelTorque;

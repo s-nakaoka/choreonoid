@@ -47,7 +47,7 @@ VacuumGripper::VacuumGripper()
     on_ = false;
     jointID = 0;
     position << 0, 0, 0;
-    normalLine << 0, 0, 0;
+    normal << 0, 0, 0;
     maxPullForce = std::numeric_limits<double>::max();
     maxShearForce = std::numeric_limits<double>::max();
     maxPeelTorque = std::numeric_limits<double>::max();
@@ -72,7 +72,7 @@ VacuumGripper::VacuumGripper(const VacuumGripper& org, bool copyStateOnly)
     copyStateFrom(org);
     jointID = org.jointID;
     position = org.position;
-    normalLine = org.normalLine;
+    normal = org.normal;
     maxPullForce = org.maxPullForce;
     maxShearForce = org.maxShearForce;
     maxPeelTorque = org.maxPeelTorque;

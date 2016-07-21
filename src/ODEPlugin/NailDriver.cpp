@@ -46,7 +46,7 @@ NailDriver::NailDriver()
 {
     on_ = false;
     position << 0, 0, 0;
-    normalLine << 0, 0, 0;
+    normal << 0, 0, 0;
     maxFasteningForce = std::numeric_limits<double>::max();
 
     resetLatestContact();
@@ -70,7 +70,7 @@ NailDriver::NailDriver(const NailDriver& org, bool copyStateOnly)
 {
     copyStateFrom(org);
     position = org.position;
-    normalLine = org.normalLine;
+    normal = org.normal;
     maxFasteningForce = org.maxFasteningForce;
 }
 
@@ -115,7 +115,7 @@ cout << "NailDriver: pos:" << str(pos) << endl;
 cout << "NailDriver:   v:" << str(v) << endl;
 #endif // NAILDRIVER_DEBUG
 
-	float isParallel = (link_->R() * normalLine).dot(v);
+	float isParallel = (link_->R() * normal).dot(v);
 #ifdef NAILDRIVER_DEBUG
 cout << "NailDriver: isParallel: " << isParallel << endl;
 #endif // NAILDRIVER_DEBUG

@@ -49,7 +49,7 @@ private:
 
 public:
     Vector3 position;
-    Vector3 normalLine;
+    Vector3 normal;
     double maxFasteningForce;
     double latestContact;
 };
