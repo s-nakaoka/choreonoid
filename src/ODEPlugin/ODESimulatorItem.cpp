@@ -1156,44 +1156,7 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
     timeStep = self->worldTimeStep();
 
     for(size_t i=0; i < simBodies.size(); ++i){
-#if 1    /* Experimental. */
-	ODEBody* odeBody = static_cast<ODEBody*>(simBodies[i]);
-	DeviceList<VacuumGripper> vacuumGrippers(odeBody->body()->devices());
-	DeviceList<NailDriver> nailDrivers(odeBody->body()->devices());
-#endif    /* Experimental. */
         addBody(static_cast<ODEBody*>(simBodies[i]));
-#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
-        preserveMecanumWheelSetting(static_cast<ODEBody*>(simBodies[i]));
-#endif                      /* MECANUM_WHEEL_ODE */
-
-#if 1    /* Experimental. */
-	for (size_t i=0; i < odeBody->odeLinks.size(); ++i) {
-	    ODELinkPtr odeLink = odeBody->odeLinks[i];
-	    for (unsigned int j=0; j<vacuumGrippers.size(); j++){
-	        VacuumGripper *vacuumGripper = vacuumGrippers[j];
-		if (odeLink->link == vacuumGripper->link()){
-cout << boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripper->link()->name() << endl;
-MessageView::instance()->putln(boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripper->link()->name());
-		    vacuumGripperDevs.insert(make_pair(odeLink->bodyID,
-						       vacuumGripper));
-		}
-	    }
-	    for (unsigned int j=0; j<nailDrivers.size(); j++) {
-	        NailDriver *nailDriver = nailDrivers[j];
-		if (odeLink->link == nailDriver->link()) {
-cout << boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriver->link()->name() << endl;
-MessageView::instance()->putln(boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriver->link()->name());
-		    nailDriverDevs.insert(make_pair(odeLink->bodyID,
-						    nailDriver));
-#if 0
-// NailedObjectManager
-cout << boost::format("NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject << endl;
-MessageView::instance()->putln(boost::format("NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriverParams->targetObject);
-#endif
-		}
-	    }
-	}
-#endif    /* Experimental. */
     }
     if(useWorldCollision)
         collisionDetector->makeReady();
@@ -1230,6 +1193,35 @@ cout << boost::format("ODESimulatorItemImpl::addBody: body.numJoints()=%d") % bo
     body.calcForwardKinematics(true, true);
 
     odeBody->createBody(this);
+
+    DeviceList<VacuumGripper> vacuumGrippers(body.devices());
+    DeviceList<NailDriver> nailDrivers(body.devices());
+
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+    preserveMecanumWheelSetting(odeBody);
+#endif                      /* MECANUM_WHEEL_ODE */
+
+    for (size_t i=0; i < odeBody->odeLinks.size(); ++i) {
+	ODELinkPtr odeLink = odeBody->odeLinks[i];
+	for (unsigned int j=0; j<vacuumGrippers.size(); j++){
+	    VacuumGripper *vacuumGripper = vacuumGrippers[j];
+	    if (odeLink->link == vacuumGripper->link()){
+cout << boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripper->link()->name() << endl;
+MessageView::instance()->putln(boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripper->link()->name());
+                vacuumGripperDevs.insert(make_pair(odeLink->bodyID,
+						   vacuumGripper));
+	    }
+	}
+	for (unsigned int j=0; j<nailDrivers.size(); j++) {
+	    NailDriver *nailDriver = nailDrivers[j];
+	    if (odeLink->link == nailDriver->link()) {
+cout << boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriver->link()->name() << endl;
+MessageView::instance()->putln(boost::format("Add NailDriver: bodyID=%d target=%s")% odeLink->bodyID % nailDriver->link()->name());
+                nailDriverDevs.insert(make_pair(odeLink->bodyID,
+						nailDriver));
+	    }
+	}
+    }
 }
 
 #ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
