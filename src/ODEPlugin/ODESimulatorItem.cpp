@@ -1208,6 +1208,7 @@ cout << boost::format("ODESimulatorItemImpl::addBody: body.numJoints()=%d") % bo
 	    if (odeLink->link == vacuumGripper->link()){
 cout << boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripper->link()->name() << endl;
 MessageView::instance()->putln(boost::format("Add VacuumGripper: bodyID=%d target=%s")% odeLink->bodyID % vacuumGripper->link()->name());
+                vacuumGripper->gripper = odeLink->bodyID;
                 vacuumGripperDevs.insert(make_pair(odeLink->bodyID,
 						   vacuumGripper));
 	    }
@@ -1421,12 +1422,10 @@ static void nearCallback(void* data, dGeomID g1, dGeomID g2)
 #if 1    /* Experimental. */
             if(!impl->vacuumGripperDevs.empty()){
                 VacuumGripper* vacuumGripper = 0;
-                dBodyID vgid = 0;
                 dBodyID gripped = 0;
                 VacuumGripperMap::iterator p = impl->vacuumGripperDevs.find(body1ID);
                 if (p != impl->vacuumGripperDevs.end()) {
                     vacuumGripper = p->second;
-                    vgid = body1ID;
                     gripped = body2ID;
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("*** vacuum gripper : body1 ***");
@@ -1435,7 +1434,6 @@ MessageView::instance()->putln("*** vacuum gripper : body1 ***");
                     p = impl->vacuumGripperDevs.find(body2ID);
                     if (p != impl->vacuumGripperDevs.end()) {
                         vacuumGripper = p->second;
-                        vgid = body2ID;
                         gripped = body1ID;
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("*** vacuum gripper : body2 ***");
@@ -1450,15 +1448,13 @@ MessageView::instance()->putln("*** vacuum gripper : body2 ***");
 MessageView::instance()->putln("*** vacuum gripper already gripping ***");
 cout << "*** vacuum gripper already gripping ***" << endl;
 #endif // VACUUM_GRIPPER_DEBUG
-                            if (dAreConnected(vgid, gripped)) {
+                            if (dAreConnected(vacuumGripper->gripper, gripped)) {
                                 dJointFeedback* fb = dJointGetFeedback(vacuumGripper->jointID);
 
                                 if (limitCheck(fb->f2, fb->t2, vacuumGripper)) {
                                     MessageView::instance()->putln("VacuumGripper: *** joint destroy : exceeded the limit ***");
                                     cout << "VacuumGripper: *** joint destroy : exceeded the limit  **" << endl;
-                                    dJointSetFeedback(vacuumGripper->jointID, 0);
-                                    dJointDestroy(vacuumGripper->jointID);
-                                    vacuumGripper->jointID = 0;
+				    vacuumGripper->release();
                                 }
                             } else {
 #ifdef VACUUM_GRIPPER_DEBUG
@@ -1470,13 +1466,7 @@ cout << boost::format("VacuumGripper: *** other body jointed %s ***") % gripped 
                         } else { // !vacuumGripper->isGripping()
                             int n = vacuumGripper->checkContact(numContacts, contacts);
                             if (n != 0) {
-                                dJointID jointID = dJointCreateFixed(impl->worldID, 0);
-                                dJointAttach(jointID, gripped, vgid);
-                                dJointSetFixed(jointID);
-                                dJointSetFeedback(jointID, new dJointFeedback());
-                                vacuumGripper->jointID = jointID;
-                                MessageView::instance()->putln("VacuumGripper: *** joint created **");
-                                cout << "VacuumGripper: *** joint created **" << endl;
+				vacuumGripper->grip(impl->worldID, gripped);
                             } else {
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("VacuumGripper: *** cannot create joint **");

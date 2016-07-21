@@ -98,6 +98,18 @@ void VacuumGripper::on(bool on) {
     on_ = on;
 }
 
+void VacuumGripper::grip(dWorldID worldID, dBodyID gripped_)
+{
+    gripped = gripped_;
+
+    jointID = dJointCreateFixed(worldID, 0);
+    dJointAttach(jointID, gripped, gripper);
+    dJointSetFixed(jointID);
+    dJointSetFeedback(jointID, new dJointFeedback());
+    MessageView::instance()->putln("VacuumGripper: *** joint created **");
+    cout << "VacuumGripper: *** joint created **" << endl;
+}
+
 void VacuumGripper::release()
 {
     if (!isGripping()) return;

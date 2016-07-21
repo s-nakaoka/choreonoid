@@ -38,6 +38,7 @@ public:
     bool on() const { return on_; }
     void on(bool on);
     bool isGripping() const { return jointID != 0; }
+    void grip(dWorldID worldId, dBodyID gripped);
     void release();
     int checkContact(int numContacts, dContact* contacts);
 private:
@@ -50,6 +51,8 @@ public:
     double maxShearForce;
     double maxPeelTorque;
 
+    dBodyID gripper;
+    dBodyID gripped;
     dJointID jointID;
 };
 
