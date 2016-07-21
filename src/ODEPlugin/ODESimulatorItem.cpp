@@ -1441,7 +1441,6 @@ MessageView::instance()->putln("*** vacuum gripper : body2 ***");
                     }
                 }
                 if (vacuumGripper != 0) {
-                    Link* link = vacuumGripper->link();
                     if (vacuumGripper->on()) {
                         if (vacuumGripper->isGripping()) {
 #ifdef VACUUM_GRIPPER_DEBUG
