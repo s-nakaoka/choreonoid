@@ -73,7 +73,12 @@ bool NailedObjectManager::find(dBodyID bodyID)
 
 NailedObjectPtr NailedObjectManager::get(dBodyID bodyID)
 {
-    return objectMap[bodyID];
+    NailedObjectMap::iterator p = objectMap.find(bodyID);
+    if (p != objectMap.end()){
+        return p->second;
+    }
+
+    return 0;
 }
 
 

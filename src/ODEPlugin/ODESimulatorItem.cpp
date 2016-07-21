@@ -137,6 +137,11 @@ namespace cnoid {
 typedef std::map<dBodyID, Link*> CrawlerLinkMap;
 typedef std::map<dBodyID, VacuumGripper*> VacuumGripperMap;
 typedef std::map<dBodyID, NailDriver*> NailDriverMap;
+
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+typedef std::map<dBodyID, double> MecanumWheelSettingMap;
+#endif                      /* MECANUM_WHEEL_ODE */
+
 class ODESimulatorItemImpl
 {
 public:
@@ -152,6 +157,9 @@ public:
     VacuumGripperMap vacuumGripperDevs;
     NailDriverMap nailDriverDevs;
     //NailedObjectManager nailedObjectMngr;
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+    MecanumWheelSettingMap mecanumWheelSetting;
+#endif                      /* MECANUM_WHEEL_ODE */
     vector<ODELink*> geometryIdToLink;
 
     Selection stepMode;
@@ -187,6 +195,10 @@ public:
     void store(Archive& archive);
     void restore(const Archive& archive);
     void collisionCallback(const CollisionPair& collisionPair);
+
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+    void preserveMecanumWheelSetting(ODEBody* odeBody);
+#endif                      /* MECANUM_WHEEL_ODE */
 };
 }
 
@@ -1084,6 +1096,9 @@ void ODESimulatorItemImpl::clear()
     vacuumGripperDevs.clear();
     nailDriverDevs.clear();
     //nailedObjectMngr.clear();
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+    mecanumWheelSetting.clear();
+#endif                      /* MECANUM_WHEEL_ODE */
     geometryIdToLink.clear();
 }    
 
@@ -1147,6 +1162,10 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
 	DeviceList<NailDriver> nailDrivers(odeBody->body()->devices());
 #endif    /* Experimental. */
         addBody(static_cast<ODEBody*>(simBodies[i]));
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+        preserveMecanumWheelSetting(static_cast<ODEBody*>(simBodies[i]));
+#endif                      /* MECANUM_WHEEL_ODE */
+
 #if 1    /* Experimental. */
 	for (size_t i=0; i < odeBody->odeLinks.size(); ++i) {
 	    ODELinkPtr odeLink = odeBody->odeLinks[i];
@@ -1213,6 +1232,75 @@ cout << boost::format("ODESimulatorItemImpl::addBody: body.numJoints()=%d") % bo
     odeBody->createBody(this);
 }
 
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+/**
+   @brief Preserve mecanum wheel setting.
+   @param[in] odeBody Pointer of ODEBody.
+   @attention Please this method calling after addBody method.
+ */
+void ODESimulatorItemImpl::preserveMecanumWheelSetting(ODEBody* odeBody)
+{
+    Mapping* m;
+    Listing* links;
+    Listing* angles;
+
+    if (! odeBody) {
+        return;
+    }
+
+    m = odeBody->body()->info()->findMapping("mecanumWheelSetting");
+
+    if (! m->isValid()) {
+        return;
+    }
+
+    links  = m->findListing("links");
+    angles = m->findListing("barrelAngles");
+
+    if (! links->isValid() || links->size() < 1) {
+        return;
+    }
+
+    try {
+        for (size_t i = 0; i < links->size(); i++) {
+            string s = links->at(i)->toString();
+            double d = PI_2;
+            Link*  p = odeBody->body()->link(s);
+
+            if (angles->isValid() && angles->size() > i) {
+                d = angles->at(i)->toDouble();
+            }
+
+            if (! p) {
+                MessageView::instance()->putln(
+                    MessageView::ERROR,
+                    boost::format("link %1% not found in the %2%") % s % odeBody->body()->name()
+                    );
+                continue;
+            } else if (p->jointType() != Link::CRAWLER_JOINT) {
+                MessageView::instance()->putln(
+                    MessageView::ERROR,
+                    boost::format("link %1% is not crawler joint in the %2%") % s % odeBody->body()->name()
+                    );
+                continue;
+            }
+
+            for (size_t j = 0; j < odeBody->odeLinks.size(); j++) {
+                if (p == odeBody->odeLinks[j]->link) {
+                    mecanumWheelSetting.insert(make_pair(odeBody->odeLinks[j]->bodyID, d));
+                    break;
+                }
+            }
+        }
+    } catch (const ValueNode::NotScalarException ex) {
+        MessageView::instance()->putln(MessageView::ERROR, ex.message());
+    } catch(const ValueNode::ScalarTypeMismatchException ex) {
+        MessageView::instance()->putln(MessageView::ERROR, ex.message());
+    }
+
+    return;
+}
+#endif                      /* MECANUM_WHEEL_ODE */
 
 void ODESimulatorItem::initializeSimulationThread()
 {
@@ -1300,15 +1388,42 @@ static void nearCallback(void* data, dGeomID g1, dGeomID g2)
             dBodyID body2ID = dGeomGetBody(g2);
             Link* crawlerlink = 0;
             double sign = 1.0;
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+            bool isMecanumWheel = false;
+            double barrelAngle  = 0.0;
+#endif                      /* MECANUM_WHEEL_ODE */
             if(!impl->crawlerLinks.empty()){
                 CrawlerLinkMap::iterator p = impl->crawlerLinks.find(body1ID);
                 if(p != impl->crawlerLinks.end()){
                     crawlerlink = p->second;
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+                    {
+                        MecanumWheelSettingMap::iterator it = impl->mecanumWheelSetting.find(body1ID);
+
+                        if (it != impl->mecanumWheelSetting.end()) {
+                            isMecanumWheel = true;
+                            barrelAngle    = it->second;
+                        }
+                    }
+#endif                      /* MECANUM_WHEEL_ODE */
                 }
                 p = impl->crawlerLinks.find(body2ID);
                 if(p != impl->crawlerLinks.end()){
                     crawlerlink = p->second;
                     sign = -1.0;
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+                    {
+                        MecanumWheelSettingMap::iterator it = impl->mecanumWheelSetting.find(body2ID);
+
+                        if (it != impl->mecanumWheelSetting.end()) {
+                            isMecanumWheel = true;
+                            barrelAngle    = it->second;
+                        } else {
+                            isMecanumWheel = false;
+                            barrelAngle    = 0.0;
+                        }
+                    }
+#endif                      /* MECANUM_WHEEL_ODE */
                 }
             }
 #if 1    /* Experimental. */
@@ -1347,10 +1462,8 @@ cout << "*** vacuum gripper already gripping ***" << endl;
                                 dJointFeedback* fb = dJointGetFeedback(vacuumGripper->jointID);
 
                                 if (limitCheck(fb->f2, fb->t2, vacuumGripper)) {
-#ifdef VACUUM_GRIPPER_DEBUG
-MessageView::instance()->putln("VacuumGripper: *** joint destroy ***");
-cout << "VacuumGripper: *** joint destroy **" << endl;
-#endif // VACUUM_GRIPPER_DEBUG
+                                    MessageView::instance()->putln("VacuumGripper: *** joint destroy : exceeded the limit ***");
+                                    cout << "VacuumGripper: *** joint destroy : exceeded the limit  **" << endl;
                                     dJointSetFeedback(vacuumGripper->jointID, 0);
                                     dJointDestroy(vacuumGripper->jointID);
                                     vacuumGripper->jointID = 0;
@@ -1391,10 +1504,8 @@ cout << boost::format("VacuumGripper: *** other body jointed %s ***") % gripped 
                                 dJointSetFixed(jointID);
                                 dJointSetFeedback(jointID, new dJointFeedback());
                                 vacuumGripper->jointID = jointID;
-#ifdef VACUUM_GRIPPER_DEBUG
-MessageView::instance()->putln("VacuumGripper: *** joint created **");
-cout << "VacuumGripper: *** joint created **" << endl;
-#endif // VACUUM_GRIPPER_DEBUG
+                                MessageView::instance()->putln("VacuumGripper: *** joint created **");
+                                cout << "VacuumGripper: *** joint created **" << endl;
                             } else {
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("VacuumGripper: *** cannot create joint **");
@@ -1411,10 +1522,8 @@ cout << "VacuumGripper OFF **" << endl;
                             dJointSetFeedback(vacuumGripper->jointID, 0);
                             dJointDestroy(vacuumGripper->jointID);
                             vacuumGripper->jointID = 0;
-#ifdef VACUUM_GRIPPER_DEBUG
-MessageView::instance()->putln("VacuumGripper: *** joint destroy ***");
-cout << "VacuumGripper: *** joint destroy **" << endl;
-#endif // VACUUM_GRIPPER_DEBUG
+                            MessageView::instance()->putln("VacuumGripper: *** joint destroy : turned off ***");
+                            cout << "VacuumGripper: *** joint destroy : turned off **" << endl;
                         }
                     } // vacuumGripper->on()
                 } // vacuumGripper != 0
@@ -1446,49 +1555,60 @@ MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object b
                     }
                 }
                 if (nailDriver != 0) {
-		    if (nailDriver->on()) {
+                    if (nailDriver->on()) {
 #ifdef NAILDRIVER_DEBUG
 cout << "NailDriver ON **" << endl;
 #endif // NAILDRIVER_DEBUG
-			int n = nailDriver->checkContact(numContacts, contacts);
+                        int n = nailDriver->checkContact(numContacts, contacts);
 #ifdef NAILDRIVER_DEBUG
 MessageView::instance()->putln(boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n);
 cout << boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n << endl;
 #endif // NAILDRIVER_DEBUG
-			if (n) {
-				// TODO check object and other object
+                        if (n) {
+                                // TODO check object and other object
 #ifdef NAILDRIVER_DEBUG
 MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) % objId);
 #endif // NAILDRIVER_DEBUG
-				if (!nailedObjMngr->find(objId)) {
-				    NailedObject* nobj = new NailedObject(objId);
-				    // first
-				    dJointID jointID = dJointCreateFixed(impl->worldID, 0);
-				    dJointAttach(jointID, 0, objId);
-				    dJointSetFixed(jointID);
-				    dJointSetFeedback(jointID, new dJointFeedback());
-				    nobj->setJointID(jointID);
-				    nailedObjMngr->addObject(nobj);
-#ifdef VACUUM_GRIPPER_DEBUG
-MessageView::instance()->putln("NailDriver: *** joint created **");
-cout << "NailDriver: *** joint created **" << endl;
-#endif // VACUUM_GRIPPER_DEBUG
-				} else {
+                            NailedObjectPtr nobj = nailedObjMngr->get(objId);
+                            if (!nobj) {
+                                // first
+                                nobj = new NailedObject(objId);
+                                dJointID jointID = dJointCreateFixed(impl->worldID, 0);
+                                dJointAttach(jointID, 0, objId);
+                                dJointSetFixed(jointID);
+                                dJointSetFeedback(jointID, new dJointFeedback());
+                                nobj->setJointID(jointID);
+                                nobj->addNail(nailDriver);
+                                nailedObjMngr->addObject(nobj);
+                                MessageView::instance()->putln("NailDriver: *** joint created **");
+                                cout << "NailDriver: *** joint created **" << endl;
+#ifdef NAILDRIVER_DEBUG
+MessageView::instance()->putln(boost::format("NailDriver: nail count = %d") % nobj->getNailCount());
+cout << "NailDriver: nail count = " << nobj->getNailCount() << endl;
+#endif // NAILDRIVER_DEBUG
+                            } else {
 #ifdef NAILDRIVER_DEBUG
 MessageView::instance()->putln("NailDriver: *** joint already created **");
 cout << "NailDriver: *** joint already created **" << endl;
 #endif // NAILDRIVER_DEBUG
-                                    ;
-				    // second
-				    // TODO
-				}
-			} // n != 0
-		    } else {
+                                if (impl->self->currentTime() - nailDriver->getLatestContact() > 1.0 ) {
+                                    // second
+                                    nobj->addNail(nailDriver);
+#ifdef NAILDRIVER_DEBUG
+MessageView::instance()->putln(boost::format("NailDriver: nail count = %d") % nobj->getNailCount());
+cout << "NailDriver: nail count = " << nobj->getNailCount() << endl;
+#endif // NAILDRIVER_DEBUG
+                                }
+                            }
+                            const double current = impl->self->currentTime();
+                            nailDriver->setLatestContact(current);
+                        } // n != 0
+                    } else {
 #ifdef NAILDRIVER_DEBUG
 cout << "NailDriver OFF **" << endl;
 #endif // NAILDRIVER_DEBUG
                         ;
-		    }
+                    }
                 }
             }
 #endif    /* Experimental. */
@@ -1509,6 +1629,15 @@ cout << "NailDriver OFF **" << endl;
                     const Vector3 axis = crawlerlink->R() * crawlerlink->a();
                     const Vector3 n(contacts[i].geom.normal);
                     Vector3 dir = axis.cross(n);
+
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+                    if (isMecanumWheel) {
+                        Quaternion mwQ(AngleAxis(barrelAngle, n));
+                        Vector3    mwv = dir.cross(mwQ.vec());
+                        dir += mwv;
+                    }
+#endif                      /* MECANUM_WHEEL_ODE */
+
                     if(dir.norm() < 1.0e-5){
                         surface.mode = dContactApprox1;
                         surface.mu = impl->friction;

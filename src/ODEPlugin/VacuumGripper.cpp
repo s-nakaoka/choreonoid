@@ -44,7 +44,7 @@ Device* VacuumGripper::clone() const
  */
 VacuumGripper::VacuumGripper()
 {
-    on_ = true;
+    on_ = false;
     jointID = 0;
     position << 0, 0, 0;
     normalLine << 0, 0, 0;

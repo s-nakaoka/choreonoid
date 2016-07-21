@@ -23,6 +23,7 @@ class CNOID_EXPORT NailedObject : public Referenced
 {
 public:
     NailedObject(dBodyID objID) {
+        nailCount = 0;
         maxFasteningForce = 0;
         objId_ = objID;
     }
@@ -31,7 +32,12 @@ public:
     void setJointID(dJointID jointID);
 
     void addNail(NailDriver *nailDriver) {
+        nailCount++;
         maxFasteningForce += nailDriver->maxFasteningForce;
+    }
+
+    int getNailCount() {
+        return nailCount;
     }
 
     dBodyID getBodyID() { return objId_; }
@@ -40,6 +46,7 @@ public:
 
 private:
     double maxFasteningForce;
+    int nailCount;
     dBodyID objId_;
     dJointID jointID;
 };
