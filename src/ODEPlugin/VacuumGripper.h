@@ -37,6 +37,7 @@ public:
 
     bool on() const { return on_; }
     void on(bool on);
+    bool isGripping() const { return jointID != 0; }
 private:
     bool on_;
 

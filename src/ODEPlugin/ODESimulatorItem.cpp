@@ -1445,7 +1445,7 @@ MessageView::instance()->putln("*** vacuum gripper : body2 ***");
                 if (vacuumGripper != 0) {
                     Link* link = vacuumGripper->link();
                     if (vacuumGripper->on()) {
-                        if (vacuumGripper->jointID != 0) {
+                        if (vacuumGripper->isGripping()) {
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("*** vacuum gripper already gripping ***");
 cout << "*** vacuum gripper already gripping ***" << endl;
@@ -1467,7 +1467,7 @@ cout << boost::format("VacuumGripper: *** other body jointed %s ***") % gripped 
 #endif // VACUUM_GRIPPER_DEBUG
                                 ;
                             }
-                        } else { // vacuumGripper->jointID == 0
+                        } else { // !vacuumGripper->isGripping()
                             Vector3 vacuumPos = link->p() + link->R() * vacuumGripper->position;
 
                             int n = 0;
@@ -1505,12 +1505,12 @@ cout << "VacuumGripper: *** cannot create joint **" << endl;
 #endif // VACUUM_GRIPPER_DEBUG
                                 ;
                             }
-                        } // vacuumGripper->jointID != 0
+                        } // vacuumGripper->isGripping()
                     } else { // vacuumGripper is off
 #ifdef VACUUM_GRIPPER_DEBUG
 cout << "VacuumGripper OFF **" << endl;
 #endif // VACUUM_GRIPPER_DEBUG
-                        if (vacuumGripper->jointID != 0) {
+                        if (vacuumGripper->isGripping()) {
                             dJointSetFeedback(vacuumGripper->jointID, 0);
                             dJointDestroy(vacuumGripper->jointID);
                             vacuumGripper->jointID = 0;
