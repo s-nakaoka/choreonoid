@@ -1468,28 +1468,7 @@ cout << boost::format("VacuumGripper: *** other body jointed %s ***") % gripped 
                                 ;
                             }
                         } else { // !vacuumGripper->isGripping()
-                            Vector3 vacuumPos = link->p() + link->R() * vacuumGripper->position;
-
-                            int n = 0;
-                            for(int i=0; i < numContacts; ++i){
-                                Vector3 pos(contacts[i].geom.pos);
-                                Vector3 v(contacts[i].geom.normal);
-
-                                float isParallel = (link->R() * vacuumGripper->normal).dot(v);
-
-                                // Distance gripper (P: vacuumPos) and contact (A:pos)
-                                Vector3 pa;
-                                pa[0] = pos[0] - vacuumPos[0];
-                                pa[1] = pos[1] - vacuumPos[1];
-                                pa[2] = pos[2] - vacuumPos[2];
-
-                                float distance = abs(vacuumPos.dot(pa));
-                                if (isParallel < -0.9f && distance < 0.01f) {
-                                    n++;
-                                }
-                            }
-//////////////////////////////////////////////////////////////////////
-
+                            int n = vacuumGripper->checkContact(numContacts, contacts);
                             if (n != 0) {
                                 dJointID jointID = dJointCreateFixed(impl->worldID, 0);
                                 dJointAttach(jointID, gripped, vgid);
@@ -1511,11 +1490,7 @@ cout << "VacuumGripper: *** cannot create joint **" << endl;
 cout << "VacuumGripper OFF **" << endl;
 #endif // VACUUM_GRIPPER_DEBUG
                         if (vacuumGripper->isGripping()) {
-                            dJointSetFeedback(vacuumGripper->jointID, 0);
-                            dJointDestroy(vacuumGripper->jointID);
-                            vacuumGripper->jointID = 0;
-                            MessageView::instance()->putln("VacuumGripper: *** joint destroy : turned off ***");
-                            cout << "VacuumGripper: *** joint destroy : turned off **" << endl;
+			    vacuumGripper->release();
                         }
                     } // vacuumGripper->on()
                 } // vacuumGripper != 0

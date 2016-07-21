@@ -38,6 +38,8 @@ public:
     bool on() const { return on_; }
     void on(bool on);
     bool isGripping() const { return jointID != 0; }
+    void release();
+    int checkContact(int numContacts, dContact* contacts);
 private:
     bool on_;
 

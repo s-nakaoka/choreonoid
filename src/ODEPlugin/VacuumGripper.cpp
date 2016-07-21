@@ -97,3 +97,39 @@ void VacuumGripper::on(bool on) {
     cout << boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF") << endl;
     on_ = on;
 }
+
+void VacuumGripper::release()
+{
+    if (!isGripping()) return;
+
+    dJointSetFeedback(jointID, 0);
+    dJointDestroy(jointID);
+    jointID = 0;
+    MessageView::instance()->putln("VacuumGripper: *** joint destroy : turned off ***");
+    cout << "VacuumGripper: *** joint destroy : turned off **" << endl;
+}
+
+int VacuumGripper::checkContact(int numContacts, dContact* contacts)
+{
+    Vector3 vacuumPos = link()->p() + link()->R() * position;
+
+    int n = 0;
+    for(int i=0; i < numContacts; ++i){
+	Vector3 pos(contacts[i].geom.pos);
+	Vector3 v(contacts[i].geom.normal);
+
+	float isParallel = (link()->R() * normal).dot(v);
+
+	// Distance gripper (P: vacuumPos) and contact (A:pos)
+	Vector3 pa;
+	pa[0] = pos[0] - vacuumPos[0];
+	pa[1] = pos[1] - vacuumPos[1];
+	pa[2] = pos[2] - vacuumPos[2];
+
+	float distance = abs(vacuumPos.dot(pa));
+	if (isParallel < -0.9f && distance < 0.01f) {
+	    n++;
+	}
+    }
+    return n;
+}
