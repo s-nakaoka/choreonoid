@@ -1143,14 +1143,8 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
     for(size_t i=0; i < simBodies.size(); ++i){
 #if 1    /* Experimental. */
 	ODEBody* odeBody = static_cast<ODEBody*>(simBodies[i]);
-	std::vector<VacuumGripper *> vacuumGrippers = createVacuumGrippers(odeBody->body());
-	if (vacuumGrippers.size()) {
-	    cout << odeBody->body()->name() << " has " << vacuumGrippers.size() << " vacuum gripper(s)." << endl;
-	}
-	std::vector<NailDriver*> nailDrivers = createNailDrivers(odeBody->body());
-	if (nailDrivers.size()) {
-	    cout << odeBody->body()->name() << " has " << nailDrivers.size() << " nail driver(s)." << endl;
-	}
+	DeviceList<VacuumGripper> vacuumGrippers(odeBody->body()->devices());
+	DeviceList<NailDriver> nailDrivers(odeBody->body()->devices());
 #endif    /* Experimental. */
         addBody(static_cast<ODEBody*>(simBodies[i]));
 #if 1    /* Experimental. */

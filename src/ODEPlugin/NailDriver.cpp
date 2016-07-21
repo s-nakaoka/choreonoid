@@ -7,7 +7,6 @@
 
 #include <cnoid/Device>
 #include <cnoid/EigenUtil>
-#include <cnoid/EigenArchive>
 
 #include <cnoid/ValueTree>
 
@@ -20,57 +19,6 @@
 
 using namespace cnoid;
 using namespace std;
-
-std::vector<NailDriver*> cnoid::createNailDrivers(Body* body)
-{
-    std::vector<NailDriver *> nailDrivers;
-    const Listing *l = body->info()->findListing("nailDrivers");
-
-    if (!l->isValid()) {
-	MessageView::instance()->putln(boost::format(_("%s doesn't have nail driver")) % body->name());
-	return nailDrivers;
-    }
-
-    MessageView::instance()->putln(boost::format(_("%s has %d nail driver(s)")) % body->name() % l->size());
-
-    for (unsigned int i=0; i<l->size(); i++){
-        const Mapping *m = l->at(i)->toMapping();
-
-	NailDriver* nailDriver = new NailDriver();
-
-	std::string targetObject = "";
-	double maxFasteningForce = 0;
-
-	targetObject = m->get("targetObject", targetObject);
-	MessageView::instance()->putln(boost::format(_("  targetObject: %s")) % targetObject);
-	nailDriver->setLink(body->link(targetObject));
-
-	read(*m, "position", nailDriver->position);
-	cout << "position=[" << str(nailDriver->position) << "]" << endl;
-	MessageView::instance()->putln(boost::format(_("      position: %s")) % str(nailDriver->position));
-
-	read(*m, "normalLine", nailDriver->normalLine);
-	cout << "normalLine=[" << str(nailDriver->normalLine) << "]" << endl;
-	MessageView::instance()->putln(boost::format(_("    normalLine: %s")) % str(nailDriver->normalLine));
-
-	if (!m->find("maxFasteningForce")->isValid()) {
-	    MessageView::instance()->putln("  maxFasteningForce: Unlimited");
-	} else {
-	    if (m->read("maxFasteningForce", maxFasteningForce)) {
-	        nailDriver->maxFasteningForce = maxFasteningForce;
-		MessageView::instance()->putln(boost::format(_("  maxFasteningForce: %f")) % maxFasteningForce);
-	    } else {
-	        // todo
-	        MessageView::instance()->putln(" maxFasteningForce is invalid.");
-	    }
-	}
-
-	nailDrivers.push_back(nailDriver);
-	body->addDevice(nailDriver);
-    }
-
-    return nailDrivers;
-}
 
 const char* NailDriver::typeName()
 {

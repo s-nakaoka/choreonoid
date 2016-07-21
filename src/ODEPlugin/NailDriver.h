@@ -50,8 +50,6 @@ public:
 };
 
 typedef ref_ptr<NailDriver> NailDriverPtr;
-
-std::vector<NailDriver *> createNailDrivers(Body *body);
 }
 
 #endif

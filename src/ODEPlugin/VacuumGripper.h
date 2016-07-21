@@ -51,8 +51,6 @@ public:
 };
 
 typedef ref_ptr<VacuumGripper> VacuumGripperPtr;
-
-std::vector<VacuumGripper *> createVacuumGrippers(Body *body);
 }
 
 #endif
