@@ -57,7 +57,10 @@ void NailDriver::copyStateFrom(const NailDriver& other)
 
 void NailDriver::copyStateFrom(const DeviceState& other)
 {
-    ;
+    if(typeid(other) != typeid(NailDriver)){
+        throw std::invalid_argument("Type mismatch in the Device::copyStateFrom function");
+    }
+    copyStateFrom(static_cast<const NailDriver&>(other));
 }
 
 NailDriver::NailDriver(const NailDriver& org, bool copyStateOnly)

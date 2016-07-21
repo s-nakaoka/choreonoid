@@ -60,7 +60,10 @@ void VacuumGripper::copyStateFrom(const VacuumGripper& other)
 
 void VacuumGripper::copyStateFrom(const DeviceState& other)
 {
-    ;
+    if(typeid(other) != typeid(VacuumGripper)){
+        throw std::invalid_argument("Type mismatch in the Device::copyStateFrom function");
+    }
+    copyStateFrom(static_cast<const VacuumGripper&>(other));
 }
 
 VacuumGripper::VacuumGripper(const VacuumGripper& org, bool copyStateOnly)
