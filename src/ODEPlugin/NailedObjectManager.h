@@ -22,14 +22,17 @@ namespace cnoid {
 class CNOID_EXPORT NailedObject : public Referenced
 {
 public:
-    NailedObject(dBodyID objID) {
+    NailedObject(dWorldID worldID, dBodyID objID) {
         nailCount = 0;
         maxFasteningForce = 0;
         objId_ = objID;
+
+	jointID = dJointCreateFixed(worldID, 0);
+	dJointAttach(jointID, 0, objId_);
+	dJointSetFixed(jointID);
+	dJointSetFeedback(jointID, new dJointFeedback());
     }
     ~NailedObject();
-
-    void setJointID(dJointID jointID);
 
     void addNail(NailDriver *nailDriver) {
         nailCount++;

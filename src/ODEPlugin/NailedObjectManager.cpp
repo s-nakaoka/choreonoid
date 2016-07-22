@@ -26,13 +26,6 @@ NailedObject::~NailedObject()
     ;
 }
 
-void NailedObject::setJointID(dJointID jointID)
-{
-    this->jointID = jointID;
-}
-
-
-
 NailedObjectManager* NailedObjectManager::getInstance()
 {
     static NailedObjectManager instance;

@@ -1471,12 +1471,7 @@ MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) 
                             NailedObjectPtr nobj = nailedObjMngr->get(objId);
                             if (!nobj) {
                                 // first
-                                nobj = new NailedObject(objId);
-                                dJointID jointID = dJointCreateFixed(impl->worldID, 0);
-                                dJointAttach(jointID, 0, objId);
-                                dJointSetFixed(jointID);
-                                dJointSetFeedback(jointID, new dJointFeedback());
-                                nobj->setJointID(jointID);
+                                nobj = new NailedObject(impl->worldID, objId);
                                 nobj->addNail(nailDriver);
                                 nailedObjMngr->addObject(nobj);
                                 MessageView::instance()->putln("NailDriver: *** joint created **");
