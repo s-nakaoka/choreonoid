@@ -195,6 +195,7 @@ public:
     void store(Archive& archive);
     void restore(const Archive& archive);
     void collisionCallback(const CollisionPair& collisionPair);
+    VacuumGripper *isVacuumGripper(dBodyID body);
 
 #ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
     void preserveMecanumWheelSetting(ODEBody* odeBody);
@@ -1364,23 +1365,17 @@ static void nearCallback(void* data, dGeomID g1, dGeomID g2)
 #if 1    /* Experimental. */
             if(!impl->vacuumGripperDevs.empty()){
                 VacuumGripper* vacuumGripper = 0;
-                dBodyID gripped = 0;
-                VacuumGripperMap::iterator p = impl->vacuumGripperDevs.find(body1ID);
-                if (p != impl->vacuumGripperDevs.end()) {
-                    vacuumGripper = p->second;
-                    gripped = body2ID;
+                dBodyID objId = 0;
+		if ((vacuumGripper = impl->isVacuumGripper(body1ID))){
+                    objId = body2ID;
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("*** vacuum gripper : body1 ***");
 #endif // VACUUM_GRIPPER_DEBUG
-                } else {
-                    p = impl->vacuumGripperDevs.find(body2ID);
-                    if (p != impl->vacuumGripperDevs.end()) {
-                        vacuumGripper = p->second;
-                        gripped = body1ID;
+                } else if ((vacuumGripper = impl->isVacuumGripper(body2ID))){
+		    objId = body1ID;
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("*** vacuum gripper : body2 ***");
 #endif // VACUUM_GRIPPER_DEBUG
-                    }
                 }
                 if (vacuumGripper != 0) {
                     if (vacuumGripper->on()) {
@@ -1389,7 +1384,7 @@ MessageView::instance()->putln("*** vacuum gripper : body2 ***");
 MessageView::instance()->putln("*** vacuum gripper already gripping ***");
 cout << "*** vacuum gripper already gripping ***" << endl;
 #endif // VACUUM_GRIPPER_DEBUG
-                            if (vacuumGripper->isGripping(gripped)) {
+                            if (vacuumGripper->isGripping(objId)) {
 				if (vacuumGripper->limitCheck()){
                                     MessageView::instance()->putln("VacuumGripper: *** joint destroy : exceeded the limit ***");
                                     cout << "VacuumGripper: *** joint destroy : exceeded the limit  **" << endl;
@@ -1399,15 +1394,15 @@ cout << "*** vacuum gripper already gripping ***" << endl;
 				}
                             } else {
 #ifdef VACUUM_GRIPPER_DEBUG
-MessageView::instance()->putln(boost::format("VacuumGripper: *** other body jointed %s ***") % gripped);
-cout << boost::format("VacuumGripper: *** other body jointed %s ***") % gripped << endl;
+MessageView::instance()->putln(boost::format("VacuumGripper: *** other body jointed %s ***") % objId);
+cout << boost::format("VacuumGripper: *** other body jointed %s ***") % objId << endl;
 #endif // VACUUM_GRIPPER_DEBUG
                                 ;
                             }
                         } else { // !vacuumGripper->isGripping()
                             int n = vacuumGripper->checkContact(numContacts, contacts);
                             if (n != 0) {
-				vacuumGripper->grip(impl->worldID, gripped);
+				vacuumGripper->grip(impl->worldID, objId);
 				return;
                             } else {
 #ifdef VACUUM_GRIPPER_DEBUG
@@ -1804,4 +1799,14 @@ void ODESimulatorItemImpl::restore(const Archive& archive)
     archive.read("2Dmode", is2Dmode);
     archive.read("UseWorldItem'sCollisionDetector", useWorldCollision);
     archive.read("velocityMode", velocityMode);
+}
+
+VacuumGripper *ODESimulatorItemImpl::isVacuumGripper(dBodyID body)
+{
+    VacuumGripperMap::iterator p = vacuumGripperDevs.find(body);
+    if (p != vacuumGripperDevs.end()) {
+	return p->second;
+    }else{
+	return 0;
+    }
 }
