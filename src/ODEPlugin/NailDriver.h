@@ -5,6 +5,7 @@
 #ifndef CNOID_ODEPLUGIN_NAILDRIVER_H
 #define CNOID_ODEPLUGIN_NAILDRIVER_H
 
+#include "NailedObjectManager.h"
 #include <cnoid/EigenTypes>
 #include <cnoid/Body>
 #include <cnoid/Link>
@@ -40,12 +41,25 @@ public:
 
     int checkContact(int numContacts, dContact* contacts);
 
+    void contact() { near_callback_called = true; }
+
+    void distantCheck();
+
+    bool ready() const { return on_ && ready_; }
+    void setReady();
+
+    void fire(NailedObjectPtr nobj);
+
     void setLatestContact(const double current) { latestContact = current; }
     double getLatestContact() { return latestContact; }
     void resetLatestContact() { latestContact = 0.0; }
 
 private:
     bool on_;
+    bool contact_;
+    bool ready_;
+    int not_called_conunt;
+    bool near_callback_called;
 
 public:
     Vector3 position;

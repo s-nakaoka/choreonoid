@@ -5,8 +5,6 @@
 #ifndef CNOID_ODEPLUGIN_NAILEDOBJECTMANAGER_H
 #define CNOID_ODEPLUGIN_NAILEDOBJECTMANAGER_H
 
-#include <cnoid/NailDriver>
-
 #include <cnoid/Referenced>
 #include <cnoid/EigenTypes>
 #include <cnoid/Body>
@@ -34,10 +32,16 @@ public:
     }
     ~NailedObject();
 
-    void addNail(NailDriver *nailDriver) {
+    void addNail(double fasteningForce) {
         nailCount++;
-        maxFasteningForce += nailDriver->maxFasteningForce;
+        maxFasteningForce += fasteningForce;
     }
+
+    bool isLimited(double force) {
+        return force < maxFasteningForce;
+    }
+
+    const double getMaxFasteningForce() { return maxFasteningForce; }
 
     int getNailCount() {
         return nailCount;
@@ -75,6 +79,8 @@ public:
     NailedObjectPtr get(dBodyID bodyID);
 
     void clear();
+
+    NailedObjectMap& map() { return objectMap; }
 
 private:
     //std::map<dBodyID, NailedObjectPtr> objectMap;
