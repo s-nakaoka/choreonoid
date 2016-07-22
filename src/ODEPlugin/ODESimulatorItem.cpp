@@ -196,6 +196,7 @@ public:
     void restore(const Archive& archive);
     void collisionCallback(const CollisionPair& collisionPair);
     VacuumGripper *isVacuumGripper(dBodyID body);
+    NailDriver *isNailDriver(dBodyID body);
 
 #ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
     void preserveMecanumWheelSetting(ODEBody* odeBody);
@@ -1427,26 +1428,17 @@ cout << "VacuumGripper OFF **" << endl;
             if(!impl->nailDriverDevs.empty()){
                 NailedObjectManager* nailedObjMngr = NailedObjectManager::getInstance();
                 NailDriver* nailDriver = 0;
-                dBodyID ndId = 0;
                 dBodyID objId = 0;
-                NailDriverMap::iterator p = impl->nailDriverDevs.find(body1ID);
-                if (p != impl->nailDriverDevs.end()) {
-                    nailDriver = p->second;
-                    ndId = body1ID;
+		if ((nailDriver = impl->isNailDriver(body1ID))){
                     objId = body2ID;
 #ifdef NAILDRIVER_DEBUG
-MessageView::instance()->putln(boost::format(_("NailDriver body1ID=%1%, Object body2ID=%2%")) % ndId % objId);
+MessageView::instance()->putln(boost::format(_("NailDriver body1ID=%1%, Object body2ID=%2%")) % body1ID % objId);
 #endif // NAILDRIVER_DEBUG
-                } else {
-                    p = impl->nailDriverDevs.find(body2ID);
-                    if (p != impl->nailDriverDevs.end()) {
-                        nailDriver = p->second;
-                        ndId = body2ID;
-                        objId = body1ID;
+                } else if ((nailDriver = impl->isNailDriver(body2ID))){
+		    objId = body1ID;
 #ifdef NAILDRIVER_DEBUG
-MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object body1ID=%2%")) % ndId % objId);
+MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object body1ID=%2%")) % body2ID % objId);
 #endif // NAILDRIVER_DEBUG
-                    }
                 }
                 if (nailDriver != 0) {
                     if (nailDriver->on()) {
@@ -1805,6 +1797,16 @@ VacuumGripper *ODESimulatorItemImpl::isVacuumGripper(dBodyID body)
 {
     VacuumGripperMap::iterator p = vacuumGripperDevs.find(body);
     if (p != vacuumGripperDevs.end()) {
+	return p->second;
+    }else{
+	return 0;
+    }
+}
+
+NailDriver *ODESimulatorItemImpl::isNailDriver(dBodyID body)
+{
+    NailDriverMap::iterator p = nailDriverDevs.find(body);
+    if (p != nailDriverDevs.end()) {
 	return p->second;
     }else{
 	return 0;
