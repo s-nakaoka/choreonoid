@@ -38,9 +38,11 @@ public:
     bool on() const { return on_; }
     void on(bool on);
     bool isGripping() const { return jointID != 0; }
+    bool isGripping(dBodyID body) const;
     void grip(dWorldID worldId, dBodyID gripped);
     void release();
     int checkContact(int numContacts, dContact* contacts);
+    bool limitCheck();
 private:
     bool on_;
 
@@ -52,7 +54,6 @@ public:
     double maxPeelTorque;
 
     dBodyID gripper;
-    dBodyID gripped;
     dJointID jointID;
 };
 

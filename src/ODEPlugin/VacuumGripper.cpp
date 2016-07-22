@@ -98,16 +98,19 @@ void VacuumGripper::on(bool on) {
     on_ = on;
 }
 
-void VacuumGripper::grip(dWorldID worldID, dBodyID gripped_)
+void VacuumGripper::grip(dWorldID worldID, dBodyID gripped)
 {
-    gripped = gripped_;
-
     jointID = dJointCreateFixed(worldID, 0);
     dJointAttach(jointID, gripped, gripper);
     dJointSetFixed(jointID);
     dJointSetFeedback(jointID, new dJointFeedback());
     MessageView::instance()->putln("VacuumGripper: *** joint created **");
     cout << "VacuumGripper: *** joint created **" << endl;
+}
+
+bool VacuumGripper::isGripping(dBodyID object) const
+{
+    return dAreConnected(gripper, object);
 }
 
 void VacuumGripper::release()
@@ -144,4 +147,62 @@ int VacuumGripper::checkContact(int numContacts, dContact* contacts)
 	}
     }
     return n;
+}
+
+bool VacuumGripper::limitCheck()
+{
+    dJointFeedback* fb = dJointGetFeedback(jointID);
+
+    Vector3 f(fb->f2);
+    Vector3 tau(fb->t2);
+
+    const Vector3 n = link()->R() * normal;
+    const Vector3 p = link()->R() * position + link()->p();
+    const Vector3 ttt = tau - p.cross(f);
+
+// check pull force
+#ifdef VACUUM_GRIPPER_DEBUG
+cout << "pull force: n.dot(f)=" << n.dot(f)
+     << " : maxPullForce=" << (dReal)maxPullForce
+     << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+//MessageView::instance()->putln("check maxPullForce");
+    if (n.dot(f) + (dReal)maxPullForce < 0) {
+#ifdef VACUUM_GRIPPER_DEBUG
+cout << "   maxPullForce limit" << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+        return true;
+    }
+
+    // check shear force
+    //MessageView::instance()->putln("check maxShearForce");
+    double fx = f[0] * f[0];
+    double fy = f[1] * f[1];
+#ifdef VACUUM_GRIPPER_DEBUG
+cout << "shear force: fx=" << f[0]
+     << " fy=" << f[1]
+     << " sqrt(fx^2, fy^2)=" << sqrt(fx + fy)
+     << " : maxShearForce=" << (dReal)maxShearForce
+     << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+    if (sqrt(fx + fy) > (dReal)maxShearForce) {
+#ifdef VACUUM_GRIPPER_DEBUG
+cout << "   maxShearForce limit" << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+        return true;
+    }
+
+    // check peel torque
+    //MessageView::instance()->putln("check maxPeelTorque");
+#ifdef VACUUM_GRIPPER_DEBUG
+cout << "peer torque: tau=" << ttt << " : maxPeelTorque=" << (dReal)maxPeelTorque << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+    if (fabs(n.dot(ttt)) > (dReal)maxPeelTorque) {
+#ifdef VACUUM_GRIPPER_DEBUG
+cout << "   maxPeerTorque limit" << endl;
+#endif // VACUUM_GRIPPER_DEBUG
+        return true;
+    }
+
+    return false;
 }

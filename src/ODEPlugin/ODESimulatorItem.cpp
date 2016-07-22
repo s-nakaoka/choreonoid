@@ -1300,64 +1300,6 @@ void ODESimulatorItem::initializeSimulationThread()
     dAllocateODEDataForThread(dAllocateMaskAll);
 }
 
-#if 1    /* Experimental. */
-static bool limitCheck(dVector3& df, dVector3& dt, VacuumGripper* vg)
-{
-   Vector3 f(df);
-   Vector3 tau(dt);
-
-   const Vector3 n = vg->link()->R() * vg->normal;
-   const Vector3 p = vg->link()->R() * vg->position + vg->link()->p();
-   const Vector3 ttt = tau - p.cross(f);
-
-// check pull force
-#ifdef VACUUM_GRIPPER_DEBUG
-cout << "pull force: n.dot(f)=" << n.dot(f)
-     << " : vg->maxPullForce=" << (dReal)vg->maxPullForce
-     << endl;
-#endif // VACUUM_GRIPPER_DEBUG
-//MessageView::instance()->putln("check maxPullForce");
-    if (n.dot(f) + (dReal)vg->maxPullForce < 0) {
-#ifdef VACUUM_GRIPPER_DEBUG
-cout << "   maxPullForce limit" << endl;
-#endif // VACUUM_GRIPPER_DEBUG
-	    return true;
-    }
-
-    // check shear force
-    //MessageView::instance()->putln("check maxShearForce");
-    double fx = f[0] * f[0];
-    double fy = f[1] * f[1];
-#ifdef VACUUM_GRIPPER_DEBUG
-cout << "shear force: fx=" << f[0]
-     << " fy=" << f[1]
-     << " sqrt(fx^2, fy^2)=" << sqrt(fx + fy)
-     << " : vg->maxShearForce=" << (dReal)vg->maxShearForce
-     << endl;
-#endif // VACUUM_GRIPPER_DEBUG
-    if (sqrt(fx + fy) > (dReal)vg->maxShearForce) {
-#ifdef VACUUM_GRIPPER_DEBUG
-cout << "   maxShearForce limit" << endl;
-#endif // VACUUM_GRIPPER_DEBUG
-        return true;
-    }
-
-    // check peel torque
-    //MessageView::instance()->putln("check maxPeelTorque");
-#ifdef VACUUM_GRIPPER_DEBUG
-cout << "peer torque: tau=" << ttt << " : vg->maxPeelTorque=" << (dReal)vg->maxPeelTorque << endl;
-#endif // VACUUM_GRIPPER_DEBUG
-    if (fabs(n.dot(ttt)) > (dReal)vg->maxPeelTorque) {
-#ifdef VACUUM_GRIPPER_DEBUG
-cout << "   maxPeerTorque limit" << endl;
-#endif // VACUUM_GRIPPER_DEBUG
-        return true;
-    }
-
-    return false;
-}
-#endif /* Experimental. */
-
 static void nearCallback(void* data, dGeomID g1, dGeomID g2)
 {
     if(dGeomIsSpace(g1) || dGeomIsSpace(g2)) { 
@@ -1447,10 +1389,8 @@ MessageView::instance()->putln("*** vacuum gripper : body2 ***");
 MessageView::instance()->putln("*** vacuum gripper already gripping ***");
 cout << "*** vacuum gripper already gripping ***" << endl;
 #endif // VACUUM_GRIPPER_DEBUG
-                            if (dAreConnected(vacuumGripper->gripper, gripped)) {
-                                dJointFeedback* fb = dJointGetFeedback(vacuumGripper->jointID);
-
-                                if (limitCheck(fb->f2, fb->t2, vacuumGripper)) {
+                            if (vacuumGripper->isGripping(gripped)) {
+				if (vacuumGripper->limitCheck()){
                                     MessageView::instance()->putln("VacuumGripper: *** joint destroy : exceeded the limit ***");
                                     cout << "VacuumGripper: *** joint destroy : exceeded the limit  **" << endl;
 				    vacuumGripper->release();
