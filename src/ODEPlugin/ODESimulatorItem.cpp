@@ -1394,7 +1394,9 @@ cout << "*** vacuum gripper already gripping ***" << endl;
                                     MessageView::instance()->putln("VacuumGripper: *** joint destroy : exceeded the limit ***");
                                     cout << "VacuumGripper: *** joint destroy : exceeded the limit  **" << endl;
 				    vacuumGripper->release();
-                                }
+                                }else{
+				    return;
+				}
                             } else {
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln(boost::format("VacuumGripper: *** other body jointed %s ***") % gripped);
@@ -1406,6 +1408,7 @@ cout << boost::format("VacuumGripper: *** other body jointed %s ***") % gripped 
                             int n = vacuumGripper->checkContact(numContacts, contacts);
                             if (n != 0) {
 				vacuumGripper->grip(impl->worldID, gripped);
+				return;
                             } else {
 #ifdef VACUUM_GRIPPER_DEBUG
 MessageView::instance()->putln("VacuumGripper: *** cannot create joint **");
