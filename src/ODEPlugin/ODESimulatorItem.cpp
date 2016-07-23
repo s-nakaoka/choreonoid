@@ -159,6 +159,8 @@ public:
     //NailedObjectManager nailedObjectMngr;
 #ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
     MecanumWheelSettingMap mecanumWheelSetting;
+    // XXX: this variable will erase later.
+    bool                   mecanumWheelDebug;
 #endif                      /* MECANUM_WHEEL_ODE */
     vector<ODELink*> geometryIdToLink;
 
@@ -197,6 +199,9 @@ public:
     void collisionCallback(const CollisionPair& collisionPair);
     VacuumGripper *isVacuumGripper(dBodyID body);
     NailDriver *isNailDriver(dBodyID body);
+
+    void nailDriverCheck();
+    void nailedObjectLimitCheck();
 
 #ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
     void preserveMecanumWheelSetting(ODEBody* odeBody);
@@ -918,6 +923,11 @@ ODESimulatorItemImpl::ODESimulatorItemImpl(ODESimulatorItem* self)
     flipYZ = false;
     useWorldCollision = false;
     velocityMode = false;
+
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+    // XXX: this code will erase later.
+    mecanumWheelDebug = false;
+#endif                      /* MECANUM_WHEEL_ODE */
 }
 
 
@@ -1160,6 +1170,10 @@ bool ODESimulatorItemImpl::initializeSimulation(const std::vector<SimulationBody
     for(size_t i=0; i < simBodies.size(); ++i){
         addBody(static_cast<ODEBody*>(simBodies[i]));
     }
+    if (!nailDriverDevs.empty()) {
+        self->addPostDynamicsFunction(boost::bind(&ODESimulatorItemImpl::nailDriverCheck, this));
+        self->addPostDynamicsFunction(boost::bind(&ODESimulatorItemImpl::nailedObjectLimitCheck, this));
+    }
     if(useWorldCollision)
         collisionDetector->makeReady();
 
@@ -1256,15 +1270,11 @@ void ODESimulatorItemImpl::preserveMecanumWheelSetting(ODEBody* odeBody)
         return;
     }
 
-    try {
-        for (size_t i = 0; i < links->size(); i++) {
+    for (size_t i = 0; i < links->size(); i++) {
+        try {
             string s = links->at(i)->toString();
             double d = PI_2;
             Link*  p = odeBody->body()->link(s);
-
-            if (angles->isValid() && angles->size() > i) {
-                d = angles->at(i)->toDouble();
-            }
 
             if (! p) {
                 MessageView::instance()->putln(
@@ -1280,17 +1290,21 @@ void ODESimulatorItemImpl::preserveMecanumWheelSetting(ODEBody* odeBody)
                 continue;
             }
 
+            if (angles->isValid() && angles->size() > i) {
+                d = angles->at(i)->toDouble();
+            }
+
             for (size_t j = 0; j < odeBody->odeLinks.size(); j++) {
                 if (p == odeBody->odeLinks[j]->link) {
                     mecanumWheelSetting.insert(make_pair(odeBody->odeLinks[j]->bodyID, d));
                     break;
                 }
             }
+        } catch (const ValueNode::NotScalarException ex) {
+            MessageView::instance()->putln(MessageView::ERROR, ex.message());
+        } catch(const ValueNode::ScalarTypeMismatchException ex) {
+            MessageView::instance()->putln(MessageView::ERROR, ex.message());
         }
-    } catch (const ValueNode::NotScalarException ex) {
-        MessageView::instance()->putln(MessageView::ERROR, ex.message());
-    } catch(const ValueNode::ScalarTypeMismatchException ex) {
-        MessageView::instance()->putln(MessageView::ERROR, ex.message());
     }
 
     return;
@@ -1441,17 +1455,18 @@ MessageView::instance()->putln(boost::format(_("NailDriver body2ID=%1%, Object b
 #endif // NAILDRIVER_DEBUG
                 }
                 if (nailDriver != 0) {
-                    if (nailDriver->on()) {
-#ifdef NAILDRIVER_DEBUG
-cout << "NailDriver ON **" << endl;
-#endif // NAILDRIVER_DEBUG
-                        int n = nailDriver->checkContact(numContacts, contacts);
+                    nailDriver->contact();
+                    int n = nailDriver->checkContact(numContacts, contacts);
 #ifdef NAILDRIVER_DEBUG
 MessageView::instance()->putln(boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n);
 cout << boost::format(_("NailDriver: numContacts=%d n=%d")) % numContacts % n << endl;
 #endif // NAILDRIVER_DEBUG
-                        if (n) {
-                                // TODO check object and other object
+                    if (n) {
+                        if (nailDriver->ready()) {
+#ifdef NAILDRIVER_DEBUG
+cout << "NailDriver ON **" << endl;
+#endif // NAILDRIVER_DEBUG
+
 #ifdef NAILDRIVER_DEBUG
 MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) % objId);
 #endif // NAILDRIVER_DEBUG
@@ -1459,7 +1474,7 @@ MessageView::instance()->putln(boost::format(_("NailDriver check body1ID=%1%")) 
                             if (!nobj) {
                                 // first
                                 nobj = new NailedObject(impl->worldID, objId);
-                                nobj->addNail(nailDriver);
+                                nailDriver->fire(nobj);
                                 nailedObjMngr->addObject(nobj);
                                 MessageView::instance()->putln("NailDriver: *** joint created **");
                                 cout << "NailDriver: *** joint created **" << endl;
@@ -1468,30 +1483,23 @@ MessageView::instance()->putln(boost::format("NailDriver: nail count = %d") % no
 cout << "NailDriver: nail count = " << nobj->getNailCount() << endl;
 #endif // NAILDRIVER_DEBUG
                             } else {
-#ifdef NAILDRIVER_DEBUG
-MessageView::instance()->putln("NailDriver: *** joint already created **");
-cout << "NailDriver: *** joint already created **" << endl;
-#endif // NAILDRIVER_DEBUG
-                                if (impl->self->currentTime() - nailDriver->getLatestContact() > 1.0 ) {
-                                    // second
-                                    nobj->addNail(nailDriver);
+                                // second
+                                nailDriver->fire(nobj);
 #ifdef NAILDRIVER_DEBUG
 MessageView::instance()->putln(boost::format("NailDriver: nail count = %d") % nobj->getNailCount());
 cout << "NailDriver: nail count = " << nobj->getNailCount() << endl;
 #endif // NAILDRIVER_DEBUG
-                                }
                             }
-                            const double current = impl->self->currentTime();
-                            nailDriver->setLatestContact(current);
-                        } // n != 0
-                    } else {
+                        } // nailDriver->ready()
+                        else {
 #ifdef NAILDRIVER_DEBUG
 cout << "NailDriver OFF **" << endl;
 #endif // NAILDRIVER_DEBUG
-                        ;
-                    }
-                }
-            }
+                            ;
+                        }
+                    } // n != 0
+                } // nailDriver == 0
+            } // empty()
 #endif    /* Experimental. */
 	    for(int i=0; i < numContacts; ++i){
                 dSurfaceParameters& surface = contacts[i].surface;
@@ -1513,9 +1521,17 @@ cout << "NailDriver OFF **" << endl;
 
 #ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
                     if (isMecanumWheel) {
-                        Quaternion mwQ(AngleAxis(barrelAngle, n));
-                        Vector3    mwv = dir.cross(mwQ.vec());
-                        dir += mwv;
+                        Vector3 mwdir = AngleAxis(barrelAngle, n).toRotationMatrix().transpose() * dir;
+
+                        // XXX: this block will erase later.
+                        if (impl->mecanumWheelDebug) {
+                            cout << crawlerlink->name() << endl;
+                            cout << "dir  : " << dir.transpose() << endl;
+                            cout << "mwdir: " << mwdir.transpose() << endl;
+                            cout << "-----" << endl;
+                        }
+
+                        dir = mwdir;
                     }
 #endif                      /* MECANUM_WHEEL_ODE */
 
@@ -1736,6 +1752,10 @@ void ODESimulatorItemImpl::doPutProperties(PutPropertyFunction& putProperty)
 
     putProperty(_("Velocity Control Mode"), velocityMode, changeProperty(velocityMode));
 
+#ifdef MECANUM_WHEEL_ODE    /* MECANUM_WHEEL_ODE */
+    // XXX: this code will erase later.
+    putProperty("Mecanum Wheel Debug Mode", mecanumWheelDebug, changeProperty(mecanumWheelDebug));
+#endif                      /* MECANUM_WHEEL_ODE */
 }
 
 
@@ -1810,5 +1830,50 @@ NailDriver *ODESimulatorItemImpl::isNailDriver(dBodyID body)
 	return p->second;
     }else{
 	return 0;
+    }
+}
+
+/*
+ */
+void ODESimulatorItemImpl::nailDriverCheck()
+{
+    for (NailDriverMap::iterator p = nailDriverDevs.begin();
+         p != nailDriverDevs.end(); p++) {
+        NailDriver* nailDriver = p->second;
+        nailDriver->distantCheck();
+    }
+}
+
+/*
+ */
+void ODESimulatorItemImpl::nailedObjectLimitCheck()
+{
+    NailedObjectManager* nailedObjMngr = NailedObjectManager::getInstance();
+
+    NailedObjectMap& map = nailedObjMngr->map();
+
+    NailedObjectMap::iterator p = map.begin();
+    while (p != map.end()) {
+        dBodyID id = p->first;
+        NailedObjectPtr nobj = p->second;
+        const dReal* pos = dBodyGetPosition(id);
+
+        Vector3 f(nobj->fb.f1);
+        Vector3 tau(nobj->fb.t1);
+
+        double fy = f[1] * f[1];
+        double fz = f[2] * f[2];
+
+#if 0 /* Experimental. */
+        if (!nobj->isLimited(sqrt(fy + fz))) {
+            MessageView::instance()->putln("NailDriver: *** exceeded the limit ***");
+            cout << "NailDriver: *** exceeded the limit  **" << endl;
+            map.erase(p++);
+        } else {
+            p++;
+        }
+#else /* Experimental. */
+        p++;
+#endif /* Experimental. */
     }
 }

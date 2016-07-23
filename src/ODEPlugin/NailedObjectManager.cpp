@@ -23,7 +23,10 @@ using namespace std;
 
 NailedObject::~NailedObject()
 {
-    ;
+    MessageView::instance()->putln("NailDriver: *** joint destroy ***");
+    cout << "NailDriver: *** joint destroy  **" << endl;
+    dJointSetFeedback(jointID, 0);
+    dJointDestroy(jointID);
 }
 
 NailedObjectManager* NailedObjectManager::getInstance()
@@ -73,5 +76,3 @@ NailedObjectPtr NailedObjectManager::get(dBodyID bodyID)
 
     return 0;
 }
-
-

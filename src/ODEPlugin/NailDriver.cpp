@@ -45,9 +45,14 @@ Device* NailDriver::clone() const
 NailDriver::NailDriver()
 {
     on_ = false;
+    contact_ = false;
+    ready_ = false;
     position << 0, 0, 0;
     normal << 0, 0, 0;
     maxFasteningForce = std::numeric_limits<double>::max();
+
+    not_called_conunt = 0;
+    near_callback_called = false;
 
     resetLatestContact();
 }
@@ -91,12 +96,53 @@ double* NailDriver::writeState(double* out_buf) const
 void NailDriver::on(bool on) {
     MessageView::instance()->putln(boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF"));
     cout << boost::format(_("*** %s: %s ***")) % typeName() % (on ? "ON" : "OFF") << endl;
+
     if (on_ == false && on == true) {
         // By switching from off to on,
         // it becomes possible to injection of a nail.
-        resetLatestContact();
+        setReady();
     }
+
     on_ = on;
+}
+
+void NailDriver::setReady()
+{
+
+    MessageView::instance()->putln(boost::format(_("%s: Ready")) % typeName());
+    cout << boost::format(_("%s: Ready")) % typeName() << endl;
+
+    ready_ = true;
+}
+
+void NailDriver::fire(NailedObjectPtr nobj)
+{
+
+    MessageView::instance()->putln(boost::format(_("%s: Fire")) % typeName());
+    cout << boost::format(_("%s: Fire")) % typeName() << endl;
+
+    nobj->addNail(maxFasteningForce);
+    ready_ = false;
+}
+
+void NailDriver::distantCheck()
+{
+    if (!near_callback_called) {
+        // Check number of times nearCallback() was not called continuously.
+        // If more than 5 times, it is processing as a distant from object.
+        if (not_called_conunt < 5) {
+            not_called_conunt++;
+        } else {
+            if (on() && !ready()) {
+                setReady();
+            }
+        }
+    } else {
+        // Since the nearCallback() was called, reset the counter.
+        not_called_conunt = 0;
+        // And reset the flag.
+        near_callback_called = false;
+    }
 }
 
 int NailDriver::checkContact(int numContacts, dContact* contacts)
