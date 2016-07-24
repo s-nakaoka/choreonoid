@@ -185,6 +185,9 @@ public:
     double collisionTime;
     QElapsedTimer collisionTimer;
 
+    double vacuumGripperLimitCheckStartTime;
+    double nailDriverLimitCheckStartTime;
+
     ODESimulatorItemImpl(ODESimulatorItem* self);
     ODESimulatorItemImpl(ODESimulatorItem* self, const ODESimulatorItemImpl& org);
     void initialize();
@@ -1072,7 +1075,11 @@ void ODESimulatorItem::useVacuumGripper(bool on)
     }
 }
 
-#if 1    /* Experimental. */
+void ODESimulatorItem::setVacuumGripperLimitCheckStartTime(double limitCheckStartTime)
+{
+    impl->vacuumGripperLimitCheckStartTime = limitCheckStartTime;
+}
+
 void ODESimulatorItem::useNailDriver(bool on)
 {
     for (NailDriverMap::iterator p = impl->nailDriverDevs.begin();
@@ -1081,7 +1088,11 @@ void ODESimulatorItem::useNailDriver(bool on)
         nailDriver->on(on);
     }
 }
-#endif    /* Experimental. */
+
+void ODESimulatorItem::setNailDriverLimitCheckStartTime(double limitCheckStartTime)
+{
+    impl->nailDriverLimitCheckStartTime = limitCheckStartTime;
+}
 
 void ODESimulatorItem::setAllLinkPositionOutputMode(bool on)
 {
@@ -1400,7 +1411,12 @@ MessageView::instance()->putln("*** vacuum gripper already gripping ***");
 cout << "*** vacuum gripper already gripping ***" << endl;
 #endif // VACUUM_GRIPPER_DEBUG
                             if (vacuumGripper->isGripping(objId)) {
-				if (vacuumGripper->limitCheck()){
+                                // limit check
+                                if (impl->self->currentTime() < impl->vacuumGripperLimitCheckStartTime) {
+                                    return;
+                                }
+
+                                if (vacuumGripper->limitCheck()){
                                     MessageView::instance()->putln("VacuumGripper: *** joint destroy : exceeded the limit ***");
                                     cout << "VacuumGripper: *** joint destroy : exceeded the limit  **" << endl;
 				    vacuumGripper->release();
@@ -1848,6 +1864,11 @@ void ODESimulatorItemImpl::nailDriverCheck()
  */
 void ODESimulatorItemImpl::nailedObjectLimitCheck()
 {
+
+    if (self->currentTime() < nailDriverLimitCheckStartTime) {
+        return;
+    }
+
     NailedObjectManager* nailedObjMngr = NailedObjectManager::getInstance();
 
     NailedObjectMap& map = nailedObjMngr->map();
@@ -1861,11 +1882,8 @@ void ODESimulatorItemImpl::nailedObjectLimitCheck()
         Vector3 f(nobj->fb.f1);
         Vector3 tau(nobj->fb.t1);
 
-        double fy = f[1] * f[1];
-        double fz = f[2] * f[2];
-
 #if 0 /* Experimental. */
-        if (!nobj->isLimited(sqrt(fy + fz))) {
+        if (nobj->isLimited(f[0])) {
             MessageView::instance()->putln("NailDriver: *** exceeded the limit ***");
             cout << "NailDriver: *** exceeded the limit  **" << endl;
             map.erase(p++);

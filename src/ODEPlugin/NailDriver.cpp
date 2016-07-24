@@ -4,6 +4,7 @@
 */
 
 #include <cnoid/NailDriver>
+#include "NailedObjectManager.h"
 
 #include <cnoid/Device>
 #include <cnoid/EigenUtil>
@@ -53,6 +54,7 @@ NailDriver::NailDriver()
 
     not_called_conunt = 0;
     near_callback_called = false;
+    distantCheckCount = 20;
 
     resetLatestContact();
 }
@@ -77,6 +79,7 @@ NailDriver::NailDriver(const NailDriver& org, bool copyStateOnly)
     position = org.position;
     normal = org.normal;
     maxFasteningForce = org.maxFasteningForce;
+    distantCheckCount = org.distantCheckCount;
 }
 
 
@@ -115,7 +118,7 @@ void NailDriver::setReady()
     ready_ = true;
 }
 
-void NailDriver::fire(NailedObjectPtr nobj)
+void NailDriver::fire(NailedObject* nobj)
 {
 
     MessageView::instance()->putln(boost::format(_("%s: Fire")) % typeName());
@@ -129,8 +132,9 @@ void NailDriver::distantCheck()
 {
     if (!near_callback_called) {
         // Check number of times nearCallback() was not called continuously.
-        // If more than 5 times, it is processing as a distant from object.
-        if (not_called_conunt < 5) {
+        // If more than distantCheckCount times, it is processing as a
+        // distant from object.
+        if (not_called_conunt < distantCheckCount) {
             not_called_conunt++;
         } else {
             if (on() && !ready()) {

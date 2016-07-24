@@ -38,7 +38,7 @@ public:
     }
 
     bool isLimited(double force) {
-        return force < maxFasteningForce;
+        return force + maxFasteningForce < 0;
     }
 
     const double getMaxFasteningForce() { return maxFasteningForce; }
