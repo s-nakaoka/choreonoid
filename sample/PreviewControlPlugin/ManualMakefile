@@ -1,0 +1,10 @@
+CXXFLAGS += `pkg-config --cflags choreonoid`
+PLUGIN = libCnoidPreviewControlPlugin.so
+
+$(PLUGIN): PreviewControlPlugin.o PreviewController.o
+	g++ -shared `pkg-config --libs choreonoid` -o $(PLUGIN) PreviewControlPlugin.o PreviewController.o
+
+install: $(PLUGIN)
+	install -s $(PLUGIN) `pkg-config --variable=plugindir choreonoid`
+clean:
+	rm -f *.o *.so
