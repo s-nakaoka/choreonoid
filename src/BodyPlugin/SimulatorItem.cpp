@@ -115,6 +115,7 @@ public:
     SimulatorItemImpl* simImpl;
 
     bool isActive;
+    bool isDynamic;
     bool areShapesCloned;
 
     Deque2D<double> jointPosBuf;
@@ -476,6 +477,7 @@ SimulationBodyImpl::SimulationBodyImpl(SimulationBody* self, Body* body)
     simImpl = 0;
     areShapesCloned = false;
     isActive = false;
+    isDynamic = false;
 }
 
 
@@ -545,10 +547,11 @@ bool SimulationBodyImpl::initialize(SimulatorItemImpl* simImpl, BodyItem* bodyIt
     controllers.clear();
     resultItemPrefix = simImpl->self->name() + "-" + bodyItem->name();
     
-    bool doReset = simImpl->doReset && !body_->isStaticModel();
+    isDynamic = !body_->isStaticModel();
+    bool doReset = simImpl->doReset && isDynamic;
     extractAssociatedItems(doReset);
     
-    if(body_->isStaticModel()){
+    if (!isDynamic && body_->numDevices() == 0) {
         return true;
     }
 
@@ -656,7 +659,10 @@ void SimulationBody::initializeResultBuffers()
 void SimulationBodyImpl::initializeResultBuffers()
 {
     jointPosBuf.resizeColumn(body_->numAllJoints());
-    const int numLinksToRecord = simImpl->isAllLinkPositionOutputMode ? body_->numLinks() : 1;
+    int numLinksToRecord = 0;
+    if (isDynamic) {
+        numLinksToRecord = simImpl->isAllLinkPositionOutputMode ? body_->numLinks() : 1;
+    }
     linkPosBuf.resizeColumn(numLinksToRecord);
 
     const DeviceList<>& devices = body_->devices();
@@ -976,7 +982,9 @@ void SimulationBodyImpl::flushResultsToWorldLogFile(int bufferFrame)
 
 void SimulationBodyImpl::notifyResults()
 {
-    bodyItem->notifyKinematicStateChange(!simImpl->isAllLinkPositionOutputMode);
+    if(isDynamic) {
+            bodyItem->notifyKinematicStateChange(!simImpl->isAllLinkPositionOutputMode);
+    }
 
     for(size_t i=0; i < devicesToNotifyResults.size(); ++i){
         devicesToNotifyResults[i]->notifyStateChange();

@@ -432,11 +432,7 @@ bool GLVisionSimulatorItemImpl::initializeSimulation(SimulatorItem* simulatorIte
 
     cloneMap.clear();
 
-#ifdef CNOID_REFERENCED_USE_ATOMIC_COUNTER
-    cloneMap.setNonNodeCloning(false);
-#else
     cloneMap.setNonNodeCloning(true);
-#endif
 
     std::set<string> bodyNameSet;
     for(size_t i=0; i < bodyNames.size(); ++i){
