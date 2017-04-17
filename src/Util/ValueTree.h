@@ -6,6 +6,7 @@
 #define CNOID_UTIL_VALUE_TREE_H
 
 #include "Referenced.h"
+#include <string>
 #include <map>
 #include <vector>
 #include "exportdecl.h"
