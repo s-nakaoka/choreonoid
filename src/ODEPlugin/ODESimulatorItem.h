@@ -44,6 +44,14 @@ public:
     void setSurfaceLayerDepth(double value);
     void useWorldCollisionDetector(bool on);
 
+    // for VacuumGripper simulation
+    void useVacuumGripper(bool on);
+    void setVacuumGripperLimitCheckStartTime(double limitCheckStartTime);
+
+    // for NailDriver simulation
+    void useNailDriver(bool on);
+    void setNailDriverLimitCheckStartTime(double limitCheckStartTime);
+
 protected:
         
     virtual SimulationBody* createSimulationBody(Body* orgBody);
