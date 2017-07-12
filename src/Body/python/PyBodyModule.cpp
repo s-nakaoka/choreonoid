@@ -262,7 +262,9 @@ BOOST_PYTHON_MODULE(Body)
             .def("hasVirtualJointForces", &Body::hasVirtualJointForces)
             .def("setVirtualJointForces", &Body::setVirtualJointForces)
             .def("addCustomizerDirectory", &Body::addCustomizerDirectory).staticmethod("addCustomizerDirectory")
+#ifndef _WIN32
             .def(other<BodyMotion::Frame>() >> self)
+#endif
             ;
 
     }
@@ -336,7 +338,9 @@ BOOST_PYTHON_MODULE(Body)
         class_< BodyMotion::Frame >("Frame", no_init)
             .def("frame", &BodyMotion::Frame::frame)
             .def(self << other<Body>())
+#ifndef _WIN32
             .def(other<Body>() >> self)
+#endif
             ;
     }
 

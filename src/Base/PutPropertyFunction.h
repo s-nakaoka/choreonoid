@@ -26,7 +26,7 @@ struct FilePath {
     }
  };
 
-#ifndef WIN32
+#ifndef _WIN32
 #define DLLSFX string("(*.so)")
 #else
 #define DLLSFX string("(*.dll)")

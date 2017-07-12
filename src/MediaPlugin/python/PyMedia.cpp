@@ -13,7 +13,7 @@ namespace {
 
 void pyPlayAudioFileMain(const std::string& filename, double volumeRatio, bool& out_result)
 {
-#ifndef WIN32
+#ifndef _WIN32
     out_result = cnoid::playAudioFile(filename, volumeRatio);
 #endif
 }

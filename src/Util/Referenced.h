@@ -9,7 +9,7 @@
 #include <cassert>
 #include <iosfwd>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <memory>
 #endif
 

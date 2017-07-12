@@ -142,6 +142,9 @@ AppImpl::AppImpl(App* self, int& argc, char**& argv)
 #endif
 
     QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
+#ifdef _WIN32
+	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+#endif
 
     doQuit = false;
 

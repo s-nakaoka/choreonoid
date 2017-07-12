@@ -1513,6 +1513,7 @@ static void LoadExtByName(const char *extensionName)
 
 static void ProcExtsFromExtString(const char *strExtList)
 {
+	if (strExtList == NULL) { return; }
 	size_t iExtListLen = strlen(strExtList);
 	const char *strExtListEnd = strExtList + iExtListLen;
 	const char *strCurrPos = strExtList;

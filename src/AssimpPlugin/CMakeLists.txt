@@ -1,7 +1,7 @@
-
-if(NOT UNIX)
-  return()
-endif()
+#
+#if(NOT UNIX)
+#  return()
+#endif()
 
 pkg_check_modules(ASSIMP QUIET assimp>=3.2)
 if(ASSIMP_FOUND)
@@ -26,9 +26,30 @@ elseif(MSVC)
 endif()
 
 if(NOT ASSIMP_FOUND )
-  set(ASSIMP_LIBRARIES assimp)
-  set(ASSIMP_INCLUDE_DIRS ${ASSIMP_DIR}/include)
-  set(ASSIMP_LIBRARY_DIRS ${ASSIMP_DIR}/lib)
+  if(MSVC)
+    find_file(ASSIMP_CONFIG assimp-config.cmake HINTS ${ASSIMP_DIR}/lib/cmake/* )
+
+    if (ASSIMP_CONFIG)
+      include(${ASSIMP_CONFIG})
+    else()
+      message(FATAL_ERROR "NO ASSIMP_CONFIG file found.")
+    endif()
+
+	if(INSTALL_RUNTIME_DEPENDENCIES)
+        install(PROGRAMS ${ASSIMP_DIR}/bin/assimp${ASSIMP_LIBRARY_SUFFIX}.dll DESTINATION bin
+	      CONFIGURATIONS Release RelWithDebInfo MinSizeRel Debug)
+      
+        if(INSTALL_SDK_WITH_EXTLIBS)
+	      install(FILES ${ASSIMP_DIR}/lib/assimp${ASSIMP_LIBRARY_SUFFIX}.lib DESTINATION lib
+	        CONFIGURATIONS Release RelWithDebInfo MinSizeRel Debug)
+	      install(DIRECTORY ${ASSIMP_DIR}/include/assimp DESTINATION ${CNOID_HEADER_SUBDIR})
+        endif()
+	endif()
+  else()
+    set(ASSIMP_LIBRARIES assimp)
+    set(ASSIMP_INCLUDE_DIRS ${ASSIMP_DIR}/include)
+    set(ASSIMP_LIBRARY_DIRS ${ASSIMP_DIR}/lib)
+  endif()
 endif()
 
 set(target CnoidAssimpPlugin)

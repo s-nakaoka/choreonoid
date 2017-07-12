@@ -18,7 +18,7 @@ template<> void MultiSeqItem<MultiAffine3Seq>::initializeClass(ExtensionManager*
         new MultiSeqItemCreationPanel(_("Number of Affine3 values in a frame")));
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 template class MultiSeqItem<MultiAffine3Seq>;
 #endif
 

@@ -1,6 +1,9 @@
 
 cmake_minimum_required(VERSION 2.6)
 cmake_policy(SET CMP0003 NEW)
+cmake_policy(SET CMP0020 NEW)
+cmake_policy(SET CMP0043 NEW)
+
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
 
 include(FindPkgConfig)
@@ -150,6 +153,10 @@ if(MSVC)
     set(ext_compiler_options "${ext_compiler_options} /arch:AVX2")
   endif()
   set(ext_linker_options "")
+
+  #
+  #  for MSVC2017 (Exception Handling Model)
+  set(ext_compiler_options "${ext_compiler_options} /EHsc")
 
   option(MSVC_ENABLE_GLOBAL_OPTIMIZATION "Global optimization with compiler option /GL and linker option /LTCG" ON)
   if(MSVC_ENABLE_GLOBAL_OPTIMIZATION)
@@ -323,7 +330,7 @@ endif()
 # set(Boost_NO_SYSTEM_PATHS true)
 
 set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0" "1.45" "1.45.0" "1.46" "1.46.0" "1.46.1" "1.47" "1.47.0" "1.48" "1.48.0" "1.49.0" "1.50.0")
+set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0" "1.45" "1.45.0" "1.46" "1.46.0" "1.46.1" "1.47" "1.47.0" "1.48" "1.48.0" "1.49.0" "1.50.0" "1.60.0" "1.61.0" "1.62.0" "1.63.0" "1.64.0")
 
 
 if(MSVC)
@@ -355,7 +362,7 @@ set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELEASE BOOST_DISABLE
 
 install_external_libraries(${Boost_LIBRARY_DIRS} ${Boost_LIBRARY_DIRS}
   ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_THREAD_LIBRARY} 
-  ${Boost_DATE_TIME_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_CHRONO_LIBRARY} ${Boost_PYTHON_LIBRARY} 
+  ${Boost_DATE_TIME_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_CHRONO_LIBRARY} ${Boost_PYTHON_LIBRARY}  ${Boost_BZIP2_LIBRARY}
   ${Boost_IOSTREAMS_LIBRARY} ${Boost_ZLIB_LIBRARY})
 
 
