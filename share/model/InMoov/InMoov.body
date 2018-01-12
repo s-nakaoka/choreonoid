@@ -1,0 +1,3369 @@
+format: ChoreonoidBody
+formatVersion: 1.0
+angleUnit: degree
+name: InMoov
+rootLink: Base
+links:
+  -
+    name: Base
+    jointType: free
+    translation: [ 0, 0, 0 ]
+    rotation : [ 0.0, 0.0, 1.0, 0 ]
+    jointId: 0
+    centerOfMass: [ 0.014070775509439625, -0.0010642631392533723, 0.018082091556018958 ]
+    mass: 0.16852
+    inertia: [
+      7.5307790665527126e-05, -1.7122423225418951e-06, -7.9600885666462265e-06,
+      -1.7122423225418951e-06, 9.8462174358634891e-05, 1.6233365559722733e-06,
+      -7.9600885666462265e-06, 1.6233365559722733e-06, 0.00012629712705606254 ]
+    elements:
+      Shape:
+        geometry: { type: Box, size: [ 1, 1, 1 ] }
+  -
+    name: AnkToesFootV2
+    parent: Base
+    translation : [ 0, 0, 0 ]
+    rotation : [ 1, 0, 0, 0]
+    jointId: 1
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/AnkToesFootV2.stl" }
+  -
+    name: AnkMidleFootV1
+    parent: Base
+    translation : [ -98, 15, 43 ]
+    rotation : [ 1, 1, 1, 120]
+    jointId: 2
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/AnkMidleFootV1.stl" }
+  -
+    name: AnkBackFootV1
+    parent: Base
+    translation : [ -145, 25, 2 ]
+    rotation : [ 0, 0, 1, 90]
+    jointId: 3
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/AnkBackFootV1.stl" }
+  -
+    name: AnkleBaseV1
+    parent: Base
+    translation : [ -135, 37, 87 ]
+    rotation : [ 0, 0, 1, 90]
+    jointId: 4
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/AnkleBaseV1.stl" }
+  -
+    name: AnkleDownV2
+    parent: Base
+    translation : [ -170, 5, 125 ]
+    rotation : [ 0.7071068, 0.7071068, 0, 180]
+    jointId: 5
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/AnkleDownV2.stl" }
+  -
+    name: AnkHolderV1
+    parent: Base
+    translation : [ -150, 40, 125 ]
+    rotation : [ 0, 0, 1, 80]
+    jointId: 6
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/AnkHolderV1.stl" }
+  -
+    name: AnkpartV1
+    parent: Base
+    translation : [ -160, 35, 244 ]
+    rotation : [ 0.7660444, 0.6427876, 0, 180]
+    jointId: 7
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/AnkpartV1.stl" }
+  -
+    name: TibiaLowS1RightV1
+    parent: Base
+    translation : [ -168, 5, 354 ]
+    rotation : [ 0.7660444, 0.6427876, 0, 180]
+    jointId: 8
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Tibia/TibiaLowS1RightV1.stl" }
+  -
+    name: TibiaLowS2RightV1
+    parent: Base
+    translation : [ -160, 58, 361 ]
+    rotation : [ 0.6755902, -0.7372773, 0, 180]
+    jointId: 9
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Tibia/TibiaLowS2RightV1.stl" }
+  -
+    name: TibiaHighRightV1
+    parent: Base
+    translation : [ -142, 30, 467 ]
+    rotation : [ -0.705757984387, -0.705757211839, 0.061744841179, 172.933475033 ]
+    jointId: 10
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Tibia/TibiaHighRightV1.stl" }
+  -
+    name: KneeLowRightV3
+    parent: Base
+    translation : [ -69, -20, 453 ]
+    rotation : [ 0.08678249806, 0.0868516328191, 0.9924341751, 90.4353557095 ]
+    jointId: 11
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Knee/KneeLowRightV3.stl" }
+  -
+    name: KneeHighRightV3
+    parent: Base
+    translation : [ -135, -20, 570 ]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 12
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Knee/KneeHighRightV3.stl" }
+  -
+    name: ThighLowRightV3
+    parent: Base
+    translation : [ -172, -38, 566 ]
+    rotation : [ 1, 0, 0, 360.00004074 ]
+    jointId: 13
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Thigh/ThighLowRightV3.stl" }
+  -
+    name: ThighMidRightV1
+    parent: Base
+    translation : [ -91, 18, 675 ]
+    rotation : [ 1, 0, 0, 360.00004074 ]
+    jointId: 14
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Thigh/ThighMidRightV1.stl" }
+  -
+    name: ThighHighRightV1
+    parent: Base
+    translation : [ 4, -67, 786 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 15
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Thigh/ThighHighRightV1.stl" }
+  -
+    name: ThighHighTempV1
+    parent: Base
+    translation : [ -200, -55, 897 ]
+    rotation : [ 1, 0, 0, 0.0 ]
+    jointId: 16
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Thigh/ThighHighTempV1.stl" }
+  -
+    name: TStoLowRightV1
+    parent: Base
+    translation : [ -42, 20, 1000]
+    rotation : [ 0.577349503163, 0.577351801239, -0.577349503163, 120.00010136 ]
+    jointId: 17
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Low Stomach/Low-Stomach/TStoLowRightV1.stl" }
+  -
+    name: BotFrontRigtV1
+    parent: Base
+    translation : [ 0, 53, 1067]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 18
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Mid Stomach/Mid-Stomach/BotFrontRigtV1.stl" }
+  -
+    name: BotFrontLeftV1
+    parent: Base
+    translation : [ -1, 163, 1070.5]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 19
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Mid Stomach/Mid-Stomach/BotFrontLeftV1.stl" }
+  -
+    name: HipCoverFrontV1S0
+    parent: Base
+    translation : [ 25, 106, 1003]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 20
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Mid Stomach/Mid-Stomach/HipCoverFrontV1S0.stl" }
+  -
+    name: HipCoverFrontV1S1
+    parent: Base
+    translation : [ 25, 106, 1003]
+    rotation : [ -9.38185046295e-07, 0.707106312093, 0.707107250279, 180.000044531 ]
+    jointId: 21
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Mid Stomach/Mid-Stomach/HipCoverFrontV1S1.stl" }
+  -
+    name: BotBackLeftV1
+    parent: Base
+    translation : [ -84, 163, 1070]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 22
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Mid Stomach/Mid-Stomach/BotBackLeftV1.stl" }
+  -
+    name: BotBackRigtV1
+    parent: Base
+    translation : [ -82, 51, 1070]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 23
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Mid Stomach/Mid-Stomach/BotBackRigtV1.stl" }
+  -
+    name: RollFrontRightV1
+    parent: Base
+    translation : [ 0, 46, 1070]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 24
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/RollFrontRightV1.stl" }
+  -
+    name: RollFrontLeftV1
+    parent: Base
+    translation : [ 0, 161, 1070]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 25
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/RollFrontLeftV1.stl" }
+  -
+    name: RollBackLeftV1
+    parent: Base
+    translation : [ -83, 163, 1070]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 26
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/RollBackLeftV1.stl" }
+  -
+    name: RollBackRightV1
+    parent: Base
+    translation : [ -84, 53, 1070]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 27
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/RollBackRightV1.stl" }
+  -
+    name: ServoBackV1S0
+    parent: Base
+    translation : [ -51, 18, 1082]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 28
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/ServoBackV1S0.stl" }
+  -
+    name: ServoBackV1S1
+    parent: Base
+    translation : [ -81, 191, 1082]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 29
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/ServoBackV1S1.stl" }
+  -
+    name: TStoBackStandRightV1
+    parent: Base
+    translation : [ -91, 53, 1128]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 30
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoBackStandRightV1.stl" }
+  -
+    name: TStoBackStandLeftV1
+    parent: Base
+    translation : [ -91, 160, 1127.5]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 31
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoBackStandLeftV1.stl" }
+  -
+    name: TStomRotBackV1
+    parent: Base
+    translation : [ -82, 105, 1177]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 32
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStomRotBackV1.stl" }
+  -
+    name: TStoMiddleV1
+    parent: Base
+    translation : [ -72.0, 105.0, 1171.8025 ]
+    rotation : [ 0.577350524531, 0.577350524531, 0.577349758506, 120.00001358 ]
+    jointId: 33
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoMiddleV1.stl" }
+  -
+    name: TStoBackRightV1
+    parent: Base
+    translation : [ -72.0, 8.0, 1206.3035 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 34
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoBackRightV1.stl" }
+  -
+    name: TStoBackLeftV1
+    parent: Base
+    translation : [ -72.0, 201.0, 1206.605 ]
+    rotation : [ 0.577350524531, 0.577350524531, 0.577349758506, 120.00001358 ]
+    jointId: 35
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoBackLeftV1.stl" }
+  -
+    name: TStomSpacerV1
+    parent: Base
+    translation : [ -62.0, 104.0, 1163.531 ]
+    rotation : [ 0.577350524531, 0.577350524531, 0.577349758506, 120.00001358 ]
+    jointId: 36
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStomSpacerV1.stl" }
+  -
+    name: TStoMiddleV1S2
+    parent: Base
+    translation : [ -5.0, 104.0, 1169.6175 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 37
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoMiddleV1.stl" }
+  -
+    name: TStoPistonRightV2S1
+    parent: Base
+    translation : [ -6.0, -40.0, 1201.8645 ]
+    rotation : [ 0.0868266355953, -0.0868265203942, 0.992432511916, 90.435230212 ]
+    jointId: 38
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoPistonRightV2S1.stl" }
+  -
+    name: TStoPistonRightV2S2
+    parent: Base
+    translation : [ 50.0, -22.0, 1134.914 ]
+    rotation : [ 0.129428369966, -0.129428198241, 0.983105609051, 90.9762008706 ]
+    jointId: 39
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoPistonRightV2S2.stl" }
+  -
+    name: TStoServoHolsterV2S1
+    parent: Base
+    translation : [ -66.0, 19.0, 1139.9265 ]
+    rotation : [ 0.704062188321, 0.704062876502, 0.0926925072922, 190.591449108 ]
+    jointId: 40
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoServoHolsterV2S1.stl" }
+  -
+    name: TStoServoHolsterV2S2
+    parent: Base
+    translation : [ -2.0, 199.0, 1140.6919 ]
+    rotation : [ -0.701673463139, 0.701674065804, -0.123724922728, 194.106080274 ]
+    jointId: 41
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoServoHolsterV2S1.stl" }
+  -
+    name: TStoPistonLeftV2S1
+    parent: Base
+    translation : [ -6.0, 194.0, 1206.3955 ]
+    rotation : [ -0.0868266355953, 0.0868265203942, 0.992432511916, 90.435230212 ]
+    jointId: 42
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoPistonLeftV2S1.stl" }
+  -
+    name: TStoPistonLeftV2S2
+    parent: Base
+    translation : [ -56.0, 120.0, 1168.161 ]
+    rotation : [ -1.0, 0.0, 0.0, 13.0 ]
+    jointId: 43
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoPistonLeftV2S2.stl" }
+  -
+    name: TStoFrontRightV1
+    parent: Base
+    translation : [ 5.0, 12.0, 1205.0 ]
+    rotation : [ -0.577349758506, -0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 44
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoFrontRightV1.stl" }
+  -
+    name: TStoFrontLeftV1
+    parent: Base
+    translation : [ 5.0, 197.0, 1205.321 ]
+    rotation : [ -0.577349758506, -0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 45
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoFrontLeftV1.stl" }
+  -
+    name: TStomRotFrontV1
+    parent: Base
+    translation : [ 15.0, 105.0, 1174.926 ]
+    rotation : [ -0.577349758506, -0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 46
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStomRotFrontV1.stl" }
+  -
+    name: TStoFrontStandV2
+    parent: Base
+    translation : [ 25.0, 106.0, 1125.889 ]
+    rotation : [ 0.577350524531, -0.577350524531, -0.577349758506, 120.00001358 ]
+    jointId: 47
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStoFrontStandV2.stl" }
+  -
+    name: DiskUnderV1S1
+    parent: Base
+    translation : [ 14.986, 126.9928, 1164.9385 ]
+    rotation : [ -0.250562924858, 0.935113152496, -0.250562592413, 93.840967544 ]
+    jointId: 48
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/DiskUnderV1S1.stl" }
+  -
+    name: DiskUnderV1S2
+    parent: Base
+    translation : [ 15.1859, 56.9466, 1173.025 ]
+    rotation : [ 0.577350524531, 0.577350524531, 0.577349758506, 120.00001358 ]
+    jointId: 49
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/DiskUnderV1S2.stl" }
+  -
+    name: DiskExternV2S1
+    parent: Base
+    translation : [ 35.1859, 74.5, 1122.7905 ]
+    rotation : [ 0.577350524531, 0.577350524531, 0.577349758506, 120.00001358 ]
+    jointId: 50
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/DiskExternV2.stl" }
+  -
+    name: DiskExternV2S2
+    parent: Base
+    translation : [ 35.1859, 71.0, 1193.3955 ]
+    rotation : [ 0.0, 1.0, 0.0, 90.0 ]
+    jointId: 51
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/DiskExternV2.stl" }
+  -
+    name: DiskExternV2S3
+    parent: Base
+    translation : [ 35.1859, 140.0, 1196.8235 ]
+    rotation : [ -0.577350524531, 0.577350524531, -0.577349758506, 120.00001358 ]
+    jointId: 52
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/DiskExternV2.stl" }
+  -
+    name: DiskExternV2S4
+    parent: Base
+    translation : [ 35.1859, 143.5, 1126.1075 ]
+    rotation : [ -0.707107250279, 9.38185046295e-07, -0.707106312093, 180.000044531 ]
+    jointId: 53
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/DiskExternV2.stl" }
+  -
+    name: DiskInternV3
+    parent: Base
+    translation : [ 46.1859, 74.0, 1125.7125 ]
+    rotation : [ 0.577349503163, 0.577351035214, 0.57735026919, 120.00010136 ]
+    jointId: 54
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/DiskInternV3 .stl" }
+  -
+    name: TStomCovRightV2
+    parent: Base
+    translation : [ 19.1859, 28.0, 1236.0 ]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 55
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStomCovRightV2.stl" }
+  -
+    name: TStomCovLeftV2
+    parent: Base
+    translation : [ 19.1859, 184.0, 1238.0 ]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 56
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Stomach/Stomach/TStomCovLeftV2.stl" }
+  -
+    name: UnderKinectRightV1
+    parent: Base
+    translation : [ 50.0, 36.0, 1268.642 ]
+    rotation : [ 0.0, 1.0, 0.0, 180.0 ]
+    jointId: 57
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/UnderKinectRightV1.stl" }
+  -
+    name: UnderKinectLeftV1
+    parent: Base
+    translation : [ 50.1859, 176.5, 1269.284 ]
+    rotation : [ 1.0, 0.0, 0.0, 180.0 ]
+    jointId: 58
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/UnderKinectLeftV1.stl" }
+  -
+    name: KinectMidFrontV1
+    parent: Base
+    translation : [ -5.0, 102.5, 1235.1605 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 59
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/KinectMidFrontV1.stl" }
+  -
+    name: KinectMidBackV1
+    parent: Base
+    translation : [ -72.0, 105.0, 1266.433 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 60
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/KinectMidBackV1.stl" }
+  -
+    name: KinectSideBackV1Right
+    parent: Base
+    translation : [ -72.0, 6.3, 1294.3 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 61
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/KinectSideBackV1.stl" }
+  -
+    name: KinectSideBackV1Left
+    parent: Base
+    translation : [ -62.0, 203.8, 1294.0 ]
+    rotation : [ 0.577349758506, -0.577350524531, -0.577350524531, 120.00001358 ]
+    jointId: 62
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/KinectSideBackV1.stl" }
+  -
+    name: BatteryHolderRightV3
+    parent: Base
+    translation : [ -98.0, 21.6, 1288.0 ]
+    rotation : [ -0.577350524531, 0.577349758506, 0.577350524531, 120.00001358 ]
+    jointId: 63
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BatteryHolderRightV3.stl" }
+  -
+    name: BatteryHolderLeftV3
+    parent: Base
+    translation : [ -98.0, 188.3, 1288.0 ]
+    rotation : [ 0.577350524531, -0.577349758506, 0.577350524531, 120.00001358 ]
+    jointId: 64
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BatteryHolderLeftV3.stl" }
+  -
+    name: HomLowBack-V1Right
+    parent: Base
+    translation : [ -71.6, 8.3, 1386.2 ]
+    rotation : [ 0.577350524531, 0.577350524531, 0.577349758506, 120.00001358 ]
+    jointId: 65
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/HomLowBack-V1.stl" }
+  -
+    name: HomLowBack-V1Left
+    parent: Base
+    translation : [ -62.0, 202.3, 1386.2 ]
+    rotation : [ 0.577350524531, -0.577350524531, -0.577349758506, 120.00001358 ]
+    jointId: 66
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/HomLowBack-V1.stl" }
+  -
+    name: HomLowFront-V1Left
+    parent: Base
+    translation : [ 5.0, 201.3, 1384.0 ]
+    rotation : [ 0.577350524531, -0.577350524531, -0.577349758506, 120.00001358 ]
+    jointId: 67
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/HomLowFront-V1.stl" }
+  -
+    name: KinectSideHolderV1Left
+    parent: Base
+    translation : [ 5.0, 197.7, 1288.5 ]
+    rotation : [ 0.577350524531, -0.577350524531, -0.577349758506, 120.00001358 ]
+    jointId: 68
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/KinectSideHolderV1.stl" }
+  -
+    name: HomLowFront-V1Right
+    parent: Base
+    translation : [ -5.0, 6.7, 1384.0 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 69
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/HomLowFront-V1.stl" }
+  -
+    name: KinectSideHolderV1Right
+    parent: Base
+    translation : [ -5.0, 10.7, 1288.5 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 70
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/KinectSideHolderV1.stl" }
+  -
+    name: ChestRightV1
+    parent: Base
+    translation : [ 29.0, 10.7, 1335.5 ]
+    rotation : [ 0.0, 0.0, 1.0, 180.0 ]
+    jointId: 71
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/ChestRightV1.stl" }
+  -
+    name: ChestLowV1Left
+    parent: Base
+    translation : [ -34.0, 132.5, 1356.4 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 72
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/ChestLowV1.stl" }
+  -
+    name: InterKinectMidV1Left
+    parent: Base
+    translation : [ -35.0, 132.3, 1275.4 ]
+    rotation : [ -0.577348481797, -0.577350779871, 0.577351545897, 240.000114939 ]
+    jointId: 73
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/InterKinectMidV1.stl" }
+  -
+    name: ThroatLowerV1Left
+    parent: Base
+    translation : [ -33.7, 132.55, 1441.2 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 74
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/ThroatLowerV1.stl" }
+  -
+    name: homplatebacklow-V1Right
+    parent: Base
+    translation : [ -71.9, 140.6, 1374.7 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 75
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/homplatebacklow-V1.stl" }
+  -
+    name: homplatebacklow-V1Left
+    parent: Base
+    translation : [ -61.9, 70.6, 1374.7 ]
+    rotation : [ 0.577349758506, -0.577350524531, -0.577350524531, 120.00001358 ]
+    jointId: 76
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/homplatebacklow-V1.stl" }
+  -
+    name: ClaviBackV2Left
+    parent: Base
+    translation : [ -61.9, 202.4, 1470.3 ]
+    rotation : [ 0.577349758506, -0.577350524531, -0.577350524531, 120.00001358 ]
+    jointId: 77
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/ClaviBackV2.stl" }
+  -
+    name: ClaviBackV2Right
+    parent: Base
+    translation : [ -71.9, 8.4, 1470.3 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 78
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/ClaviBackV2.stl" }
+  -
+    name: homplateback-V1Right
+    parent: Base
+    translation : [ -61.9, 70.4, 1483.3 ]
+    rotation : [ 0.577351290555, 0.577348992481, -0.577350524531, 240.000027159 ]
+    jointId: 79
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/homplateback-V1.stl" }
+  -
+    name: homplateback-V1Left
+    parent: Base
+    translation : [ -61.9, 136.4, 1481.3 ]
+    rotation : [ 0.577349758506, -0.577350524531, -0.577350524531, 120.00001358 ]
+    jointId: 80
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/homplateback+V1.stl" }
+  -
+    name: ChestLowV1Right
+    parent: Base
+    translation : [ -34.0, 86.5, 1356.4 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 81
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/ChestLowV1.stl" }
+  -
+    name: InterKinectMidV1Right
+    parent: Base
+    translation : [ -35.0, 86.3, 1275.4 ]
+    rotation : [ -0.577348481797, -0.577350779871, 0.577351545897, 240.000114939 ]
+    jointId: 82
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/InterKinectMidV1.stl" }
+  -
+    name: ThroatLowerV1Right
+    parent: Base
+    translation : [ -33.7, 86.55, 1441.2 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 83
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/ThroatLowerV1.stl" }
+  -
+    name: ThroatHolderV1
+    parent: Base
+    translation : [ -72.0, 105.0, 1520.2 ]
+    rotation : [ -0.577349758506, -0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 84
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Neck/InMoov Print Files - Neck/ThroatHolderV1.stl" }
+  -
+    name: ThroatHoleV2
+    parent: Base
+    translation : [ -58.0, 106.2, 1521.2 ]
+    rotation : [ 0.707106312093, 0.707107250279, 9.38185046295e-07, 180.000044531 ]
+    jointId: 85
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Neck/InMoov Print Files - Neck/ThroatHoleV2.stl" }
+  -
+    name: NeckV1
+    parent: Base
+    translation : [ -73.4, 104.2, 1636.4 ]
+    rotation : [ 0.707106312093, 0.707107250279, 9.38185046295e-07, 180.000044531 ]
+    jointId: 86
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Neck/InMoov Print Files - Neck/NeckV1.stl" }
+  -
+    name: homplatefront-V1Left
+    parent: Base
+    translation : [ 5.0, 139.3, 1373.0 ]
+    rotation : [ 0.0, -1.0, 0.0, 90.0 ]
+    jointId: 87
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/homplatefront-V1.stl" }
+  -
+    name: homplatefront-V1Right
+    parent: Base
+    translation : [ 5.0, 71.0, 1373.0 ]
+    rotation : [ 0.577349758506, -0.577350524531, -0.577350524531, 120.00001358 ]
+    jointId: 88
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/homplatefront+V1.stl" }
+  -
+    name: ClaviFrontV2Left
+    parent: Base
+    translation : [ 5.0, 202.0, 1450.5 ]
+    rotation : [ 0.577349758506, -0.577350524531, -0.577350524531, 120.00001358 ]
+    jointId: 89
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/ClaviFrontV2.stl" }
+  -
+    name: ClaviFrontV2Right
+    parent: Base
+    translation : [ -5.0, 6.0, 1450.5 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 90
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/ClaviFrontV2.stl" }
+  -
+    name: SternumV1
+    parent: Base
+    translation : [ -5.0, 104.0, 1461.0 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 91
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Torso/InMoov Print Files - Torso/SternumV1.stl" }
+  -
+    name: BottomChestV1Left
+    parent: Base
+    translation : [ 29.1859, 138.5, 1337.5 ]
+    rotation : [ -0.577350524531, 0.577349758506, 0.577350524531, 120.00001358 ]
+    jointId: 92
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/BottomChestV1Left.stl" }
+  -
+    name: BottomChestV1Right
+    parent: Base
+    translation : [ 29.181, 69.0, 1337.0 ]
+    rotation : [ 0.577350524531, -0.577349758506, 0.577350524531, 120.00001358 ]
+    jointId: 93
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/BottomChestV1Right.stl" }
+  -
+    name: MiddleChestV1
+    parent: Base
+    translation : [ 25.181, 69.0, 1334.0 ]
+    rotation : [ -1.0, 0.0, 0.0, 90.0 ]
+    jointId: 94
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/MiddleChestV1.stl" }
+  -
+    name: ChestLeftV1
+    parent: Base
+    translation : [ 29.0, 196.0, 1335.5 ]
+    rotation : [ 1, 0, 0, 0.0 ]
+    jointId: 95
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/ChestLeftV1.stl" }
+  -
+    name: InMrightV1
+    parent: Base
+    translation : [ 29.0, 104.0, 1399.0 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 96
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/InMrightV1.stl" }
+  -
+    name: InMLeftV1
+    parent: Base
+    translation : [ 29.0, 104.0, 1399.0 ]
+    rotation : [ -9.38185046295e-07, 0.707106312093, 0.707107250279, 180.000044531 ]
+    jointId: 97
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/InMLeftV1.stl" }
+  -
+    name: ChestTopV1Left
+    parent: Base
+    translation : [ 5.0, 104.0, 1447.0 ]
+    rotation : [ -9.38185046295e-07, 0.707106312093, 0.707107250279, 180.000044531 ]
+    jointId: 98
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/ChestTopV1Left.stl" }
+  -
+    name: ChestTopV1Right
+    parent: Base
+    translation : [ 5.0, 104.0, 1447.0 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 99
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Chest/Chest & back 20140902/ChestTopV1Right.stl" }
+  -
+    name: PivcenterV1
+    parent: Base
+    translation : [ -40.0, -83.0, 1428.0 ]
+    rotation : [ -1.0, 0.0, 0.0, 90.0 ]
+    jointId: 100
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/PivcenterV1.stl" }
+  -
+    name: PivMitV1
+    parent: Base
+    translation : [ -39.0, -51.0, 1432.0 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 101
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/PivMitV1.stl" }
+  -
+    name: PivConnectorV1RightBack
+    parent: Base
+    translation : [ -60.0, -111.0, 1447.0 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 102
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/PivConnectorV1.stl" }
+  -
+    name: PivConnectorV1RightFront
+    parent: Base
+    translation : [ -14.0, -111.0, 1447.0 ]
+    rotation : [ 0.577349758506, 0.577350524531, 0.577350524531, 120.00001358 ]
+    jointId: 103
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/PivConnectorV1.stl" }
+  -
+    name: leftPivMitV1
+    parent: Base
+    translation : [ -38.3, 259.0, 1432.0 ]
+    rotation : [ 9.38185046295e-07, 0.707107250279, 0.707106312093, 180.000044531 ]
+    jointId: 104
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/leftPivMitV1.stl" }
+  -
+    name: leftPivcenterV1
+    parent: Base
+    translation : [ -40.5, 291.0, 1427.0 ]
+    rotation : [ 0.577350524531, 0.577349758506, -0.577350524531, 120.00001358 ]
+    jointId: 105
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/leftPivcenterV1.stl" }
+  -
+    name: PivConnectorV1LeftFront
+    parent: Base
+    translation : [ -6.3, 320.0, 1446.5 ]
+    rotation : [ 0.577349758506, -0.577350524531, -0.577350524531, 120.00001358 ]
+    jointId: 106
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/PivConnectorV1.stl" }
+  -
+    name: PivConnectorV1LeftBack
+    parent: Base
+    translation : [ -52.3, 320.0, 1446.0 ]
+    rotation : [ 0.577349758506, -0.577350524531, -0.577350524531, 120.00001358 ]
+    jointId: 107
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Shoulder/Shoulder_for_Robot_InMoov/PivConnectorV1.stl" }
+  -
+    name: BackCoverTopLeftV3
+    parent: Base
+    translation : [ -122.0, 249.0, 1470.0 ]
+    rotation : [ 0.862357526506, -0.286171992519, 0.417666238972, 99.7554806229 ]
+    jointId: 108
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackCoverTopLeftV3.stl" }
+  -
+    name: BackCoverTopRightV3
+    parent: Base
+    translation : [ -122.0, -40.0, 1470.0 ]
+    rotation : [ -0.230922182464, 0.695863338916, 0.680036145509, 142.749499293 ]
+    jointId: 109
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackCoverTopRightV3.stl" }
+  -
+    name: BackCoverTopMid.V2
+    parent: Base
+    translation : [ -118.0, 143.0, 1501.0 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 110
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackCoverTopMid.V2.stl" }
+  -
+    name: BackCoverBottomLeftV2
+    parent: Base
+    translation : [ -120.0, 213.0, 1300.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 111
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackCoverBottomLeftV2.stl" }
+  -
+    name: BackCoverBottomRightV2
+    parent: Base
+    translation : [ -120.0, -4.0, 1300.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 112
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackCoverBottomRightV2.stl" }
+  -
+    name: BackCoverBottomMidV2
+    parent: Base
+    translation : [ -155.0, 160.0, 1342.0 ]
+    rotation : [ 1.0, 0.0, 0.0, 90.0 ]
+    jointId: 113
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackCoverBottomMidV2.stl" }
+  -
+    name: BackCoverLowRightV1
+    parent: Base
+    translation : [ -111.0, -22.0, 1235.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 114
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackCoverLowRightV1.stl" }
+  -
+    name: BackCoverLowLeftV1
+    parent: Base
+    translation : [ -111.0, 229.0, 1235.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 115
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackCoverLowLeftV1.stl" }
+  -
+    name: BackHipsRightV2
+    parent: Base
+    translation : [ -121.0, 11.5, 1259.0 ]
+    rotation : [ 0.707106312093, 0.707107250279, 9.38185046295e-07, 180.000044531 ]
+    jointId: 116
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackHipsRightV2.stl" }
+  -
+    name: BackHipsLeftV2
+    parent: Base
+    translation : [ -121.0, 197.0, 1259.0 ]
+    rotation : [ 0.707106312093, 0.707107250279, 9.38185046295e-07, 180.000044531 ]
+    jointId: 117
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackHipsLeftV2.stl" }
+  -
+    name: BackHipsMidV2
+    parent: Base
+    translation : [ -154.5, 104.0, 1212.0 ]
+    rotation : [ 0.707106312093, 0.707107250279, 9.38185046295e-07, 180.000044531 ]
+    jointId: 118
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Back/BackHipsMidV2.stl" }
+  -
+    name: NeckHingeV1
+    parent: Base
+    translation : [ -48.5, 105.4, 1650.7 ]
+    rotation : [ 0.707106312093, 0.707107250279, 9.38185046295e-07, 180.000044531 ]
+    jointId: 119
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Neck/InMoov Print Files - Neck/NeckHingeV1.stl" }
+  -
+    name: ThroatPistonBaseV3
+    parent: Base
+    translation : [ 1418.0, 1193.0, 1512.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 120
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Neck/InMoov Print Files - Neck/ThroatPistonBaseV3.stl" }
+  -
+    name: ThroatPistonV3
+    parent: Base
+    translation : [ 1037.0, -1327.0, 1450.0 ]
+    rotation : [ 1, 0, 0, 0.0 ]
+    jointId: 121
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Neck/InMoov Print Files - Neck/ThroatPistonV3.stl" }
+  -
+    name: MainGearV1
+    parent: Base
+    translation : [ -68.1, 104.65, 1650.0 ]
+    rotation : [ 1, 0, 0, 0.0 ]
+    jointId: 122
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Neck/InMoov Print Files - Neck/MainGearV1.stl" }
+  -
+    name: GearHolderV1
+    parent: Base
+    translation : [ -49.5, 105.0, 1650.7 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 123
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Neck/InMoov Print Files - Neck/GearHolderV1.stl" }
+  -
+    name: LowbackV3
+    parent: Base
+    translation : [ -75.9, 105.5, 1708.0 ]
+    rotation : [ 0.382684351714, 0.923879151703, -1.22579814363e-06, 180.000093856 ]
+    jointId: 124
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Face and Jaw/InMoov Print Files - Face & Jaw/LowBackV3.stl" }
+  -
+    name: RotTitV2
+    parent: Base
+    translation : [ -32.7, -111.4, 1401.6 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 125
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/RotTitV2.stl" }
+  -
+    name: TopBackskullV1Left
+    parent: Base
+    translation : [ -65.7, 117.0, 1729.1 ]
+    rotation : [ 0.678599081798, 0.678598181437, 0.281083251606, 211.399785772 ]
+    jointId: 126
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Skull Ears/InMoov Print Files - Skull & Ears/TopBackskullV1Left.stl" }
+  -
+    name: TopBackskullV1Right
+    parent: Base
+    translation : [ -79.4, 75.5, 1745.2 ]
+    rotation : [ 0.178378080096, -0.910393484884, 0.373316170587, 169.433123306 ]
+    jointId: 127
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Skull Ears/InMoov Print Files - Skull & Ears/TopBackskullV1Right.stl" }
+  -
+    name: TopskullLeftV3S0
+    parent: Base
+    translation : [ -70.0, 105.0, 1738.0 ]
+    rotation : [ -0.526575123958, 0.60575451704, 0.596473053804, 123.522503752 ]
+    jointId: 128
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Skull Ears/InMoov Print Files - Skull & Ears/TopskullLeftV3S0.stl" }
+  -
+    name: TopskullRightV3S0
+    parent: Base
+    translation : [ -65.0, 104.0, 1734.0 ]
+    rotation : [ 0.554048964552, 0.583844972176, -0.593426316693, 122.927547912 ]
+    jointId: 129
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Skull Ears/InMoov Print Files - Skull & Ears/TopskullRightV3S0.stl" }
+  -
+    name: TopskullLeftV3S1
+    parent: Base
+    translation : [ 30.0, 105.0, 1754.0 ]
+    rotation : [ -0.0616292994081, 0.704415480084, 0.707107248494, 180.000039846 ]
+    jointId: 130
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Skull Ears/InMoov Print Files - Skull & Ears/TopskullLeftV3S1.stl" }
+  -
+    name: TopskullRightV3S1
+    parent: Base
+    translation : [ 30.0, 105.0, 1750.0 ]
+    rotation : [ 8.99009869444e-07, 0.708453006508, -0.70575798796, 172.93347034 ]
+    jointId: 131
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Skull Ears/InMoov Print Files - Skull & Ears/TopskullRightV3S1.stl" }
+  -
+    name: TopskullRightV3S2
+    parent: Base
+    translation : [ 36.0, 65.0, 1760.0 ]
+    rotation : [ -0.00788071573867, 0.930527900278, -0.366136205698, 174.981911016 ]
+    jointId: 132
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Skull Ears/InMoov Print Files - Skull & Ears/TopskullRightV3S2.stl" }
+  -
+    name: TopskullLeftV3S2
+    parent: Base
+    translation : [ 42.0, 139.5, 1754.5 ]
+    rotation : [ -0.0403058493069, 0.923128397424, 0.382373378234, 178.087190392 ]
+    jointId: 133
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Skull Ears/InMoov Print Files - Skull & Ears/TopskullLeftV3S2.stl" }
+  -
+    name: SideHearV2Right
+    parent: Base
+    translation : [ -12.0, 32.0, 1620.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 134
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Face and Jaw/InMoov Print Files - Face & Jaw/SideHearV2Right.stl" }
+  -
+    name: SideHearV2Left
+    parent: Base
+    translation : [ -13.0, 174.0, 1620.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 135
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Face and Jaw/InMoov Print Files - Face & Jaw/SideHearV2Left.stl" }
+  -
+    name: EyeglassV2
+    parent: Base
+    translation : [ 45.0, 105.0, 1725.0 ]
+    rotation : [ -0.382683125915, 0.923879659447, -5.0774201851e-07, 180.000011573 ]
+    jointId: 136
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Face and Jaw/InMoov Print Files - Face & Jaw/EyeglassV2.stl" }
+  -
+    name: TopMouthV3
+    parent: Base
+    translation : [ 58.0, 104.5, 1625.5 ]
+    rotation : [ 0.0, 0.0, 1.0, 45.0 ]
+    jointId: 137
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Face and Jaw/InMoov Print Files - Face & Jaw/TopMouthV3NoSupport.stl" }
+  -
+    name: JawV4
+    parent: Base
+    translation : [ 46.0, 104.5, 1640.0 ]
+    rotation : [ 0.382683125915, 0.923879659447, 5.0774201851e-07, 180.000011573 ]
+    jointId: 138
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Face and Jaw/InMoov Print Files - Face & Jaw/JawV4.stl" }
+  -
+    name: RotcenterV2
+    parent: Base
+    translation : [ -37.8, -107.6, 1377.2 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 139
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/RotcenterV2.stl" }
+  -
+    name: RotMitV2Right
+    parent: Base
+    translation : [ -33.0, -117.0, 1376.8 ]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 140
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/RotMitV2.stl" }
+  -
+    name: HighArmSideV2RightOut
+    parent: Base
+    translation : [ -41.0, -135.5, 1308.0 ]
+    rotation : [ 0.999315002237, 0.0261679621582, -0.0261679968778, 90.0392609593 ]
+    jointId: 141
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/HighArmSideV2.stl" }
+  -
+    name: HighArmSideV2RightIn
+    parent: Base
+    translation : [ -41.0, -90.5, 1308.0 ]
+    rotation : [ 0.999315002237, 0.0261679621582, -0.0261679968778, 90.0392609593 ]
+    jointId: 142
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/HighArmSideV2.stl" }
+  -
+    name: lowarmsideV1RightIn
+    parent: Base
+    translation : [ -40.0, -98.0, 1208.0 ]
+    rotation : [ -0.0370315337037, 0.7066222928, 0.706621256989, 175.758376483 ]
+    jointId: 143
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/lowarmsideV1.stl" }
+  -
+    name: lowarmsideV1RightOut
+    parent: Base
+    translation : [ -40.0, -143.0, 1208.0 ]
+    rotation : [ -0.0370315337037, 0.7066222928, 0.706621256989, 175.758376483 ]
+    jointId: 144
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/lowarmsideV1.stl" }
+  -
+    name: elbowshaftgearV1Right
+    parent: Base
+    translation : [ -57.0, -150.5, 1132.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 145
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/elbowshaftgearV1.stl" }
+  -
+    name: robcap3V2
+    parent: Base
+    translation : [ -67.7, -116.4, 1145.1 ]
+    rotation : [ 0.913545601551, -0.406736319852, 5.39655673474e-07, 180.000013144 ]
+    jointId: 146
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Right Hand/robcap3V2.stl" }
+  -
+    name: robpart4V4
+    parent: Base
+    translation : [ -50.0, -100.0, 1140.0 ]
+    rotation : [ 0.909961420657, -0.414692913994, 5.50212441975e-07, 180.000013689 ]
+    jointId: 147
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Right Hand/robpart4V4.stl" }
+  -
+    name: robpart3V4
+    parent: Base
+    translation : [ -53.0, -100.0, 1040.0 ]
+    rotation : [ 0.898794214325, -0.438370802285, 5.81628143324e-07, 180.000015387 ]
+    jointId: 148
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Right Hand/robpart3V4.stl" }
+  -
+    name: robpart5V4
+    parent: Base
+    translation : [ -81.0, -126.0, 1140.0 ]
+    rotation : [ 0.906307942794, -0.422617927717, 5.6072730974e-07, 180.000014245 ]
+    jointId: 149
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Right Hand/robpart5V4.stl" }
+  -
+    name: robpart2V4
+    parent: Base
+    translation : [ -85.0, -126.0, 1040.0 ]
+    rotation : [ 0.906307942794, -0.422617927717, 5.6072730974e-07, 180.000014245 ]
+    jointId: 150
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Right Hand/robpart2V4.stl" }
+  -
+    name: Rotawrist1V4
+    parent: Base
+    translation : [ -75.0, -106.0, 947.0 ]
+    rotation : [ 0.898794214325, -0.438370802285, 5.81628143324e-07, 180.000015387 ]
+    jointId: 151
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Rotation Wrist/InMoov-Rotational-Wrist/Rotawrist1V4.stl" }
+  -
+    name: RotaWrist2V3
+    parent: Base
+    translation : [ -77.0, -104.0, 865.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 126.0 ]
+    jointId: 152
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Rotation Wrist/InMoov-Rotational-Wrist/RotaWrist2V3.stl" }
+  -
+    name: RotaWrist3V3
+    parent: Base
+    translation : [ -76.6, -105.0, 865.0 ]
+    rotation : [ 0.707107250279, -0.707106312093, 9.38185046295e-07, 180.000044531 ]
+    jointId: 153
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Rotation Wrist/InMoov-Rotational-Wrist/RotaWrist3V3.stl" }
+  -
+    name: leftRotcenterV2
+    parent: Base
+    translation : [ -37.2, 316.9, 1377.2 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 154
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/leftRotcenterV2.stl" }
+  -
+    name: leftRotTitV2
+    parent: Base
+    translation : [ -32.3, 320.0, 1401.6 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 155
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/leftRotTitV2.stl" }
+  -
+    name: RotMitV2Left
+    parent: Base
+    translation : [ -32.7, 326.0, 1376.8 ]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 156
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/RotMitV2.stl" }
+  -
+    name: HighArmSideV2LeftIn
+    parent: Base
+    translation : [ -41.0, 307.5, 1308.0 ]
+    rotation : [ 0.999315002237, 0.0261679621582, -0.0261679968778, 90.0392609593 ]
+    jointId: 157
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/HighArmSideV2.stl" }
+  -
+    name: HighArmSideV2LeftOut
+    parent: Base
+    translation : [ -41.0, 352.5, 1308.0 ]
+    rotation : [ 0.999315002237, 0.0261679621582, -0.0261679968778, 90.0392609593 ]
+    jointId: 158
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/HighArmSideV2.stl" }
+  -
+    name: lowarmsideV1LeftIn
+    parent: Base
+    translation : [ -40.0, 300.0, 1208.0 ]
+    rotation : [ -0.0370315337037, 0.7066222928, 0.706621256989, 175.758376483 ]
+    jointId: 159
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/lowarmsideV1.stl" }
+  -
+    name: lowarmsideV1LeftOut
+    parent: Base
+    translation : [ -40.0, 345.0, 1208.0 ]
+    rotation : [ -0.0370315337037, 0.7066222928, 0.706621256989, 175.758376483 ]
+    jointId: 160
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/lowarmsideV1.stl" }
+  -
+    name: elbowshaftgearV1Left
+    parent: Base
+    translation : [ -57.0, 292.5, 1132.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 161
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Biceps/Bicep_for_Robot_InMoov/elbowshaftgearV1.stl" }
+  -
+    name: LeftRobCap3V2
+    parent: Base
+    translation : [ -66.5, 328.1, 1145.1 ]
+    rotation : [ 0.406737531939, -0.913545061894, 1.21208692601e-06, 180.000090199 ]
+    jointId: 162
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Left Hand/LeftRobCap3V2.stl" }
+  -
+    name: LeftRobpart4V4
+    parent: Base
+    translation : [ -51.0, 311.0, 1140.0 ]
+    rotation : [ 0.390732037695, -0.920504467516, 1.22132062987e-06, 180.000092633 ]
+    jointId: 163
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Left Hand/LeftRobpart4V4.stl" }
+  -
+    name: LeftRobpart3V4
+    parent: Base
+    translation : [ -55.0, 311.0, 1040.0 ]
+    rotation : [ 0.390732037695, -0.920504467516, 1.22132062987e-06, 180.000092633 ]
+    jointId: 164
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Left Hand/LeftRobpart3V4.stl" }
+  -
+    name: LeftRobpart5V4
+    parent: Base
+    translation : [ -80.0, 338.0, 1140.0 ]
+    rotation : [ 0.398749967968, -0.917059683469, 1.21675010798e-06, 180.000091414 ]
+    jointId: 165
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Left Hand/LeftRobpart5V4.stl" }
+  -
+    name: LeftRobpart2V4
+    parent: Base
+    translation : [ -85.0, 339.0, 1040.0 ]
+    rotation : [ 0.390732037695, -0.920504467516, 1.22132062987e-06, 180.000092633 ]
+    jointId: 166
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Left Hand/LeftRobpart2V4.stl" }
+  -
+    name: Rotawrist1V4Left
+    parent: Base
+    translation : [ -78.0, 318.0, 947.0 ]
+    rotation : [ 0.927183976062, 0.374606292704, -4.97025717424e-07, 180.000011071 ]
+    jointId: 167
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Rotation Wrist/InMoov-Rotational-Wrist/Rotawrist1V4.stl" }
+  -
+    name: RotaWrist2V3Left
+    parent: Base
+    translation : [ -79.0, 316.0, 865.0 ]
+    rotation : [ 0.0, 0.0, -1.0, 134.0 ]
+    jointId: 168
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Rotation Wrist/InMoov-Rotational-Wrist/RotaWrist2V3.stl" }
+  -
+    name: RotaWrist3V3Left
+    parent: Base
+    translation : [ -76.6, 316.8, 865.0 ]
+    rotation : [ 0.707107250279, -0.707106312093, 9.38185046295e-07, 180.000044531 ]
+    jointId: 169
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Rotation Wrist/InMoov-Rotational-Wrist/RotaWrist3V3.stl" }
+  -
+    name: TStoLowLeftV1
+    parent: Base
+    translation : [ -42.0, 193.0, 1000.0 ]
+    rotation : [ -0.577350524531, -0.577349758506, -0.577350524531, 120.00001358 ]
+    jointId: 170
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Low Stomach/Low-Stomach/TStoLowLeftV1.stl" }
+  -
+    name: ThighHighLeftV1
+    parent: Base
+    translation : [ -1.0, 120.0, 786.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 171
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Thigh/ThighHighLeftV1.stl" }
+  -
+    name: ThighHighTempLeftV1
+    parent: Base
+    translation : [ -2.0, 268.0, 897.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 180.0 ]
+    jointId: 172
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Thigh/ThighHighTempLeftV1.stl" }
+  -
+    name: ThighMidLeftV1
+    parent: Base
+    translation : [ -94.0, 199.0, 675.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 180.0 ]
+    jointId: 173
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Thigh/ThighMidLeftV1.stl" }
+  -
+    name: ThighLowLeftV3
+    parent: Base
+    translation : [ -29.0, 255.0, 566.0 ]
+    rotation : [ 0, 0, 1, 180 ]
+    jointId: 174
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Thigh/ThighLowLeftV3.stl" }
+  -
+    name: KneeHighLeftV3
+    parent: Base
+    translation : [ -139.0, 127.5, 570.0 ]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 175
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Knee/KneeHighLeftV3.stl" }
+  -
+    name: KneeLowLeftV3
+    parent: Base
+    translation : [ -69.0, 131.0, 453.0 ]
+    rotation : [ 0.08678249806, 0.0868516328191, 0.9924341751, 90.4353557095 ]
+    jointId: 176
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Knee/KneeLowLeftV3.stl" }
+  -
+    name: TibiaHighLeftV1
+    parent: Base
+    translation : [ -215.0, 125.0, 482.0 ]
+    rotation : [ -0.705757984387, -0.705757211839, 0.061744841179, 172.933475033 ]
+    jointId: 177
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Tibia/TibiaHighLeftV1.stl" }
+  -
+    name: TibiaLowS1LeftV1
+    parent: Base
+    translation : [ -166.0, 162.0, 360.0 ]
+    rotation : [ 0.707107250279, -0.707106312093, 9.38185046295e-07, 180.000044531 ]
+    jointId: 178
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Tibia/TibiaLowS1LeftV1.stl" }
+  -
+    name: TibiaLowS2LeftV1
+    parent: Base
+    translation : [ -167.0, 217.0, 367.0 ]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 179
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Tibia/TibiaLowS2LeftV1.stl" }
+  -
+    name: LeftAnkToesFootV2
+    parent: Base
+    translation : [ -15.0, 211.0, 0.0 ]
+    rotation : [ 0.0, 0.0, 1.0, 180.0 ]
+    jointId: 180
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/LeftAnkToesFootV2.stl" }
+  -
+    name: LeftAnkMidleFootV1
+    parent: Base
+    translation : [ -115.0, 206.0, 42.7285 ]
+    rotation : [ 0.577349503163, 0.577351035214, 0.57735026919, 120.00010136 ]
+    jointId: 181
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/LeftAnkMidleFootV1.stl" }
+  -
+    name: LeftAnkBackFootV1
+    parent: Base
+    translation : [ -158.0, 196.0, 1.0495 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 182
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/LeftAnkBackFootV1.stl" }
+  -
+    name: leftAnkleBaseV1
+    parent: Base
+    translation : [ -149.0, 185.0, 85.9755 ]
+    rotation : [ 0.0, 0.0, 1.0, 90.0 ]
+    jointId: 183
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/leftAnkleBaseV1.stl" }
+  -
+    name: LeftAnkleDownV2
+    parent: Base
+    translation : [ -186.0, 152.0, 131.1485 ]
+    rotation : [ 0.707107250279, 0.707106312093, -9.38185046295e-07, 180.000044531 ]
+    jointId: 184
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/LeftAnkleDownV2.stl" }
+  -
+    name: LeftAnkHolderV1
+    parent: Base
+    translation : [ -160.0, 183.0, 141.3215 ]
+    rotation : [ 0.777146323281, -0.629319944234, 8.34978490387e-07, 180.000033883 ]
+    jointId: 185
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/AnkHolderV1.stl" }
+  -
+    name: LeftAnkpartV1
+    parent: Base
+    translation : [ -170.0, 184.0, 250.9635 ]
+    rotation : [ 0.615662079408, 0.788010281645, -1.04552802022e-06, 180.000058435 ]
+    jointId: 186
+    jointType: revolute
+    jointAxis: -Y
+    jointRange: [ -0.873, 2.269 ]
+    centerOfMass: [ 0.0015461746197516959, -0.00033796007273481838, -0.015625257207349728 ]
+    mass: 0.02905
+    inertia: [
+      1.0789525167996373e-05, -3.9905699607782306e-09, 1.7978343823012256e-06,
+      -3.9905699607782306e-09, 1.1003152501217637e-05, 4.0040500729103886e-08,
+      1.7978343823012256e-06, 4.0040500729103886e-08, 3.259107193487409e-06 ]
+    elements:
+      Shape:
+        geometry: { type: Resource, uri: "STLFiles/Legs-Ankle/LeftAnkpartV1.stl" }
