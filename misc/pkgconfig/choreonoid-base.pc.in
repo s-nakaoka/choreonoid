@@ -14,4 +14,4 @@ Version: @CNOID_FULL_VERSION@
 Requires: choreonoid-util = @CNOID_FULL_VERSION@ @PKGCONFIG_QT_REQUIREMENTS@
 Conflicts:
 Libs: -L${plugindir} -lCnoidBase
-Cflags: -DQT_NO_KEYWORDS
+Cflags: -DQT_NO_KEYWORDS -std=c++11
