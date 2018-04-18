@@ -13,4 +13,4 @@ Version: @CNOID_FULL_VERSION@
 Requires: @PKGCONFIG_EIGEN_REQUIREMENT@
 Conflicts:
 Libs: -L${libdir} -lCnoidUtil -lboost_filesystem -lboost_system
-Cflags: -I${includedir}
+Cflags: -I${includedir} -std=c++11

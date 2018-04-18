@@ -16,3 +16,4 @@ Version: @CNOID_FULL_VERSION@
 Requires: choreonoid-base = @CNOID_FULL_VERSION@ choreonoid-body = @CNOID_FULL_VERSION@
 Conflicts:
 Libs: -lCnoidBodyPlugin
+Cflags: -std=c++11
