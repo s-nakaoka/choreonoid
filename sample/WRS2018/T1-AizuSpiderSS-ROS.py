@@ -1,4 +1,4 @@
 import WRSUtil
 WRSUtil.loadProject(
-    "SingleSceneView", "T1", "AISTSimulator", "AizuSpiderSS",
-    enableVisionSimulation = True, targetVisionSensors = "FRONT_CAMERA", remoteType = "ROS")
+    "SingleSceneView", "T1", "AISTSimulator", "AizuSpiderSS_visionsensors",
+    enableVisionSimulation = True, targetVisionSensors = "LRF", remoteType = "ROS")
