@@ -467,6 +467,7 @@ views:
     id: 12
     plugin: Python
     class: PythonConsoleView
+
 viewAreas: 
   - 
     type: embedded

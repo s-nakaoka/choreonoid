@@ -67,40 +67,58 @@ items:
                     controller: "Jaco2Controller.so"
                     baseDirectory: "Controller directory"
                     reloading: true
-            - 
-              id: 5
-              name: "BodyTrackingCamera"
-              plugin: Body
-              class: BodyTrackingCameraItem
-              data: 
-                keepRelativeAttitude: true
-                nearClipDistance: 0.01
-                farClipDistance: 100
+                - 
+                  id: 5
+                  name: "BodyTrackingCamera"
+                  plugin: Body
+                  class: BodyTrackingCameraItem
+                  data: 
+                    keepRelativeAttitude: true
+                    nearClipDistance: 0.01
+                    farClipDistance: 100
+                - 
+                  id: 6
+                  name: "LIDAR-View"
+                  plugin: Body
+                  class: BodyTrackingCameraItem
+                  data: 
+                    keepRelativeAttitude: true
+                    cameraType: "Perspective"
+                    nearClipDistance: 0.01
+                    farClipDistance: 100
+                    fieldOfView: 0.785398
+                - 
+                  id: 7
+                  name: "SensorVisualizer"
+                  plugin: Body
+                  class: SensorVisualizer
+                  data: 
+                    subItems: 
+                      - 
+                        class: RangeSensorVisualizer
+                    name: LRF
+                    renderingMode: Point
+                    pointSize: 2
+                    voxelSize: 0.01
+                    isEditable: false
+                  - 
+                    class: CameraImageVisualizer
+                    name: FRONT_CAMERA
+                  - 
+                    class: CameraImageVisualizer
+                    name: LEFT_CAMERA
+                  - 
+                    class: CameraImageVisualizer
+                    name: RIGHT_CAMERA
+                  - 
+                    class: CameraImageVisualizer
+                    name: BACK_CAMERA
+                  - 
+                    class: CameraImageVisualizer
+                    name: ARM_CAMERA
+
         - 
-          id: 6
-          name: "Labo1"
-          plugin: Body
-          class: BodyItem
-          data: 
-            modelFile: "${SHARE}/model/Labo1/Labo1.body"
-            currentBaseLink: "Root"
-            rootPosition: [ 0, 0, 0 ]
-            rootAttitude: [ 
-              1, 0, 0, 
-              0, 1, 0, 
-              0, 0, 1 ]
-            jointPositions: [  0.000000 ]
-            initialRootPosition: [ 0, 0, 0 ]
-            initialRootAttitude: [ 
-              1, 0, 0, 
-              0, 1, 0, 
-              0, 0, 1 ]
-            zmp: [ 0, 0, 0 ]
-            collisionDetection: true
-            selfCollisionDetection: false
-            isEditable: false
-        - 
-          id: 7
+          id: 8
           name: "AGXSimulator-Velocity"
           plugin: AGXDynamics
           class: AGXSimulatorItem
@@ -124,7 +142,7 @@ items:
             AutoSleep: false
             SaveToAGXFileOnStart: false
         - 
-          id: 8
+          id: 9
           name: "AGXSimulator-Torque"
           plugin: AGXDynamics
           class: AGXSimulatorItem
@@ -315,19 +333,86 @@ views:
       dedicatedItemTreeViewChecks: false
   - 
     id: 5
+    name: "LIDAR"
+    plugin: Base
+    class: SceneView
+    mounted: true
+    state: 
+      editMode: false
+      viewpointControlMode: thirdPerson
+      collisionLines: false
+      polygonMode: fill
+      defaultHeadLight: true
+      defaultHeadLightIntensity: 0.75
+      headLightLightingFromBack: false
+      worldLight: false
+      worldLightIntensity: 0.5
+      worldLightAmbient: 0.3
+      additionalLights: false
+      fog: true
+      floorGrid: false
+      floorGridSpan: 10
+      floorGridInterval: 0.5
+      xzGridSpan: 10
+      xzGridInterval: 0.5
+      xzGrid: false
+      yzGridSpan: 10
+      yzGridInterval: 0.5
+      texture: true
+      lineWidth: 1
+      pointSize: 1
+      normalVisualization: false
+      normalLength: 0.01
+      coordinateAxes: true
+      fpsTestIteration: 1
+      showFPS: false
+      enableNewDisplayListDoubleRendering: false
+      useBufferForPicking: true
+      upsideDown: false
+      cameras: 
+        - 
+          camera: [ System, Perspective ]
+          fieldOfView: 0.698132
+          near: 0.01
+          far: 100
+          eye: [ -4.75262637, -0.451915726, 1.87489648 ]
+          direction: [ 0.908405906, 5.56238192e-17, -0.418089357 ]
+          up: [ 0.418089357, 2.56005896e-17, 0.908405906 ]
+        - 
+          camera: [ System, Orthographic ]
+          orthoHeight: 20
+          near: 0.01
+          far: 100
+        - 
+          camera: LIDAR-View
+          isCurrent: true
+          fieldOfView: 0.785398
+          near: 0.01
+          far: 100
+          eye: [ -4.20307891, -0.469708843, 2.3192548 ]
+          direction: [ 0.824577685, 5.04908212e-17, -0.565748743 ]
+          up: [ 0.565748743, 3.46421194e-17, 0.824577685 ]
+      backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
+      gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      dedicatedItemTreeViewChecks: true
+      checked: [ 2, 6, [ 7, "LRF" ] ]
+  - 
+    id: 6
     name: "Joystick"
     plugin: Base
     class: VirtualJoystickView
     mounted: true
   - 
-    id: 6
+    id: 7
     plugin: Body
     class: BodyLinkView
     mounted: true
     state: 
       showRotationMatrix: false
   - 
-    id: 7
+    id: 8
     plugin: Body
     class: JointSliderView
     mounted: true
@@ -341,7 +426,7 @@ views:
       labelOnLeft: true
       currentBodyItem: 2
   - 
-    id: 8
+    id: 9
     plugin: Body
     class: LinkSelectionView
     mounted: true
@@ -350,8 +435,25 @@ views:
       currentBodyItem: 2
       bodyItems: 
         - 
-          id: 6
+          id: 8
           selectedLinks: [ 1 ]
+  - 
+    id: 10
+    plugin: Multicopter
+    class: MulticopterMonitorView
+  - 
+    id: 11
+    plugin: OpenRTM
+    class: RTSNameServerView
+    state: 
+      host: localhost
+      port: 2809
+  - 
+    id: 12
+    plugin: Python
+    class: PythonConsoleView
+
+
 viewAreas: 
   - 
     type: embedded
@@ -359,12 +461,12 @@ viewAreas:
     contents: 
       type: splitter
       orientation: horizontal
-      sizes: [ 456, 1942 ]
+      sizes: [ 458, 1953 ]
       children: 
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 765, 764 ]
+          sizes: [ 809, 808 ]
           children: 
             - 
               type: pane
@@ -372,22 +474,31 @@ viewAreas:
               current: 1
             - 
               type: pane
-              views: [ 0, 8 ]
+              views: [ 0, 9 ]
               current: 0
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 1094, 435 ]
+          sizes: [ 1157, 460 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 907, 1029 ]
+              sizes: [ 912, 1035 ]
               children: 
                 - 
-                  type: pane
-                  views: [ 6, 7, 4 ]
-                  current: 7
+                  type: splitter
+                  orientation: vertical
+                  sizes: [ 576, 575 ]
+                  children: 
+                    - 
+                      type: pane
+                      views: [ 4 ]
+                      current: 4
+                    - 
+                      type: pane
+                      views: [ 7, 8, 5 ]
+                      current: 5
                 - 
                   type: pane
                   views: [ 3 ]
@@ -395,7 +506,7 @@ viewAreas:
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 1166, 770 ]
+              sizes: [ 1173, 774 ]
               children: 
                 - 
                   type: pane
@@ -403,8 +514,9 @@ viewAreas:
                   current: 2
                 - 
                   type: pane
-                  views: [ 5 ]
-                  current: 5
+                  views: [ 6 ]
+                  current: 6
+                  
 layoutOfToolBars: 
   rows: 
     - 

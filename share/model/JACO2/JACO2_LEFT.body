@@ -2,7 +2,7 @@ format: ChoreonoidBody
 formatVersion: 1.0
 angleUnit: degree
 name: JACO2
-rootLink: ROOT
+rootLink: JACO2_LEFT
 
 definitions:
   MAIN_APPEARANCE_: &MAIN_APPEARANCE
@@ -33,7 +33,7 @@ STL: &STL
 
 links:
   -
-    name: ROOT
+    name: JACO2_LEFT
     jointType: fixed
     centerOfMass: [ 0, 0, 0.1255 ]
     mass: 0.46734
@@ -68,7 +68,7 @@ links:
             geometry: { type: Cylinder, height: 0.15650, radius: 0.04125 }
   -
     name: shoulder
-    parent: ROOT
+    parent: JACO2_LEFT
     translation: [ 0, 0, 0.1565 ]
     jointType: revolute
     jointAxis: [ 0, 0, -1 ]

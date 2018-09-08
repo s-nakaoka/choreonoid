@@ -10,22 +10,11 @@ links:
     uri: "AizuSpiderNA.body"
     translation: [ 0, 0, 0.03503 ]
     jointType: free
-    elements:
-      -
-        type: RangeSensor
-        on: true
-        yawRange: 180
-        yawStep: 0.4
-        pitchRange: 20
-        pitchStep: 2.0
-        scanRate: 20
-        minDistance: 1
-        maxDistance: 100
         
   - # Arm 1
-    name: Arm_1
+    name: RightArm
     type: SubBody
-    uri: "../JACO2/JACO2.body"
+    uri: "../JACO2/JACO2_RIGHT.body"
     parent: CHASSIS
     translation: [ -0.06320, -0.094, 0.5150 ]
     rotation: [ [ 0, 1, 0, 90 ], [ 0, 0, 1, 90 ] ]
@@ -34,14 +23,14 @@ links:
     devicePrefix: ARM_
 
   - # Arm 2
-    name: Arm_2
+    name: LeftArm
     type: SubBody
-    uri: "../JACO2/JACO2_1.body"
+    uri: "../JACO2/JACO2_LEFT.body"
     parent: CHASSIS
     translation: [ -0.06320, 0.094, 0.5150 ]
     rotation: [ [ 0, 1, 0, 90 ], [ 0, 0, 1, 90 ] ]
     jointType: fixed
-    jointIdOffset: 4
+    jointIdOffset: 13
     devicePrefix: ARM_
     
 
