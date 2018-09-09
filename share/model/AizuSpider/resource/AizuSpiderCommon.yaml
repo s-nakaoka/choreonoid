@@ -218,8 +218,8 @@ CHASSIS: &CHASSIS
         name: CHASSIS_RATE_GYRO_SENSOR
         id: 0
       - # Range sensor
-        #<<: *LRF_UTM-30LX
-        <<: *LIDAR_VLP16
+        <<: *LRF_UTM-30LX
+        #<<: *LIDAR_VLP16
         name: LRF
         id: 0
         translation: [ 0.23415, 0, 0.19750 ]
