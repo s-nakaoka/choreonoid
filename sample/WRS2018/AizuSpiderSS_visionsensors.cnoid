@@ -87,8 +87,8 @@ items:
                 class: RangeSensorVisualizer
                 name: LRF
                 renderingMode: Point
-                pointSize: 2
-                voxelSize: 0.01
+                pointSize: 10
+                voxelSize: 1
                 isEditable: false
               - 
                 class: CameraImageVisualizer
