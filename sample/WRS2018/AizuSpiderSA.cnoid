@@ -20,7 +20,8 @@ items:
         jointPositions: [ 
            0.000000,  0.000000,  0.000000,  0.000000, -1.570796,  2.635447,  0.471239, -1.623156,  0.104720,  1.745329, 
            0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
-           0.000000,  0.000000,  0.000000,  0.000000,  0.000000 ]
+           0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
+           0.000000,  0.000000,  0.000000,  0.000000 ]
         initialRootPosition: [ 1, 0, 0.035 ]
         initialRootAttitude: [ 
           1, 0, 0, 
@@ -48,37 +49,42 @@ items:
             reloading: true
           children: 
             - 
-              id: 5
+              id: 3
               name: "Jaco2Controller"
               plugin: Body
               class: SimpleControllerItem
               data: 
                 isNoDelayMode: false
+                controllerOptions: ""
                 controller: "Jaco2Controller.so"
                 baseDirectory: "Controller directory"
                 reloading: true
             - 
-              id: 6
+              id: 4
               name: "BodyTrackingCamera"
               plugin: Body
               class: BodyTrackingCameraItem
               data: 
-                keepRelativeAttitude: true
-                nearClipDistance: 0.01
-                farClipDistance: 100
-            - 
-              id: 7
-              name: "LIDAR-View"
-              plugin: Body
-              class: BodyTrackingCameraItem
-              data: 
+                targetLink: ""
                 keepRelativeAttitude: true
                 cameraType: "Perspective"
                 nearClipDistance: 0.01
                 farClipDistance: 100
                 fieldOfView: 0.785398
             - 
-              id: 8
+              id: 5
+              name: "LIDAR-View"
+              plugin: Body
+              class: BodyTrackingCameraItem
+              data: 
+                targetLink: ""
+                keepRelativeAttitude: true
+                cameraType: "Perspective"
+                nearClipDistance: 0.01
+                farClipDistance: 100
+                fieldOfView: 0.785398
+            - 
+              id: 6
               name: "SensorVisualizer"
               plugin: Body
               class: SensorVisualizer
@@ -106,79 +112,58 @@ items:
                   - 
                     class: CameraImageVisualizer
                     name: ARM_CAMERA
-
-    - 
-      id: 9
-      name: "AGXSimulator-Position"
-      plugin: AGXDynamics
-      class: AGXSimulatorItem
-      data: 
-        timestep: 0.005
-        realtimeSync: true
-        recording: "full"
-        timeRangeMode: "Unlimited"
-        timeLength: 180
-        allLinkPositionOutputMode: true
-        deviceStateOutput: true
-        controllerThreads: true
-        recordCollisionData: false
-        controllerOptions: "position"
-        Gravity: [ 0, 0, -9.80665 ]
-        NumThreads: 4
-        ContactReduction: true
-        ContactReductionBinResolution: 3
-        ContactReductionThreshhold: 12
-        ContactWarmstarting: false
-        AutoSleep: false
-        SaveToAGXFileOnStart: false
+                  - 
+                    class: CameraImageVisualizer
+                    name: ARM_CAMERA
     - 
       id: 10
-      name: "AGXSimulator-Velocity"
-      plugin: AGXDynamics
-      class: AGXSimulatorItem
+      name: "AISTSimulator"
+      plugin: Body
+      class: AISTSimulatorItem
       data: 
-        timestep: 0.005
+        timeStep: 0.001
         realtimeSync: true
-        recording: "full"
+        recording: "tail"
         timeRangeMode: "Unlimited"
-        timeLength: 180
+        timeLength: 1
         allLinkPositionOutputMode: true
         deviceStateOutput: true
         controllerThreads: true
         recordCollisionData: false
-        controllerOptions: "velocity"
-        Gravity: [ 0, 0, -9.80665 ]
-        NumThreads: 4
-        ContactReduction: true
-        ContactReductionBinResolution: 3
-        ContactReductionThreshhold: 12
-        ContactWarmstarting: false
-        AutoSleep: false
-        SaveToAGXFileOnStart: false
-    - 
-      id: 11
-      name: "AGXSimulator-Torque"
-      plugin: AGXDynamics
-      class: AGXSimulatorItem
-      data: 
-        timestep: 0.005
-        realtimeSync: true
-        recording: "full"
-        timeRangeMode: "Unlimited"
-        timeLength: 180
-        allLinkPositionOutputMode: true
-        deviceStateOutput: true
-        controllerThreads: true
-        recordCollisionData: false
-        controllerOptions: "torque"
-        Gravity: [ 0, 0, -9.80665 ]
-        NumThreads: 4
-        ContactReduction: true
-        ContactReductionBinResolution: 3
-        ContactReductionThreshhold: 12
-        ContactWarmstarting: false
-        AutoSleep: false
-        SaveToAGXFileOnStart: false
+        controllerOptions: ""
+        dynamicsMode: "Forward dynamics"
+        integrationMode: "Runge Kutta"
+        gravity: [ 0, 0, -9.80665 ]
+        staticFriction: 1
+        dynamicFriction: 1
+        cullingThresh: 0.005
+        contactCullingDepth: 0.05
+        errorCriterion: 0.001
+        maxNumIterations: 1000
+        contactCorrectionDepth: 0.0001
+        contactCorrectionVelocityRatio: 1
+        kinematicWalking: false
+        2Dmode: false
+        oldAccelSensorMode: false
+      children: 
+        - 
+          id: 11
+          name: "GLVisionSimulator"
+          plugin: Body
+          class: GLVisionSimulatorItem
+          data: 
+            enabled: true
+            maxFrameRate: 1000
+            maxLatency: 1
+            recordVisionData: true
+            threadMode: Sensor
+            bestEffort: true
+            allSceneObjects: false
+            rangeSensorPrecisionRatio: 2
+            depthError: 0
+            enableHeadLight: true
+            enableAdditionalLights: true
+            antiAliasing: false
 views: 
   - 
     id: 0
@@ -191,9 +176,8 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 7 ]
-      checked: [ 1, 2, 5, 6 ]
-      expanded: [ 1, 2, 3 ]
+      checked: [ 1, 2, 3, 4, 10 ]
+      expanded: [ 1, 2, 10 ]
   - 
     id: 2
     plugin: Base
@@ -255,18 +239,13 @@ views:
           near: 0.01
           far: 10000
         - 
-          camera: BodyTrackingCamera (Perspective)
+          camera: BodyTrackingCamera
           fieldOfView: 0.785398
           near: 0.01
           far: 100
-          eye: [ -4.36866229, -0.521277418, 1.53144894 ]
-          direction: [ 0.896052502, 5.48673914e-17, -0.443948098 ]
-          up: [ 0.443948098, 2.71839808e-17, 0.896052502 ]
-        - 
-          camera: BodyTrackingCamera (Orthographic)
-          orthoHeight: 2
-          near: 0.01
-          far: 100
+          eye: [ 4, 2, 1.5 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -328,18 +307,13 @@ views:
           near: 0.01
           far: 100
         - 
-          camera: BodyTrackingCamera (Perspective)
+          camera: BodyTrackingCamera
           fieldOfView: 0.785398
           near: 0.01
           far: 100
-          eye: [ -4.36866229, -0.521277418, 1.53144894 ]
-          direction: [ 0.896052502, 5.48673914e-17, -0.443948098 ]
-          up: [ 0.443948098, 2.71839808e-17, 0.896052502 ]
-        - 
-          camera: BodyTrackingCamera (Orthographic)
-          orthoHeight: 2
-          near: 0.01
-          far: 100
+          eye: [ 4, 2, 1.5 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -386,6 +360,7 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
+          isCurrent: true
           fieldOfView: 0.698132
           near: 0.01
           far: 100
@@ -412,6 +387,7 @@ views:
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
       checked: [ 2, 6, [ 7, "LRF" ] ]
+
   - 
     id: 6
     name: "Joystick"
@@ -438,7 +414,6 @@ views:
       spinBox: true
       slider: true
       labelOnLeft: true
-      currentBodyItem: 2
   - 
     id: 9
     plugin: Body
@@ -446,13 +421,9 @@ views:
     mounted: true
     state: 
       listingMode: "Link Tree"
-      currentBodyItem: 2
-      bodyItems: 
-        - 
-          id: 8
-          selectedLinks: [ 1 ]
   - 
     id: 10
+    name: "MultiCopterMonitor"
     plugin: Multicopter
     class: MulticopterMonitorView
   - 
@@ -460,12 +431,97 @@ views:
     plugin: OpenRTM
     class: RTSNameServerView
     state: 
-      host: localhost
-      port: 2809
+      NameServers: 
+        - 
+          host: "localhost"
+          port: 2809
   - 
     id: 12
     plugin: Python
     class: PythonConsoleView
+
+    
+toolbars: 
+  "TimeBar": 
+    minTime: 0
+    maxTime: 30
+    frameRate: 1000
+    playbackFrameRate: 60
+    idleLoopDrivenMode: false
+    currentTime: 0
+    speedScale: 1
+    syncToOngoingUpdates: true
+    autoExpansion: true
+  "KinematicsBar": 
+    mode: AUTO
+    enablePositionDragger: true
+    penetrationBlock: false
+    collisionLinkHighlight: false
+    snapDistance: 0.025
+    penetrationBlockDepth: 0.0005
+    lazyCollisionDetectionMode: true
+  "LeggedBodyBar": 
+    stanceWidth: 0.15
+  "BodyMotionGenerationBar": 
+    autoGenerationForNewBody: true
+    balancer: false
+    autoGeneration: false
+    timeScaleRatio: 1
+    preInitialDuration: 1
+    postFinalDuration: 1
+    onlyTimeBarRange: false
+    makeNewBodyItem: true
+    stealthyStepMode: true
+    stealthyHeightRatioThresh: 2
+    flatLiftingHeight: 0.005
+    flatLandingHeight: 0.005
+    impactReductionHeight: 0.005
+    impactReductionTime: 0.04
+    autoZmp: true
+    minZmpTransitionTime: 0.1
+    zmpCenteringTimeThresh: 0.03
+    zmpTimeMarginBeforeLiftingSpin: 0
+    zmpMaxDistanceFromCenter: 0.02
+    allLinkPositions: false
+    lipSyncMix: false
+    timeToStartBalancer: 0
+    balancerIterations: 2
+    plainBalancerMode: false
+    boundaryConditionType: position
+    boundarySmootherType: quintic
+    boundarySmootherTime: 0.5
+    boundaryCmAdjustment: false
+    boundaryCmAdjustmentTime: 1
+    waistHeightRelaxation: false
+    gravity: 9.8
+    dynamicsTimeRatio: 1
+Body: 
+  "BodyMotionEngine": 
+    updateJointVelocities: false
+  "EditableSceneBody": 
+    editableSceneBodies: 
+      - 
+        bodyItem: 1
+        showCenterOfMass: false
+        showPpcom: false
+        showZmp: false
+    staticModelEditing: true
+  "KinematicFaultChecker": 
+    checkJointPositions: true
+    angleMargin: 0
+    translationMargin: 0
+    checkJointVelocities: true
+    velocityLimitRatio: 100
+    targetJoints: all
+    checkSelfCollisions: true
+    onlyTimeBarRange: false
+  "SplineFilterDialog": 
+    isInputFrameRateSpecified: false
+    inputFrameRate: 200
+    isOutputFrameRateSpecified: false
+    outputFrameRate: 200
+OpenRTM: 
+  "deleteUnmanagedRTCsOnStartingSimulation": false
 
 
 viewAreas: 
@@ -475,12 +531,12 @@ viewAreas:
     contents: 
       type: splitter
       orientation: horizontal
-      sizes: [ 458, 1953 ]
+      sizes: [ 351, 1498 ]
       children: 
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 809, 808 ]
+          sizes: [ 508, 507 ]
           children: 
             - 
               type: pane
@@ -493,17 +549,17 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 1157, 460 ]
+          sizes: [ 726, 289 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 912, 1035 ]
+              sizes: [ 699, 793 ]
               children: 
                 - 
                   type: splitter
                   orientation: vertical
-                  sizes: [ 576, 575 ]
+                  sizes: [ 360, 360 ]
                   children: 
                     - 
                       type: pane
@@ -520,7 +576,7 @@ viewAreas:
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 1173, 774 ]
+              sizes: [ 899, 593 ]
               children: 
                 - 
                   type: pane
@@ -530,7 +586,6 @@ viewAreas:
                   type: pane
                   views: [ 6 ]
                   current: 6
-                  
 layoutOfToolBars: 
   rows: 
     - 
