@@ -115,9 +115,9 @@ items:
       data: 
         timestep: 0.001
         realtimeSync: true
-        recording: "full"
+        recording: "tail"
         timeRangeMode: "Unlimited"
-        timeLength: 60
+        timeLength: 1
         allLinkPositionOutputMode: true
         deviceStateOutput: true
         controllerThreads: true
