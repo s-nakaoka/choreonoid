@@ -309,8 +309,8 @@ void DoubleArmV7Controller::controlTracks()
         trackL->u() = trackgain * (-2.0 * pos[1] + pos[0]);
         trackR->u() = trackgain * (-2.0 * pos[1] - pos[0]);
     } else {
-        trackL->dq() = trackgain * (-2.0 * pos[1] + pos[0]);
-        trackR->dq() = trackgain * (-2.0 * pos[1] - pos[0]);
+        trackL->dq_target() = trackgain * (-2.0 * pos[1] + pos[0]);
+        trackR->dq_target() = trackgain * (-2.0 * pos[1] - pos[0]);
     }
 }
 
@@ -336,7 +336,12 @@ void DoubleArmV7Controller::setTargetArmPositions()
 
     // Restrict each target position by taking the joint displacement range
     // and the cunnret joint displacement into accout
-    static const double maxerror = radian(3.0);
+    double maxerror;
+    if(mainActuationMode == Link::ActuationMode::JOINT_EFFORT){
+        maxerror = radian(20.0);
+    } else {
+        maxerror = radian(5.0);
+    }
     for(size_t i=0; i < armJoints.size(); ++i){
         auto joint = armJoints[i];
         auto& q = q_ref[i];
@@ -378,7 +383,7 @@ void DoubleArmV7Controller::controlArms()
 void DoubleArmV7Controller::controlArmsWithPosition()
 {
     for(size_t i=0; i < armJoints.size(); ++i){
-        armJoints[i]->q() = q_ref[i];
+        armJoints[i]->q_target() = q_ref[i];
     }
 }
 
@@ -388,7 +393,7 @@ void DoubleArmV7Controller::controlArmsWithVelocity()
     for(size_t i=0; i < armJoints.size(); ++i){
         auto joint = armJoints[i];
         auto q_current = joint->q();
-        joint->dq() = pgain[i] * (q_ref[i] - q_current);
+        joint->dq_target() = pgain[i] * (q_ref[i] - q_current);
     }
 }
 

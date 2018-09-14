@@ -147,6 +147,7 @@ bool Jaco2Controller::initializeJoints(SimpleControllerIO* io, vector<JointSpec>
         auto joint = body->link(name);
         if(!joint){
             io->os() << format("%1% of %2% is not found") % name % body->name() << endl;
+            return false;
         } else {
             joint->setActuationMode(mainActuationMode);
             io->enableIO(joint);
@@ -277,7 +278,7 @@ void Jaco2Controller::clampTargetJointAngle(int jointID)
 void Jaco2Controller::controlJointsWithPosition()
 {
     for(auto& info : jointInfos){
-        info.joint->q() = info.q_ref;
+        info.joint->q_target() = info.q_ref;
     }
 }
 
@@ -287,7 +288,7 @@ void Jaco2Controller::controlJointsWithVelocity()
     for(auto& info : jointInfos){
         auto joint = info.joint;
         double q = joint->q();
-        joint->dq() = info.kp * (info.q_ref - q) / dt;
+        joint->dq_target() = info.kp * (info.q_ref - q) / dt;
     }
 }
 
