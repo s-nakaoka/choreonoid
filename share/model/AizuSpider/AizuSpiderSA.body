@@ -7,7 +7,7 @@ rootLink: CHASSIS
 links:
   - # Main body
     type: SubBody
-    uri: "AizuSpiderNA_plain.body"
+    uri: "AizuSpiderNA.body"
     translation: [ 0, 0, 0.03503 ]
     jointType: free
         
@@ -22,25 +22,25 @@ links:
     jointIdOffset: 4
     devicePrefix: ARM_
 
-  - # Arm 2
-    name: LeftArm
-    type: SubBody
-    uri: "../JACO2/JACO2_LEFT.body"
-    parent: CHASSIS
-    translation: [ -0.06320, 0.094, 0.5150 ]
-    rotation: [ [ 0, 1, 0, 90 ], [ 0, 0, 1, 90 ] ]
-    jointType: fixed
-    jointIdOffset: 13
-    devicePrefix: ARM_
+#  - # Arm 2
+#    name: LeftArm
+#    type: SubBody
+#    uri: "../JACO2/JACO2_LEFT.body"
+#    parent: CHASSIS
+#    translation: [ -0.06320, 0.094, 0.5150 ]
+#    rotation: [ [ 0, 1, 0, 90 ], [ 0, 0, 1, 90 ] ]
+#    jointType: fixed
+#    jointIdOffset: 13
+#    devicePrefix: ARM_
     
 
 standardPose: [
   # Flippers
   0, 0, 0, 0,
   # Arm 1
-  -90, 151, 27, -93, 6, 100, 0, 0, 0,
-  # Arm 2
   -90, 151, 27, -93, 6, 100, 0, 0, 0
+  # Arm 2
+#  ,-90, 151, 27, -93, 6, 100, 0, 0, 0
   ]
 
 # TODO: Share the following information with other AizuSpider models
