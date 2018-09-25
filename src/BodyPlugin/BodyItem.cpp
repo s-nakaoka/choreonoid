@@ -17,6 +17,7 @@
 #include <cnoid/LazySignal>
 #include <cnoid/LazyCaller>
 #include <cnoid/MessageView>
+#include <cnoid/TimeBar>
 #include <cnoid/ItemManager>
 #include <cnoid/OptionManager>
 #include <cnoid/MenuManager>
@@ -83,6 +84,11 @@ void onSigOptionsParsed(boost::program_options::variables_map& variables)
     		}
     	}
     }
+}
+
+double getCurrentTime()
+{
+    return TimeBar::instance()->time();
 }
 
 }
@@ -341,6 +347,7 @@ bool BodyItemImpl::loadModelFile(const std::string& filename)
         body = newBody;
         body->setName(self->name());
         body->initializePosition();
+        body->setCurrentTimeFunction(getCurrentTime);
     }
 
     initBody(false);
@@ -1208,11 +1215,12 @@ bool BodyItemImpl::restore(const Archive& archive)
 
     if(restored){
 
-        Vector3 p;
+        Vector3 p = Vector3::Zero();
+        Matrix3 R = Matrix3::Identity();
+        
         if(read(archive, "rootPosition", p)){
             body->rootLink()->p() = p;
         }
-        Matrix3 R;
         if(read(archive, "rootAttitude", R)){
             body->rootLink()->R() = R;
         }
@@ -1235,9 +1243,10 @@ bool BodyItemImpl::restore(const Archive& archive)
         //! \todo replace the following code with the ValueTree serialization function of BodyState
         initialState.clear();
 
-        if(read(archive, "initialRootPosition", p) && read(archive, "initialRootAttitude", R)){
-            initialState.setRootLinkPosition(SE3(p, R));
-        }
+        read(archive, "initialRootPosition", p);
+        read(archive, "initialRootAttitude", R);
+        initialState.setRootLinkPosition(SE3(p, R));
+
         qs = archive.findListing("initialJointPositions");
         if(qs->isValid()){
             BodyState::Data& q = initialState.data(BodyState::JOINT_POSITIONS);
