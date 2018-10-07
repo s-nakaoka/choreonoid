@@ -1,5 +1,5 @@
-#ifndef CNOID_OPENRTM_PLUGIN_RTS_ITEM_H
-#define CNOID_OPENRTM_PLUGIN_RTS_ITEM_H
+#ifndef CNOID_OPENRTM_PLUGIN_RTS_EXT_ITEM_H
+#define CNOID_OPENRTM_PLUGIN_RTS_EXT_ITEM_H
 
 #include <cnoid/Item>
 #include <cnoid/EigenUtil>
@@ -12,30 +12,30 @@
 #include <list>
 #include <string>
 #include "RTCWrapper.h"
-#include "ProfileHandler.h"
+#include "ProfileHandlerExt.h"
 #include "exportdecl.h"
 
 namespace cnoid {
 
-class RTSComp;
-class RTSystemItem;
-class RTSystemItemImpl;
+class RTSCompExt;
+class RTSystemExtItem;
+class RTSystemExtItemImpl;
 
-class NamedValue
+class NamedValueExt
 {
 public:
     std::string name_;
     std::string value_;
 
-    NamedValue(std::string name, std::string value)
+    NamedValueExt(std::string name, std::string value)
     {
         name_ = name;
         value_ = value;
     };
 };
-typedef std::shared_ptr<NamedValue> NamedValuePtr;
+typedef std::shared_ptr<NamedValueExt> NamedValueExtPtr;
 
-class PortInterface
+class PortInterfaceExt
 {
 public:
     std::string rtc_name;
@@ -58,22 +58,23 @@ public:
         return rtc_name + ".port." + port_name + "." + if_polarity + "." + if_tname + "." + if_iname;
     };
 };
-typedef std::shared_ptr<PortInterface> PortInterfacePtr;
+typedef std::shared_ptr<PortInterfaceExt> PortInterfaceExtPtr;
 
-class RTSPort : public Referenced
+class RTSPortExt : public Referenced
 {
 public:
-    RTSComp* rtsComp;
+    RTSCompExt* rtsComp;
     std::string name;
     RTC::PortService_var port;
     bool isServicePort;
     bool isInPort;
-    std::vector<PortInterfacePtr>  interList;
+    std::vector<PortInterfaceExtPtr>  interList;
+    bool isConnected_;
 
-    RTSPort(const std::string& name, RTC::PortService_var port, RTSComp* parent);
+    RTSPortExt(const std::string& name, RTC::PortService_var port, RTSCompExt* parent);
     bool isConnected();
-    bool isConnectedWith(RTSPort* target);
-    bool checkConnectablePort(RTSPort* target);
+    bool isConnectedWith(RTSPortExt* target);
+    bool checkConnectablePort(RTSPortExt* target);
     std::vector<std::string> getDataTypes();
     std::vector<std::string> getInterfaceTypes();
     std::vector<std::string> getDataflowTypes();
@@ -83,9 +84,9 @@ private:
     std::vector<std::string> getProperty(const std::string& key);
 };
 
-typedef ref_ptr<RTSPort> RTSPortPtr;
+typedef ref_ptr<RTSPortExt> RTSPortExtPtr;
 
-class RTSConnection : public Referenced
+class RTSConnectionExt : public Referenced
 {
 public:
     std::string id;
@@ -94,18 +95,18 @@ public:
     std::string sourcePortName;
     std::string targetRtcName;
     std::string targetPortName;
-    std::vector<NamedValuePtr> propList;
-    RTSComp* srcRTC;
-    RTSPort* sourcePort;
-    RTSComp* targetRTC;
-    RTSPort* targetPort;
+    std::vector<NamedValueExtPtr> propList;
+    RTSCompExt* srcRTC;
+    RTSPortExt* sourcePort;
+    RTSCompExt* targetRTC;
+    RTSPortExt* targetPort;
     Vector2 position[6];
     bool setPos;
 
     DataPortConnector dataProfile;
     ServicePortConnector serviceProfile;
 
-    RTSConnection(
+    RTSConnectionExt(
         const std::string& id, const std::string& name, const std::string& sourceRtcName,
         const std::string& sourcePortName, const std::string& targetRtcName, const std::string& targetPortName);
     bool isAlive() { return isAlive_; };
@@ -122,89 +123,89 @@ private:
 
     bool disconnect();
 
-    friend class RTSComp;
-    friend class RTSystemItem;
-    friend class RTSystemItemImpl;
+    friend class RTSCompExt;
+    friend class RTSystemExtItem;
+    friend class RTSystemExtItemImpl;
 };
 
-typedef ref_ptr<RTSConnection> RTSConnectionPtr;
+typedef ref_ptr<RTSConnectionExt> RTSConnectionExtPtr;
 
-class RTSComp : public Referenced, public RTCWrapper
+class RTSCompExt : public Referenced, public RTCWrapper
 {
 public:
     std::string name;
     std::string fullPath;
     std::string hostAddress;
     int portNo;
-    std::vector<RTSPortPtr> inPorts;
-    std::vector<RTSPortPtr> outPorts;
+    std::vector<RTSPortExtPtr> inPorts;
+    std::vector<RTSPortExtPtr> outPorts;
 
     Component profile;
     bool isAlive_;
+    RTC_STATUS rtc_status_;
 
-    RTSComp(const std::string& name, const std::string& fullPath, RTC::RTObject_ptr rtc, RTSystemItem* rts, const QPointF& pos, const std::string& host, int port);
-    RTSystemItem* rts() { return rts_; }
-    RTSPort* nameToRTSPort(const std::string& name);
+    RTSCompExt(const std::string& name, const std::string& fullPath, RTC::RTObject_ptr rtc, RTSystemExtItem* rts, const QPointF& pos, const std::string& host, int port);
+    RTSystemExtItem* rts() { return rts_; }
+    RTSPortExt* nameToRTSPort(const std::string& name);
     const QPointF& pos() const { return pos_; }
-    void setPos(const QPointF& p);
+    void moveToRelative(const QPointF& p);
 
 private:
-    RTSystemItem* rts_;
+    RTSystemExtItem* rts_;
     RTC::ExecutionContextList_var participatingExeContList;
     QPointF pos_;
 
     void setRtc(RTC::RTObject_ptr rtc);
     bool connectionCheck();
-    bool connectionCheckSub(RTSPort* rtsPort);
+    bool connectionCheckSub(RTSPortExt* rtsPort);
     bool getComponentPath(RTC::PortService_ptr source, std::string& out_path);
 
-    friend class RTSystemItemImpl;
+    friend class RTSystemExtItemImpl;
 };
 
-typedef ref_ptr<RTSComp> RTSCompPtr;
+typedef ref_ptr<RTSCompExt> RTSCompExtPtr;
 
 /*!
  * @brief This is the RTSystem item.
  */
-class CNOID_EXPORT RTSystemItem : public Item
+class CNOID_EXPORT RTSystemExtItem : public Item
 {
 public:
-    typedef cnoid::IdPair<RTSPort*> RTSPortPair;
-    typedef std::map<RTSPortPair, RTSConnectionPtr> RTSConnectionMap;
-    RTSystemItem();
-    RTSystemItem(const RTSystemItem& org);
-    virtual ~RTSystemItem();
+    typedef cnoid::IdPair<RTSPortExt*> RTSPortPair;
+    typedef std::map<RTSPortPair, RTSConnectionExtPtr> RTSConnectionMap;
+    RTSystemExtItem();
+    RTSystemExtItem(const RTSystemExtItem& org);
+    virtual ~RTSystemExtItem();
     static void initializeClass(ExtensionManager* ext);
 
-    RTSComp* addRTSComp(const std::string& name, const QPointF& pos);
-    RTSComp* addRTSComp(const NamingContextHelper::ObjectInfo& info, const QPointF& pos);
+    RTSCompExt* addRTSComp(const std::string& name, const QPointF& pos);
+    RTSCompExt* addRTSComp(const NamingContextHelper::ObjectInfo& info, const QPointF& pos);
     void deleteRTSComp(const std::string& name);
-    bool compIsAlive(RTSComp* rtsComp);
-    RTSComp* nameToRTSComp(const std::string& name);
-    std::map<std::string, RTSCompPtr>& rtsComps();
+    bool compIsAlive(RTSCompExt* rtsComp);
+    RTSCompExt* nameToRTSComp(const std::string& name);
+    std::map<std::string, RTSCompExtPtr>& rtsComps();
 
-    RTSConnection* addRTSConnection(
+    RTSConnectionExt* addRTSConnection(
         const std::string& id, const std::string& name,
-        RTSPort* sourcePort, RTSPort* targetPort, const std::vector<NamedValuePtr>& propList,
+        RTSPortExt* sourcePort, RTSPortExt* targetPort, const std::vector<NamedValueExtPtr>& propList,
         const Vector2 pos[]);
     bool connectionCheck();
-    void RTSCompToConnectionList(const RTSComp* rtsComp, std::list<RTSConnection*>& rtsConnectionList, int mode = 0);
+    void RTSCompToConnectionList(const RTSCompExt* rtsComp, std::list<RTSConnectionExt*>& rtsConnectionList, int mode = 0);
     RTSConnectionMap& rtsConnections();
-    void disconnectAndRemoveConnection(RTSConnection* connection);
+    void disconnectAndRemoveConnection(RTSConnectionExt* connection);
 
     bool loadRtsProfile(const std::string& filename);
     bool saveRtsProfile(const std::string& filename);
 
-    int pollingCycle() const;
     void setVendorName(const std::string& name);
     void setVersion(const std::string& version);
     int stateCheck() const;
 
-    bool checkStatus();
+    void checkStatus();
+    void onActivated();
 
-    SignalProxy<void(int)> sigTimerPeriodChanged();
-    SignalProxy<void(bool)> sigTimerChanged();
     SignalProxy<void(bool isRestored)> sigLoaded();
+    SignalProxy<void(bool)> sigStatusUpdate();
 
 protected:
     virtual Item* doDuplicate() const override;
@@ -213,12 +214,12 @@ protected:
     virtual bool restore(const Archive& archive) override;
 
 private:
-    RTSystemItemImpl* impl;
+    RTSystemExtItemImpl* impl;
 
-    friend class RTSComp;
+    friend class RTSCompExt;
 };
 
-typedef ref_ptr<RTSystemItem> RTSystemItemPtr;
+typedef ref_ptr<RTSystemExtItem> RTSystemItemExtPtr;
 }
 
 #endif
