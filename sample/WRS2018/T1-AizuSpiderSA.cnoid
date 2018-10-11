@@ -773,22 +773,22 @@ items:
                     selfCollisionDetection: false
                     isEditable: false
             - 
-              id: 39
+              id: 37
               name: "AizuSpider"
               plugin: Body
               class: BodyItem
               data: 
                 modelFile: "${SHARE}/model/AizuSpider/AizuSpiderSA.body"
                 currentBaseLink: "CHASSIS"
-                rootPosition: [ 0.999983518, 2.62823327e-07, 0.0366766952 ]
+                rootPosition: [ 1, 0, 0.035 ]
                 rootAttitude: [ 
-                  0.999999897, -9.68799224e-05, -0.000444381978, 
-                  9.68728917e-05, 0.999999995, -1.58428201e-05, 
-                  0.00044438351, 1.57997699e-05, 0.999999901 ]
+                  1, 0, 0, 
+                  0, 1, 0, 
+                  0, 0, 1 ]
                 jointPositions: [ 
-                  -0.000000, -0.000000, -0.000000, -0.000000, -1.570796,  2.635447,  0.471239, -1.623156,  0.104720,  1.745329, 
-                   0.000000,  0.000000,  0.000000,  0.000000, -0.008344,  0.000000, -0.008367, -0.013608, -0.000001, -0.013579, 
-                  -0.000001, -0.023082,  0.000000, -0.023082,  0.000000 ]
+                   0.000000,  0.000000,  0.000000,  0.000000, -1.570796,  2.635447,  0.471239, -1.623156,  0.104720,  1.745329, 
+                   0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
+                   0.000000,  0.000000,  0.000000,  0.000000,  0.000000 ]
                 initialRootPosition: [ 1, 0, 0.035 ]
                 initialRootAttitude: [ 
                   1, 0, 0, 
@@ -804,7 +804,7 @@ items:
                 isEditable: true
               children: 
                 - 
-                  id: 40
+                  id: 38
                   name: "AizuSpiderController"
                   plugin: Body
                   class: SimpleControllerItem
@@ -817,7 +817,7 @@ items:
                     isOldTargetVariableMode: false
                   children: 
                     - 
-                      id: 41
+                      id: 39
                       name: "Jaco2Controller"
                       plugin: Body
                       class: SimpleControllerItem
@@ -829,7 +829,7 @@ items:
                         reloading: true
                         isOldTargetVariableMode: false
                     - 
-                      id: 42
+                      id: 40
                       name: "BodyTrackingCamera"
                       plugin: Body
                       class: BodyTrackingCameraItem
@@ -841,7 +841,7 @@ items:
                         farClipDistance: 100
                         fieldOfView: 0.785398
                     - 
-                      id: 43
+                      id: 41
                       name: "LIDAR-View"
                       plugin: Body
                       class: BodyTrackingCameraItem
@@ -853,7 +853,7 @@ items:
                         farClipDistance: 100
                         fieldOfView: 0.785398
                     - 
-                      id: 44
+                      id: 42
                       name: "SensorVisualizer"
                       plugin: Body
                       class: SensorVisualizer
@@ -881,8 +881,15 @@ items:
                           - 
                             class: CameraImageVisualizer
                             name: ARM_CAMERA
+                - 
+                  id: 43
+                  name: "BodyRos"
+                  plugin: RosBody
+                  class: BodyRosItem
+                  data: 
+                    jointStateUpdateRate: 100
             - 
-              id: 37
+              id: 44
               name: "AGXSimulator"
               plugin: AGXDynamics
               class: AGXSimulatorItem
@@ -908,7 +915,7 @@ items:
                 DebugMessageOnConsole: 2
               children: 
                 - 
-                  id: 38
+                  id: 45
                   name: "GLVisionSimulator"
                   plugin: Body
                   class: GLVisionSimulatorItem
@@ -925,9 +932,8 @@ items:
                     enableHeadLight: true
                     enableAdditionalLights: true
                     antiAliasing: false
-     
         - 
-          id: 45
+          id: 46
           name: "WorldRos"
           plugin: RosBody
           class: WorldRosItem
@@ -949,8 +955,9 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      checked: [ 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 39, 40, 41, 42 ]
-      expanded: [ 1, 9, 19, 27, 35, 36, 37, 39, 40, 44 ]
+      selected: [ 44 ]
+      checked: [ 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 43, 46 ]
+      expanded: [ 1, 9, 19, 27, 35, 36, 37, 38, 42, 44 ]
   - 
     id: 2
     plugin: Base
@@ -1017,9 +1024,9 @@ views:
           fieldOfView: 0.785398
           near: 0.01
           far: 100
-          eye: [ 3.99913843, 2.00026767, 1.5030413 ]
-          direction: [ -0.888796364, -0.444528791, -0.111513129 ]
-          up: [ -0.0998176047, -0.049715771, 0.993762944 ]
+          eye: [ 4, 2.00000001, 1.5 ]
+          direction: [ -0.888888889, -0.444444444, -0.11111111 ]
+          up: [ -0.0993807982, -0.0496903991, 0.99380799 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -1145,9 +1152,9 @@ views:
           fieldOfView: 0.785398
           near: 0.01
           far: 100
-          eye: [ 3.99913843, 2.00026767, 1.5030413 ]
-          direction: [ -0.888796364, -0.444528791, -0.111513129 ]
-          up: [ -0.0998176047, -0.049715771, 0.993762944 ]
+          eye: [ 4, 2.00000001, 1.5 ]
+          direction: [ -0.888888889, -0.444444444, -0.11111111 ]
+          up: [ -0.0993807982, -0.0496903991, 0.99380799 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -1195,7 +1202,6 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
-          isCurrent: true
           fieldOfView: 0.698132
           near: 0.01
           far: 100
@@ -1213,15 +1219,15 @@ views:
           fieldOfView: 0.785398
           near: 0.01
           far: 100
-          eye: [ -4.20307891, -0.469708843, 2.3192548 ]
-          direction: [ 0.824577685, 5.04908212e-17, -0.565748743 ]
-          up: [ 0.565748743, 3.46421194e-17, 0.824577685 ]
+          eye: [ -4.20209305, -0.469168967, 2.31989747 ]
+          direction: [ 0.82432619, -8.88237221e-05, -0.566115115 ]
+          up: [ 0.566115113, -4.17815567e-05, 0.824326196 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 39, 43, [ 44, "LRF" ] ]
+      checked: [ 37, 41, [ 42, "LRF" ] ]
   - 
     id: 7
     name: "Joystick"
@@ -1248,7 +1254,7 @@ views:
       spinBox: true
       slider: true
       labelOnLeft: true
-      currentBodyItem: 39
+      currentBodyItem: 37
   - 
     id: 10
     plugin: Body
@@ -1256,7 +1262,7 @@ views:
     mounted: true
     state: 
       listingMode: "Link Tree"
-      currentBodyItem: 39
+      currentBodyItem: 37
   - 
     id: 11
     name: "MultiCopterMonitor"
@@ -1269,6 +1275,7 @@ views:
     state: 
       NameServers: 
         - 
+          isDefaultNameServer: false
           host: "localhost"
           port: 2809
   - 
@@ -1282,10 +1289,12 @@ toolbars:
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
-    currentTime: 33.335
+    currentTime: 0
     speedScale: 1
     syncToOngoingUpdates: true
     autoExpansion: true
+  "BodyBar": 
+    current: 37
   "KinematicsBar": 
     mode: AUTO
     enablePositionDragger: true
@@ -1294,8 +1303,6 @@ toolbars:
     snapDistance: 0.025
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
-  "BodyBar": 
-    current: 39
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
@@ -1497,7 +1504,7 @@ Body:
         showPpcom: false
         showZmp: false
       - 
-        bodyItem: 39
+        bodyItem: 37
         showCenterOfMass: false
         showPpcom: false
         showZmp: false
@@ -1525,12 +1532,12 @@ viewAreas:
     contents: 
       type: splitter
       orientation: horizontal
-      sizes: [ 351, 1498 ]
+      sizes: [ 293, 1250 ]
       children: 
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 508, 507 ]
+          sizes: [ 419, 418 ]
           children: 
             - 
               type: pane
@@ -1543,17 +1550,17 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 726, 289 ]
+          sizes: [ 599, 238 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 699, 793 ]
+              sizes: [ 583, 661 ]
               children: 
                 - 
                   type: splitter
                   orientation: vertical
-                  sizes: [ 360, 360 ]
+                  sizes: [ 297, 296 ]
                   children: 
                     - 
                       type: pane
@@ -1570,7 +1577,7 @@ viewAreas:
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 899, 593 ]
+              sizes: [ 750, 494 ]
               children: 
                 - 
                   type: pane
