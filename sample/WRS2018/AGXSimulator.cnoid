@@ -12,9 +12,9 @@ items:
       data: 
         timestep: 0.005
         realtimeSync: true
-        recording: "full"
+        recording: "tail"
         timeRangeMode: "Unlimited"
-        timeLength: 180
+        timeLength: 1
         allLinkPositionOutputMode: true
         deviceStateOutput: true
         controllerThreads: true
@@ -28,6 +28,26 @@ items:
         ContactWarmstarting: true
         AutoSleep: false
         SaveToAGXFileOnStart: false
+      children: 
+        - 
+          id: 2
+          name: "GLVisionSimulator"
+          plugin: Body
+          class: GLVisionSimulatorItem
+          data: 
+            enabled: true
+            maxFrameRate: 1000
+            maxLatency: 1
+            recordVisionData: true
+            threadMode: Sensor
+            bestEffort: true
+            allSceneObjects: false
+            rangeSensorPrecisionRatio: 2
+            depthError: 0
+            enableHeadLight: true
+            enableAdditionalLights: true
+            antiAliasing: false
+
 views: 
   - 
     id: 1
