@@ -218,9 +218,16 @@ CHASSIS: &CHASSIS
         type: RateGyroSensor
         name: CHASSIS_RATE_GYRO_SENSOR
         id: 0
+      - # Range sensor
+        <<: *LRF_UTM-30LX
+        #<<: *LIDAR_VLP16
+        name: FRONT_LRF
+        id: 0
+        translation: [ 0.23415, 0, 0.19750 ]
+        rotation: [ [ 0, 0, 1, -90 ], [ 1, 0, 0, 90 ] ]
       - # Velodyne VLP16
         <<: *LIDAR_VLP16
-        name: Velodyne
+        name: TOP_Velodyne
         id: 0
         translation: [ 0, 0, 0.7 ]
         rotation: [ [ 0, 1, 0, -90 ], [ 0, 0, 1, -90 ] ]
