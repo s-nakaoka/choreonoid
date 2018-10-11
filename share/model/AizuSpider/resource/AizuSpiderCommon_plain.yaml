@@ -26,7 +26,7 @@ LIGHT_YELLOW: &LIGHT_YELLOW
 LRF_UTM-30LX: &LRF_UTM-30LX
   type: RangeSensor
   name: UTM-30LX
-  scanAngle: 270
+  scanAngle: 135
   scanStep: 0.25
   scanRate: 25
   maxDistance: 30
@@ -58,10 +58,10 @@ LRF_UTM-30LX: &LRF_UTM-30LX
 LIDAR_VLP16: &LIDAR_VLP16
   type: RangeSensor
   name: VLP-16
-  yawRange: 360
-  yawStep:  0.25
+  yawRange: 180
+  yawStep:  0.4
   pitchRange: 30.0
-  pitchStep: 1.875
+  pitchStep: 2.0
   scanRate:  20
   maxDistance: 100.0
   elements:
@@ -75,8 +75,7 @@ LIDAR_VLP16: &LIDAR_VLP16
         0,             0.00041287283, 0.37968799701 ]
       elements:
         Shape:
-          geometry: { type: Box, size: [ 0.073, 0.073, 0.0717 ] }
-          rotation: [ 1, 0, 0, 90 ]
+          geometry: { type: Box, size: [ 0.060, 0.087, 0.060 ] }
           appearance:
             material:
               diffuseColor: [ 0.73, 0.36, 0.02 ]
@@ -210,50 +209,47 @@ CHASSIS: &CHASSIS
       0,              2.13753698965, 0,
       -0.21517604538, 0,             1.94665822762 ]
     elements:
-      -
-        type: AccelerationSensor
-        name: CHASSIS_ACCELERATION_SENSOR
-        id: 0
-      -
-        type: RateGyroSensor
-        name: CHASSIS_RATE_GYRO_SENSOR
-        id: 0
-      - # Velodyne VLP16
-        <<: *LIDAR_VLP16
-        name: Velodyne
-        id: 0
-        translation: [ 0, 0, 0.7 ]
-        rotation: [ [ 0, 1, 0, -90 ], [ 0, 0, 1, -90 ] ]
-      - # B0010_3101<1>
-        <<: *CAMERA_MCM-4350FISH
-        name: FRONT_CAMERA
-        translation: [ 0.25470, 0, 0.13550  ]
-        rotation: [ [ 0, 0, 1, -90 ], [ 1, 0, 0, 90 ] ]
-        on: true
-      - # B0010_3101<2>
-        <<: *CAMERA_MCM-4350FISH
-        name: LEFT_CAMERA
-        translation: [ 0, 0.17850, 0.04450 ]
-        rotation: [ 1, 0, 0, 90 ]
-        on: false
-      - # B0010_3101<3>
-        <<: *CAMERA_MCM-4350FISH
-        name: RIGHT_CAMERA
-        translation: [ 0, -0.17850, 0.04450 ]
-        rotation: [ [ 0, 0, 1, 180 ], [ 1, 0, 0, 90 ] ]
-        on: false
-      - # B0010_3101<4>
-        <<: *CAMERA_MCM-4350FISH
-        name: BACK_CAMERA
-        translation: [ -0.35670, 0, 0.094 ]
-        rotation: [ [ 0, 0, 1, 90 ], [ 1, 0, 0, 90 ] ]
-        on: false
-      - # Front light
-        <<: *LIGHT
-        name: FRONT_LIGHT
-        id: 0
-        translation: [ 0.12580, 0, 0.41050 ]
-        rotation: [ [ 0, 0, 1, -90 ], [ 1, 0, 0, 90 ] ]
+      # -
+      #   type: AccelerationSensor
+      #   name: CHASSIS_ACCELERATION_SENSOR
+      #   id: 0
+      # -
+      #   type: RateGyroSensor
+      #   name: CHASSIS_RATE_GYRO_SENSOR
+      #   id: 0
+      # - # Range sensor
+      #   <<: *LRF_UTM-30LX
+      #   #<<: *LIDAR_VLP16
+      #   name: LRF
+      #   id: 0
+      #   translation: [ 0.23415, 0, 0.19750 ]
+      #   rotation: [ [ 0, 0, 1, -90 ], [ 1, 0, 0, 90 ] ]
+      # - # B0010_3101<1>
+      #   <<: *CAMERA_MCM-4350FISH
+      #   name: FRONT_CAMERA
+      #   translation: [ 0.25470, 0, 0.13550  ]
+      #   rotation: [ [ 0, 0, 1, -90 ], [ 1, 0, 0, 90 ] ]
+      # - # B0010_3101<2>
+      #   <<: *CAMERA_MCM-4350FISH
+      #   name: LEFT_CAMERA
+      #   translation: [ 0, 0.17850, 0.04450 ]
+      #   rotation: [ 1, 0, 0, 90 ]
+      # - # B0010_3101<3>
+      #   <<: *CAMERA_MCM-4350FISH
+      #   name: RIGHT_CAMERA
+      #   translation: [ 0, -0.17850, 0.04450 ]
+      #   rotation: [ [ 0, 0, 1, 180 ], [ 1, 0, 0, 90 ] ]
+      # - # B0010_3101<4>
+      #   <<: *CAMERA_MCM-4350FISH
+      #   name: BACK_CAMERA
+      #   translation: [ -0.35670, 0, 0.094 ]
+      #   rotation: [ [ 0, 0, 1, 90 ], [ 1, 0, 0, 90 ] ]
+      # - # Front light
+      #   <<: *LIGHT
+      #   name: FRONT_LIGHT
+      #   id: 0
+      #   translation: [ 0.12580, 0, 0.41050 ]
+      #   rotation: [ [ 0, 0, 1, -90 ], [ 1, 0, 0, 90 ] ]
       - # vertical arm attachment
         <<: *VERTICAL_ARM_FRAME
         translation: [ -0.060, 0.094, 0.43050 ]
@@ -613,12 +609,6 @@ TRACK_BOTTOM_ROLLER_VISUAL: &TRACK_BOTTOM_ROLLER_VISUAL
 
 # Main Belt Bottom Roller Guide (For AGX)
 TRACK_BOTTOM_ROLLER_GUIDE: &TRACK_BOTTOM_ROLLER_GUIDE
-  RigidBody:
-    mass: 0.01
-    inertia: [
-      0.0001, 0,      0,
-      0,      0.0001, 0,
-      0,      0,      0.0001 ]
   Collision:
     shape:
       geometry: { type: Box, size: [ 0.306, 0.067, 0.050125 ] }
@@ -777,18 +767,15 @@ SUB_TRACK_BOTTOM_ROLLER_VISUAL: &SUB_TRACK_BOTTOM_ROLLER_VISUAL
 
 # Sub Belt Bottom Roller Guide (For AGX)
 SUB_TRACK_BOTTOM_ROLLER_GUIDE: &SUB_TRACK_BOTTOM_ROLLER_GUIDE
-  RigidBody:
-    mass: 0.01
-    inertia: [
-      0.0001, 0,      0,
-      0,      0.0001, 0,
-      0,      0,      0.0001 ]
   Collision:
-    shape:
-      rotation: [ 0, -1, 0, 7.82 ]
-      translation: [ 0, 0, 0.00383 ]
-      geometry: { type: Box, size: [ 0.14, 0.053, 0.04 ] }
-      appearance: *LIGHT_YELLOW
+    elements:
+      Transform:
+        rotation: [ 0, -1, 0, 7.82 ]
+        elements:
+          Shape:
+            translation: [ 0, 0, 0.00383 ]
+            geometry: { type: Box, size: [ 0.14, 0.053, 0.04 ] }
+            appearance: *LIGHT_YELLOW
 
 # Sub Belt
 SUB_BELT: &SUB_BELT
