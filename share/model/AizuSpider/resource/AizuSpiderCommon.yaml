@@ -64,6 +64,7 @@ LIDAR_VLP16: &LIDAR_VLP16
   pitchStep: 1.875
   scanRate:  20
   maxDistance: 100.0
+  minDistance: 1.0
   elements:
     RigidBody:
       translation: [ 0, 0, 0.03 ]
@@ -210,17 +211,24 @@ CHASSIS: &CHASSIS
       0,              2.13753698965, 0,
       -0.21517604538, 0,             1.94665822762 ]
     elements:
-      -
+      - # Acceleration sensor
         type: AccelerationSensor
         name: CHASSIS_ACCELERATION_SENSOR
         id: 0
-      -
+      - # Gyro sensor
         type: RateGyroSensor
         name: CHASSIS_RATE_GYRO_SENSOR
         id: 0
+      - # Range sensor
+        <<: *LRF_UTM-30LX
+        #<<: *LIDAR_VLP16
+        name: FRONT_LRF
+        id: 0
+        translation: [ 0.23415, 0, 0.19750 ]
+        rotation: [ [ 0, 0, 1, -90 ], [ 1, 0, 0, 90 ] ]
       - # Velodyne VLP16
         <<: *LIDAR_VLP16
-        name: Velodyne
+        name: TOP_Velodyne
         id: 0
         translation: [ 0, 0, 0.7 ]
         rotation: [ [ 0, 1, 0, -90 ], [ 0, 0, 1, -90 ] ]
