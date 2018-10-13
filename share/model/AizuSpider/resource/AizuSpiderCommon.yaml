@@ -211,11 +211,11 @@ CHASSIS: &CHASSIS
       0,              2.13753698965, 0,
       -0.21517604538, 0,             1.94665822762 ]
     elements:
-      -
+      - # Acceleration sensor
         type: AccelerationSensor
         name: CHASSIS_ACCELERATION_SENSOR
         id: 0
-      -
+      - # Gyro sensor
         type: RateGyroSensor
         name: CHASSIS_RATE_GYRO_SENSOR
         id: 0
