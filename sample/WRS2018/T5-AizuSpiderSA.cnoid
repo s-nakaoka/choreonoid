@@ -57,8 +57,27 @@ items:
             AutoSleep: false
             SaveToAGXFileOnStart: false
             DebugMessageOnConsole: 2
+          children: 
+            - 
+              id: 5
+              name: "GLVisionSimulator"
+              plugin: Body
+              class: GLVisionSimulatorItem
+              data: 
+                enabled: true
+                maxFrameRate: 1000
+                maxLatency: 1
+                recordVisionData: false
+                threadMode: Sensor
+                bestEffort: false
+                allSceneObjects: false
+                rangeSensorPrecisionRatio: 2
+                depthError: 0
+                enableHeadLight: true
+                enableAdditionalLights: true
+                antiAliasing: false
         - 
-          id: 5
+          id: 6
           name: "AizuSpider"
           plugin: Body
           class: BodyItem
@@ -89,7 +108,7 @@ items:
             isEditable: true
           children: 
             - 
-              id: 6
+              id: 7
               name: "AizuSpiderController"
               plugin: Body
               class: SimpleControllerItem
@@ -102,7 +121,7 @@ items:
                 isOldTargetVariableMode: false
               children: 
                 - 
-                  id: 7
+                  id: 8
                   name: "Jaco2Controller"
                   plugin: Body
                   class: SimpleControllerItem
@@ -114,7 +133,7 @@ items:
                     reloading: true
                     isOldTargetVariableMode: false
             - 
-              id: 8
+              id: 9
               name: "BodyTrackingCamera"
               plugin: Body
               class: BodyTrackingCameraItem
@@ -125,6 +144,24 @@ items:
                 nearClipDistance: 0.05
                 farClipDistance: 200
                 fieldOfView: 0.785398
+            - 
+              id: 10
+              name: "BodyRos"
+              plugin: RosBody
+              class: BodyRosItem
+              data: 
+                jointStateUpdateRate: 100
+        - 
+          id: 11
+          name: "WorldRos"
+          plugin: RosBody
+          class: WorldRosItem
+          data: 
+            publishClockUpdateRate: 100
+            publishLinkStatesUpdateRate: 10
+            publishModelStatesUpdateRate: 10
+            publishContactsStateUpdateRate: 0
+            contactsStateMessagesVerbose: false
 views: 
   - 
     id: 0
@@ -137,9 +174,9 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 4 ]
-      checked: [ 5, 7, 8 ]
-      expanded: [ 2, 4, 5, 6 ]
+      selected: [ 6 ]
+      checked: [ 4, 6, 8, 9, 10, 11 ]
+      expanded: [ 2, 4, 6, 7 ]
   - 
     id: 2
     plugin: Base
@@ -274,7 +311,7 @@ views:
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 5, 8 ]
+      checked: [ 6, 9 ]
   - 
     id: 5
     plugin: Body
@@ -295,6 +332,7 @@ views:
       spinBox: true
       slider: true
       labelOnLeft: true
+      currentBodyItem: 6
   - 
     id: 7
     plugin: Body
@@ -302,11 +340,7 @@ views:
     mounted: true
     state: 
       listingMode: "Link List"
-  - 
-    id: 8
-    plugin: Python
-    class: PythonConsoleView
-    mounted: true
+      currentBodyItem: 6
 toolbars: 
   "TimeBar": 
     minTime: 0
@@ -326,6 +360,8 @@ toolbars:
     snapDistance: 0.025
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
+  "BodyBar": 
+    current: 6
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
@@ -367,7 +403,7 @@ Body:
   "EditableSceneBody": 
     editableSceneBodies: 
       - 
-        bodyItem: 5
+        bodyItem: 6
         showCenterOfMass: false
         showPpcom: false
         showZmp: false
@@ -427,18 +463,9 @@ viewAreas:
                   views: [ 3 ]
                   current: 3
             - 
-              type: splitter
-              orientation: horizontal
-              sizes: [ 764, 764 ]
-              children: 
-                - 
-                  type: pane
-                  views: [ 2 ]
-                  current: 2
-                - 
-                  type: pane
-                  views: [ 8 ]
-                  current: 8
+              type: pane
+              views: [ 2 ]
+              current: 2
 layoutOfToolBars: 
   rows: 
     - 
