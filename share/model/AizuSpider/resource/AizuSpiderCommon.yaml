@@ -64,6 +64,7 @@ LIDAR_VLP16: &LIDAR_VLP16
   pitchStep: 1.875
   scanRate:  20
   maxDistance: 100.0
+  minDistance: 1.0
   elements:
     RigidBody:
       translation: [ 0, 0, 0.03 ]
