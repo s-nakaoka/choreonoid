@@ -16,11 +16,11 @@ items:
       children: 
         - 
           id: 2
-          name: "T1"
+          name: "T3"
           plugin: Base
           class: SubProjectItem
           data: 
-            filename: "${SHARE}/wrs2018/project/T1M_201810_01.cnoid"
+            filename: "${SHARE}/wrs2018/project/T3_201810_01.cnoid"
             format: PROJECT
             saveMode: "Manual save"
         - 
@@ -31,14 +31,14 @@ items:
           data: 
             timeStep: 0.005
             realtimeSync: true
-            recording: "tail"
+            recording: "full"
             timeRangeMode: "Unlimited"
-            timeLength: 1
+            timeLength: 180
             allLinkPositionOutputMode: true
             deviceStateOutput: true
             controllerThreads: true
             recordCollisionData: false
-            controllerOptions: "velocity"
+            controllerOptions: "position"
             Gravity: [ 0, 0, -9.80665 ]
             NumThreads: 4
             ContactReduction: true
@@ -69,30 +69,32 @@ items:
                 antiAliasing: false
         - 
           id: 5
-          name: "AizuSpider"
+          name: "DoubleArmV7"
           plugin: Body
           class: BodyItem
           data: 
-            modelFile: "${SHARE}/model/AizuSpider/AizuSpiderSA.body"
-            currentBaseLink: "CHASSIS"
-            rootPosition: [ 0.999997645, -1.04768036e-06, 0.0366691911 ]
+            modelFile: "${SHARE}/model/DoubleArmV7/DoubleArmV7A.body"
+            currentBaseLink: "TFRAME"
+            rootPosition: [ 1.00006409, 0.00372672347, 0.537600495 ]
             rootAttitude: [ 
-              0.999999852, -5.26921757e-05, -0.000541047329, 
-              5.26843628e-05, 0.999999999, -1.44545068e-05, 
-              0.00054104809, 1.44259999e-05, 0.999999854 ]
+              0.999999953, 1.74902991e-06, -0.000306961607, 
+              -1.73378061e-06, 0.999999999, 4.96784577e-05, 
+              0.000306961693, -4.96779231e-05, 0.999999952 ]
             jointPositions: [ 
-              -0.000000, -0.000000, -0.000000, -0.000000, -1.570796,  2.635447,  0.471239, -1.623156,  0.104720,  1.745329, 
-               0.000000,  0.000000,  0.000000,  0.000000, -0.008322,  0.000000, -0.008340, -0.013647, -0.000002, -0.013639, 
-              -0.000002, -0.023005,  0.000000, -0.023045,  0.000000 ]
-            initialRootPosition: [ 1, 0, 0.035 ]
+               0.391500, -0.762258, -1.310731,  2.654647,  0.000001,  0.101593, -0.349066, -0.349066,  0.000000, -0.000000, 
+               0.000001,  0.000001, -0.000000, -0.000000, -0.000000,  0.000000,  0.000012, -0.000012, -0.000031,  0.000041, 
+              -0.000033, -0.000032,  0.000042, -0.000033,  0.000019,  0.000310,  0.000306,  0.001192,  0.000018,  0.000311, 
+               0.000306,  0.001134 ]
+            initialRootPosition: [ 1, 0.0037, 0.5376 ]
             initialRootAttitude: [ 
               1, 0, 0, 
               0, 1, 0, 
               0, 0, 1 ]
             initialJointPositions: [ 
-               0.000000,  0.000000,  0.000000,  0.000000, -1.570796,  2.635447,  0.471239, -1.623156,  0.104720,  1.745329, 
+               0.391500, -0.762258, -1.310742,  2.654646,  0.000000,  0.101593, -0.349066, -0.349066, -0.000000, -0.000000, 
+               0.000000,  0.000000, -0.000000, -0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
                0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000,  0.000000,  0.000000,  0.000000 ]
+               0.000000,  0.000000 ]
             zmp: [ 0, 0, 0 ]
             collisionDetection: true
             selfCollisionDetection: true
@@ -100,91 +102,19 @@ items:
           children: 
             - 
               id: 6
-              name: "AizuSpiderController"
+              name: "DoubleArmV7Controller"
               plugin: Body
               class: SimpleControllerItem
               data: 
                 isNoDelayMode: false
                 controllerOptions: ""
-                controller: "AizuSpiderController.so"
+                controller: "DoubleArmV7Controller"
                 baseDirectory: "Controller directory"
                 reloading: true
                 isOldTargetVariableMode: false
               children: 
                 - 
                   id: 7
-                  name: "Jaco2Controller"
-                  plugin: Body
-                  class: SimpleControllerItem
-                  data: 
-                    isNoDelayMode: false
-                    controllerOptions: ""
-                    controller: "Jaco2Controller.so"
-                    baseDirectory: "Controller directory"
-                    reloading: true
-                    isOldTargetVariableMode: false
-                - 
-                  id: 8
-                  name: "BodyTrackingCamera"
-                  plugin: Body
-                  class: BodyTrackingCameraItem
-                  data: 
-                    targetLink: ""
-                    keepRelativeAttitude: true
-                    cameraType: "Perspective"
-                    nearClipDistance: 0.01
-                    farClipDistance: 100
-                    fieldOfView: 0.785398
-                - 
-                  id: 9
-                  name: "LIDAR-View"
-                  plugin: Body
-                  class: BodyTrackingCameraItem
-                  data: 
-                    targetLink: ""
-                    keepRelativeAttitude: true
-                    cameraType: "Perspective"
-                    nearClipDistance: 0.01
-                    farClipDistance: 100
-                    fieldOfView: 0.785398
-                - 
-                  id: 10
-                  name: "SensorVisualizer"
-                  plugin: Body
-                  class: SensorVisualizer
-                  data: 
-                    subItems: 
-                      - 
-                        class: RangeSensorVisualizer
-                        name: LRF
-                        renderingMode: Point
-                        pointSize: 2
-                        voxelSize: 0.01
-                        isEditable: false
-                      - 
-                        class: RangeSensorVisualizer
-                        name: TOP_Velodyne
-                        renderingMode: Point
-                        pointSize: 0
-                        voxelSize: 0.01
-                        isEditable: false
-                      - 
-                        class: CameraImageVisualizer
-                        name: FRONT_CAMERA
-                      - 
-                        class: CameraImageVisualizer
-                        name: LEFT_CAMERA
-                      - 
-                        class: CameraImageVisualizer
-                        name: RIGHT_CAMERA
-                      - 
-                        class: CameraImageVisualizer
-                        name: BACK_CAMERA
-                      - 
-                        class: CameraImageVisualizer
-                        name: ARM_CAMERA
-                - 
-                  id: 11
                   name: "JoySubscriber"
                   plugin: Body
                   class: SimpleControllerItem
@@ -196,14 +126,26 @@ items:
                     reloading: false
                     isOldTargetVariableMode: false
             - 
-              id: 12
+              id: 8
+              name: "BodyTrackingCamera"
+              plugin: Body
+              class: BodyTrackingCameraItem
+              data: 
+                targetLink: ""
+                keepRelativeAttitude: false
+                cameraType: "Perspective"
+                nearClipDistance: 0.05
+                farClipDistance: 200
+                fieldOfView: 0.785398
+            - 
+              id: 9
               name: "BodyRos"
               plugin: RosBody
               class: BodyRosItem
               data: 
                 jointStateUpdateRate: 100
         - 
-          id: 13
+          id: 10
           name: "WorldRos"
           plugin: RosBody
           class: WorldRosItem
@@ -229,8 +171,8 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 11 ]
-      checked: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ]
+      selected: [ 3 ]
+      checked: [ 3, 4, 5, 6, 7, 8, 9, 10 ]
       expanded: [ 1, 3, 5, 6 ]
   - 
     id: 3
@@ -278,28 +220,23 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
-          fieldOfView: 0.6978
-          near: 0.01
-          far: 10000
-          eye: [ -4.03773228, -2.34269571, 2.02033223 ]
-          direction: [ 0.711954996, 0.503646067, -0.489347242 ]
-          up: [ 0.399492714, 0.282606254, 0.87208903 ]
+          fieldOfView: 0.698132
+          near: 0.05
+          far: 200
+          eye: [ 4, 2, 1.5 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.0993807989, -0.0496903995, 0.99380799 ]
         - 
           camera: [ System, Orthographic ]
           orthoHeight: 20
-          near: 0.01
-          far: 10000
+          near: 0.05
+          far: 200
         - 
           camera: BodyTrackingCamera
           isCurrent: true
-          eye: [ -5.59600648, -0.746972012, 2.80295211 ]
-          direction: [ 0.904921005, -0.00710096666, -0.42552033 ]
-          up: [ 0.425507269, -0.00333393368, 0.904948866 ]
-        - 
-          camera: LIDAR-View
-          eye: [ -2.22688697, -3.99500223, 1.86939392 ]
-          direction: [ 0.66345882, 0.683103315, -0.305274065 ]
-          up: [ 0.212689708, 0.218987084, 0.952264536 ]
+          eye: [ -2.82683675, -1.71106606, 2.52493029 ]
+          direction: [ 0.911599433, 0.294077183, -0.287236983 ]
+          up: [ 0.273364786, 0.0881860424, 0.957859549 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -310,6 +247,7 @@ views:
     name: "Camera Scene"
     plugin: Base
     class: SceneView
+    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -346,9 +284,8 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
-          isCurrent: true
-          fieldOfView: 0.6981
-          near: 0.01
+          fieldOfView: 0.698132
+          near: 0.05
           far: 200
           eye: [ 4, 2, 1.5 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
@@ -356,175 +293,31 @@ views:
         - 
           camera: [ System, Orthographic ]
           orthoHeight: 20
-          near: 0.01
+          near: 0.05
           far: 200
         - 
-          camera: BodyTrackingCamera
-          eye: [ -5.59600648, -0.746972012, 2.80295211 ]
-          direction: [ 0.904921005, -0.00710096666, -0.42552033 ]
-          up: [ 0.425507269, -0.00333393368, 0.904948866 ]
+          camera: [ DoubleArmV7, FRAME_FRONT_CAMERA ]
+          isCurrent: true
         - 
-          camera: LIDAR-View
-          eye: [ -2.22688697, -3.99500223, 1.86939392 ]
-          direction: [ 0.66345882, 0.683103315, -0.305274065 ]
-          up: [ 0.212689708, 0.218987084, 0.952264536 ]
+          camera: BodyTrackingCamera
+          eye: [ -2.82683675, -1.71106606, 2.52493029 ]
+          direction: [ 0.911599433, 0.294077183, -0.287236983 ]
+          up: [ 0.273364786, 0.0881860424, 0.957859549 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 5, 6, 7, 8, 9, 10, 12, 13 ]
+      checked: [ 5, 8 ]
   - 
     id: 6
-    name: "Scene 2"
-    plugin: Base
-    class: SceneView
-    mounted: true
-    state: 
-      editMode: false
-      viewpointControlMode: thirdPerson
-      collisionLines: false
-      polygonMode: fill
-      cullingMode: enabled
-      defaultHeadLight: true
-      defaultHeadLightIntensity: 0.75
-      headLightLightingFromBack: false
-      worldLight: true
-      worldLightIntensity: 0.5
-      worldLightAmbient: 0.3
-      additionalLights: true
-      shadowLights: 
-        - 0
-      fog: true
-      floorGrid: false
-      floorGridSpan: 10
-      floorGridInterval: 0.5
-      xzGridSpan: 10
-      xzGridInterval: 0.5
-      xzGrid: false
-      yzGridSpan: 10
-      yzGridInterval: 0.5
-      texture: true
-      lineWidth: 1
-      pointSize: 1
-      normalVisualization: false
-      normalLength: 0.01
-      coordinateAxes: true
-      fpsTestIteration: 1
-      showFPS: false
-      enableNewDisplayListDoubleRendering: false
-      useBufferForPicking: true
-      upsideDown: false
-      cameras: 
-        - 
-          camera: [ System, Perspective ]
-          isCurrent: true
-          fieldOfView: 0.6978
-          near: 0.01
-          far: 100
-          eye: [ -12.895607, -9.90791107, 8.22569778 ]
-          direction: [ 0.756596254, 0.487150344, -0.43617273 ]
-          up: [ 0.3667299, 0.236126726, 0.899862962 ]
-        - 
-          camera: [ System, Orthographic ]
-          orthoHeight: 20
-          near: 0.01
-          far: 100
-        - 
-          camera: BodyTrackingCamera
-          eye: [ -5.59600648, -0.746972012, 2.80295211 ]
-          direction: [ 0.904921005, -0.00710096666, -0.42552033 ]
-          up: [ 0.425507269, -0.00333393368, 0.904948866 ]
-        - 
-          camera: LIDAR-View
-          eye: [ -2.22688697, -3.99500223, 1.86939392 ]
-          direction: [ 0.66345882, 0.683103315, -0.305274065 ]
-          up: [ 0.212689708, 0.218987084, 0.952264536 ]
-      backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
-      gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
-      xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
-      yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
-      dedicatedItemTreeViewChecks: false
-  - 
-    id: 7
-    name: "LIDAR"
-    plugin: Base
-    class: SceneView
-    mounted: true
-    state: 
-      editMode: false
-      viewpointControlMode: thirdPerson
-      collisionLines: false
-      polygonMode: fill
-      cullingMode: enabled
-      defaultHeadLight: true
-      defaultHeadLightIntensity: 0.75
-      headLightLightingFromBack: false
-      worldLight: false
-      worldLightIntensity: 0.5
-      worldLightAmbient: 0.3
-      additionalLights: false
-      fog: true
-      floorGrid: false
-      floorGridSpan: 10
-      floorGridInterval: 0.5
-      xzGridSpan: 10
-      xzGridInterval: 0.5
-      xzGrid: false
-      yzGridSpan: 10
-      yzGridInterval: 0.5
-      texture: true
-      lineWidth: 1
-      pointSize: 1
-      normalVisualization: false
-      normalLength: 0.01
-      coordinateAxes: true
-      fpsTestIteration: 1
-      showFPS: false
-      enableNewDisplayListDoubleRendering: false
-      useBufferForPicking: true
-      upsideDown: false
-      cameras: 
-        - 
-          camera: [ System, Perspective ]
-          fieldOfView: 0.698132
-          near: 0.04
-          far: 200
-          eye: [ 4, 2, 1.5 ]
-          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
-          up: [ -0.0993807989, -0.0496903995, 0.99380799 ]
-        - 
-          camera: [ System, Orthographic ]
-          orthoHeight: 20
-          near: 0.04
-          far: 200
-        - 
-          camera: LIDAR-View
-          isCurrent: true
-          eye: [ -2.22688697, -3.99500223, 1.86939392 ]
-          direction: [ 0.66345882, 0.683103315, -0.305274065 ]
-          up: [ 0.212689708, 0.218987084, 0.952264536 ]
-      backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
-      gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
-      xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
-      yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
-      dedicatedItemTreeViewChecks: true
-      checked: [ 5, 9, [ 10, "LRF" ] ]
-  - 
-    id: 8
-    name: "Joystick"
-    plugin: Base
-    class: VirtualJoystickView
-    mounted: true
-  - 
-    id: 9
     plugin: Body
     class: BodyLinkView
     mounted: true
     state: 
       showRotationMatrix: false
   - 
-    id: 10
+    id: 7
     plugin: Body
     class: JointSliderView
     mounted: true
@@ -538,26 +331,21 @@ views:
       labelOnLeft: true
       currentBodyItem: 5
   - 
-    id: 11
+    id: 8
     plugin: Body
     class: LinkSelectionView
     mounted: true
     state: 
-      listingMode: "Link Tree"
+      listingMode: "Link List"
       currentBodyItem: 5
-  - 
-    id: 12
-    name: "MultiCopterMonitor"
-    plugin: Multicopter
-    class: MulticopterMonitorView
 toolbars: 
   "TimeBar": 
     minTime: 0
-    maxTime: 77.335
+    maxTime: 30
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
-    currentTime: 77.335
+    currentTime: 18.68
     speedScale: 1
     syncToOngoingUpdates: true
     autoExpansion: true
@@ -651,48 +439,30 @@ viewAreas:
               current: 2
             - 
               type: pane
-              views: [ 1, 11 ]
+              views: [ 1, 8 ]
               current: 1
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 726, 289 ]
+          sizes: [ 780, 235 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 716, 812 ]
+              sizes: [ 664, 864 ]
               children: 
                 - 
-                  type: splitter
-                  orientation: vertical
-                  sizes: [ 361, 359 ]
-                  children: 
-                    - 
-                      type: pane
-                      views: [ 6 ]
-                      current: 6
-                    - 
-                      type: pane
-                      views: [ 9, 10, 7 ]
-                      current: 7
+                  type: pane
+                  views: [ 6, 7, 5 ]
+                  current: 5
                 - 
                   type: pane
                   views: [ 4 ]
                   current: 4
             - 
-              type: splitter
-              orientation: horizontal
-              sizes: [ 922, 606 ]
-              children: 
-                - 
-                  type: pane
-                  views: [ 3 ]
-                  current: 3
-                - 
-                  type: pane
-                  views: [ 8 ]
-                  current: 8
+              type: pane
+              views: [ 3 ]
+              current: 3
 layoutOfToolBars: 
   rows: 
     - 
