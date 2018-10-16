@@ -40,6 +40,9 @@ list(APPEND project_files DoubleArmV7S.cnoid DoubleArmV7A.cnoid)
 # Jaco2 sample
 add_cnoid_simple_controller(Jaco2Controller Jaco2Controller.cpp)
 
+#Jaco2 test
+add_cnoid_simple_controller(Jaco2test Jaco2ControllerROS.cpp)
+
 # AizuSpider sample
 add_cnoid_simple_controller(AizuSpiderController AizuSpiderController.cpp)
 list(APPEND project_files
