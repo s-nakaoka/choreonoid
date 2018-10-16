@@ -380,13 +380,13 @@ items:
         collisionDetection: true
         selfCollisionDetection: false
         isEditable: false
-views: 
-  - 
-    id: 2
-    plugin: Base
-    class: ItemTreeView
-    mounted: true
-    state: 
-      selected: [ 11, 12 ]
-      checked: [ 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
-      expanded: [ 3 ]
+# views: 
+#   - 
+#     id: 2
+#     plugin: Base
+#     class: ItemTreeView
+#     mounted: true
+#     state: 
+#       selected: [ 11, 12 ]
+#       checked: [ 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
+#       expanded: [ 3 ]
