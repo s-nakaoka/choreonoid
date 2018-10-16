@@ -6,15 +6,6 @@ items:
   children: 
     - 
       id: 1
-      name: "ViewProject"
-      plugin: Base
-      class: SubProjectItem
-      data: 
-        filename: "${PROJECT_DIR}/MultiSceneViews.cnoid"
-        format: PROJECT
-        saveMode: "Manual save"
-    - 
-      id: 2
       name: "World"
       plugin: Body
       class: WorldItem
@@ -24,16 +15,16 @@ items:
         materialTableFile: "${SHARE}/default/materials.yaml"
       children: 
         - 
-          id: 3
+          id: 2
           name: "T1"
           plugin: Base
           class: SubProjectItem
           data: 
-            filename: "${PROJECT_DIR}/T1.cnoid"
+            filename: "${SHARE}/wrs2018/project/T1M_201810_01.cnoid"
             format: PROJECT
             saveMode: "Manual save"
         - 
-          id: 4
+          id: 3
           name: "AGXSimulator"
           plugin: AGXDynamics
           class: AGXSimulatorItem
@@ -59,7 +50,7 @@ items:
             DebugMessageOnConsole: 2
           children: 
             - 
-              id: 5
+              id: 4
               name: "GLVisionSimulator"
               plugin: Body
               class: GLVisionSimulatorItem
@@ -77,22 +68,22 @@ items:
                 enableAdditionalLights: true
                 antiAliasing: false
         - 
-          id: 6
+          id: 5
           name: "AizuSpider"
           plugin: Body
           class: BodyItem
           data: 
             modelFile: "${SHARE}/model/AizuSpider/AizuSpiderSA.body"
             currentBaseLink: "CHASSIS"
-            rootPosition: [ 0.999999085, 4.65046464e-07, 0.0366692189 ]
+            rootPosition: [ 0.999997641, -1.01505485e-06, 0.0366692036 ]
             rootAttitude: [ 
-              0.999999852, -5.52417761e-05, -0.000540953268, 
-              5.52338819e-05, 0.999999998, -1.46079781e-05, 
-              0.000540954074, 1.4578097e-05, 0.999999854 ]
+              0.999999852, -5.27098338e-05, -0.000541154198, 
+              5.27018988e-05, 0.999999999, -1.46773011e-05, 
+              0.000541154971, 1.46487791e-05, 0.999999853 ]
             jointPositions: [ 
               -0.000000, -0.000000, -0.000000, -0.000000, -1.570796,  2.635447,  0.471239, -1.623156,  0.104720,  1.745329, 
-               0.000000,  0.000000,  0.000000, -0.000000, -0.008322, -0.000000, -0.008341, -0.013698, -0.000000, -0.013716, 
-              -0.000000, -0.022995,  0.000000, -0.022877,  0.000000 ]
+               0.000000,  0.000000,  0.000000,  0.000000, -0.008322,  0.000000, -0.008340, -0.013689, -0.000001, -0.013649, 
+              -0.000001, -0.023005,  0.000000, -0.023045,  0.000000 ]
             initialRootPosition: [ 1, 0, 0.035 ]
             initialRootAttitude: [ 
               1, 0, 0, 
@@ -108,7 +99,7 @@ items:
             isEditable: true
           children: 
             - 
-              id: 7
+              id: 6
               name: "AizuSpiderController"
               plugin: Body
               class: SimpleControllerItem
@@ -121,7 +112,7 @@ items:
                 isOldTargetVariableMode: false
               children: 
                 - 
-                  id: 8
+                  id: 7
                   name: "Jaco2Controller"
                   plugin: Body
                   class: SimpleControllerItem
@@ -133,7 +124,7 @@ items:
                     reloading: true
                     isOldTargetVariableMode: false
                 - 
-                  id: 9
+                  id: 8
                   name: "BodyTrackingCamera"
                   plugin: Body
                   class: BodyTrackingCameraItem
@@ -145,7 +136,7 @@ items:
                     farClipDistance: 100
                     fieldOfView: 0.785398
                 - 
-                  id: 10
+                  id: 9
                   name: "LIDAR-View"
                   plugin: Body
                   class: BodyTrackingCameraItem
@@ -157,7 +148,7 @@ items:
                     farClipDistance: 100
                     fieldOfView: 0.785398
                 - 
-                  id: 11
+                  id: 10
                   name: "SensorVisualizer"
                   plugin: Body
                   class: SensorVisualizer
@@ -193,14 +184,14 @@ items:
                         class: CameraImageVisualizer
                         name: ARM_CAMERA
             - 
-              id: 12
+              id: 11
               name: "BodyRos"
               plugin: RosBody
               class: BodyRosItem
               data: 
                 jointStateUpdateRate: 100
         - 
-          id: 13
+          id: 12
           name: "WorldRos"
           plugin: RosBody
           class: WorldRosItem
@@ -226,9 +217,8 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 2 ]
-      checked: [ 5, 6, 7, 8, 9, 10, 11, 12, 13 ]
-      expanded: [ 1, 2, 6 ]
+      checked: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ]
+      expanded: [ 1, 2, 3, 5, 6 ]
   - 
     id: 3
     plugin: Base
@@ -419,7 +409,7 @@ views:
           fieldOfView: 0.6978
           near: 0.01
           far: 100
-          eye: [ -5.29126118, -5.01169376, 3.84184278 ]
+          eye: [ -12.895607, -9.90791107, 8.22569778 ]
           direction: [ 0.756596254, 0.487150344, -0.43617273 ]
           up: [ 0.3667299, 0.236126726, 0.899862962 ]
         - 
@@ -429,14 +419,14 @@ views:
           far: 100
         - 
           camera: BodyTrackingCamera
-          eye: [ -6.78216281, -2.58080797, 4.11127512 ]
-          direction: [ 0.898583034, 0.361190903, -0.249177975 ]
-          up: [ 0.231199668, 0.0929321094, 0.96845771 ]
+          eye: [ -5.59600677, -0.746972712, 2.80295125 ]
+          direction: [ 0.904921051, -0.00710085589, -0.425520235 ]
+          up: [ 0.425507172, -0.00333412777, 0.90494891 ]
         - 
           camera: LIDAR-View
-          eye: [ -2.22687542, -3.99500953, 1.86939247 ]
-          direction: [ 0.663457093, 0.683105111, -0.3052738 ]
-          up: [ 0.212689028, 0.218987375, 0.95226462 ]
+          eye: [ -2.2268871, -3.99500266, 1.8693927 ]
+          direction: [ 0.66345884, 0.683103395, -0.305273842 ]
+          up: [ 0.212689602, 0.218986876, 0.952264607 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -497,15 +487,15 @@ views:
         - 
           camera: LIDAR-View
           isCurrent: true
-          eye: [ -2.22687542, -3.99500953, 1.86939247 ]
-          direction: [ 0.663457093, 0.683105111, -0.3052738 ]
-          up: [ 0.212689028, 0.218987375, 0.95226462 ]
+          eye: [ -2.2268871, -3.99500266, 1.8693927 ]
+          direction: [ 0.66345884, 0.683103395, -0.305273842 ]
+          up: [ 0.212689602, 0.218986876, 0.952264607 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 6, 10, [ 11, "LRF" ] ]
+      checked: [ 5, 9, [ 10, "LRF" ] ]
   - 
     id: 8
     name: "Joystick"
@@ -546,11 +536,11 @@ views:
 toolbars: 
   "TimeBar": 
     minTime: 0
-    maxTime: 33.335
+    maxTime: 46.46
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
-    currentTime: 1.15
+    currentTime: 24.155
     speedScale: 1
     syncToOngoingUpdates: true
     autoExpansion: true
@@ -603,7 +593,7 @@ Body:
   "EditableSceneBody": 
     editableSceneBodies: 
       - 
-        bodyItem: 6
+        bodyItem: 5
         showCenterOfMass: false
         showPpcom: false
         showZmp: false
@@ -634,7 +624,7 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 509, 508 ]
+          sizes: [ 497, 496 ]
           children: 
             - 
               type: pane
@@ -647,25 +637,43 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 782, 235 ]
+          sizes: [ 710, 283 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 664, 864 ]
+              sizes: [ 699, 793 ]
               children: 
                 - 
-                  type: pane
-                  views: [ 9, 10, 5 ]
-                  current: 5
+                  type: splitter
+                  orientation: vertical
+                  sizes: [ 353, 351 ]
+                  children: 
+                    - 
+                      type: pane
+                      views: [ 6 ]
+                      current: 6
+                    - 
+                      type: pane
+                      views: [ 9, 10, 7 ]
+                      current: 7
                 - 
                   type: pane
                   views: [ 4 ]
                   current: 4
             - 
-              type: pane
-              views: [ 3 ]
-              current: 3
+              type: splitter
+              orientation: horizontal
+              sizes: [ 900, 592 ]
+              children: 
+                - 
+                  type: pane
+                  views: [ 3 ]
+                  current: 3
+                - 
+                  type: pane
+                  views: [ 8 ]
+                  current: 8
 layoutOfToolBars: 
   rows: 
     - 
