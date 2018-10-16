@@ -5,15 +5,6 @@ items:
   class: RootItem
   children: 
     - 
-      id: 1
-      name: "ViewProject"
-      plugin: Base
-      class: SubProjectItem
-      data: 
-        filename: "${PROJECT_DIR}/MultiSceneViews.cnoid"
-        format: PROJECT
-        saveMode: "Manual save"
-    - 
       id: 2
       name: "World"
       plugin: Body
@@ -175,7 +166,7 @@ views:
     mounted: true
     state: 
       selected: [ 10 ]
-      checked: [ 4, 6, 8, 9, 10, 11 ]
+      checked: [3, 4, 5, 6, 7, 8, 9, 10, 11 ]
       expanded: [ 2, 4, 6, 7, 10 ]
   - 
     id: 2
