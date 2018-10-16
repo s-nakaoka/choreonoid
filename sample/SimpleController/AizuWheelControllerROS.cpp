@@ -2,9 +2,7 @@
 #include <cnoid/SharedJoystick>
 #include <boost/format.hpp>
 #include <ros/ros.h>
-#include <actionlib/server/simple_actionserver.h>
-#include <control_msgs/FollowJointTrajectoryAction.h>
-
+#include <std_msgs/twist>
 
 using namespace std;
 using namespace cnoid;
@@ -52,6 +50,12 @@ bool AizuWheelController::initialize(SimpleControllerIO* io)
   dt = io->timeStep();
   actuationMode = Link::JOINT_TORQUE;
 
+  static bool initialized = false;
+  int argc = 0;
+  char** argv;
+  
+  if (!ros::isInitialized()) ros::init(argc, argv, "choreonoid");
+  
   string option = io->optionString();
   if(!option.empty()){
     if(option == "velocity" || option == "position"){
@@ -99,7 +103,7 @@ bool AizuWheelController::initializeWheels(SimpleControllerIO* io, vector<string
 bool AizuWheelController::control()
 {
   joystick->updateState(targetMode);
-
+  
   double hpos =
     joystick->getPosition(targetMode, Joystick::L_STICK_H_AXIS, STICK_THRESH) +
     0.8 * joystick->getPosition(Joystick::DIRECTIONAL_PAD_H_AXIS);
