@@ -76,7 +76,6 @@ items:
                 enableHeadLight: true
                 enableAdditionalLights: true
                 antiAliasing: false
-                isEditable: false
         - 
           id: 6
           name: "AizuSpider"
@@ -171,6 +170,28 @@ items:
                         pointSize: 2
                         voxelSize: 0.01
                         isEditable: false
+                      - 
+                        class: RangeSensorVisualizer
+                        name: TOP_Velodyne
+                        renderingMode: Point
+                        pointSize: 0
+                        voxelSize: 0.01
+                        isEditable: false
+                      - 
+                        class: CameraImageVisualizer
+                        name: FRONT_CAMERA
+                      - 
+                        class: CameraImageVisualizer
+                        name: LEFT_CAMERA
+                      - 
+                        class: CameraImageVisualizer
+                        name: RIGHT_CAMERA
+                      - 
+                        class: CameraImageVisualizer
+                        name: BACK_CAMERA
+                      - 
+                        class: CameraImageVisualizer
+                        name: ARM_CAMERA
             - 
               id: 12
               name: "BodyRos"
@@ -193,24 +214,28 @@ views:
   - 
     id: 0
     plugin: Base
+    class: GeneralSliderView
+  - 
+    id: 1
+    plugin: Base
     class: ItemPropertyView
     mounted: true
   - 
-    id: 1
+    id: 2
     plugin: Base
     class: ItemTreeView
     mounted: true
     state: 
       selected: [ 2 ]
-      checked: [ 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, [ 26, "LRF" ], 27 ]
-      expanded: [ 1, 2, 19, 20, 21, 22, 26 ]
+      checked: [ 5, 6, 7, 8, 9, 10, 11, 12, 13 ]
+      expanded: [ 1, 2, 6 ]
   - 
-    id: 2
+    id: 3
     plugin: Base
     class: MessageView
     mounted: true
   - 
-    id: 3
+    id: 4
     plugin: Base
     class: SceneView
     mounted: true
@@ -221,15 +246,12 @@ views:
       polygonMode: fill
       cullingMode: enabled
       defaultHeadLight: true
-      defaultHeadLightIntensity: 0.6
+      defaultHeadLightIntensity: 0.8
       headLightLightingFromBack: false
       worldLight: true
-      worldLightIntensity: 0.4
-      worldLightAmbient: 0
+      worldLightIntensity: 0.7
+      worldLightAmbient: 0.3
       additionalLights: true
-      shadowLights: 
-        - 0
-        - 1
       fog: true
       floorGrid: false
       floorGridSpan: 10
@@ -253,7 +275,6 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
-          isCurrent: true
           fieldOfView: 0.6978
           near: 0.01
           far: 10000
@@ -267,24 +288,26 @@ views:
           far: 10000
         - 
           camera: BodyTrackingCamera
-          eye: [ 3.99909566, 2.00014477, 1.50332102 ]
-          direction: [ -0.8888041, -0.444491917, -0.111598421 ]
-          up: [ -0.099915642, -0.0497104056, 0.99375336 ]
+          isCurrent: true
+          eye: [ -6.78216281, -2.58080797, 4.11127512 ]
+          direction: [ 0.898583034, 0.361190903, -0.249177975 ]
+          up: [ 0.231199668, 0.0929321094, 0.96845771 ]
         - 
           camera: LIDAR-View
           eye: [ -2.22687542, -3.99500953, 1.86939247 ]
           direction: [ 0.663457093, 0.683105111, -0.3052738 ]
           up: [ 0.212689028, 0.218987375, 0.95226462 ]
-      backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
+      backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: false
   - 
-    id: 4
+    id: 5
     name: "Camera Scene"
     plugin: Base
     class: SceneView
+    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -323,11 +346,6 @@ views:
           camera: [ System, Perspective ]
           isCurrent: true
           fieldOfView: 0.6981
-          ContactWarmstarting: true
-          AutoSleep: false
-          SaveToAGXFileOnStart: false
-          DebugMessageOnConsole: 2
-          children: 32
           near: 0.01
           far: 200
           eye: [ 4, 2, 1.5 ]
@@ -338,18 +356,27 @@ views:
           orthoHeight: 20
           near: 0.01
           far: 200
+        - 
+          camera: BodyTrackingCamera
+          eye: [ -6.78216281, -2.58080797, 4.11127512 ]
+          direction: [ 0.898583034, 0.361190903, -0.249177975 ]
+          up: [ 0.231199668, 0.0929321094, 0.96845771 ]
+        - 
+          camera: LIDAR-View
+          eye: [ -2.22687542, -3.99500953, 1.86939247 ]
+          direction: [ 0.663457093, 0.683105111, -0.3052738 ]
+          up: [ 0.212689028, 0.218987375, 0.95226462 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, [ 26, "LRF" ] ]
+      checked: [ 5, 6, 7, 8, 9, 10, 11, 12, 13 ]
   - 
-    id: 5
+    id: 6
     name: "Scene 2"
     plugin: Base
     class: SceneView
-    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -402,9 +429,9 @@ views:
           far: 100
         - 
           camera: BodyTrackingCamera
-          eye: [ 3.99909566, 2.00014477, 1.50332102 ]
-          direction: [ -0.8888041, -0.444491917, -0.111598421 ]
-          up: [ -0.099915642, -0.0497104056, 0.99375336 ]
+          eye: [ -6.78216281, -2.58080797, 4.11127512 ]
+          direction: [ 0.898583034, 0.361190903, -0.249177975 ]
+          up: [ 0.231199668, 0.0929321094, 0.96845771 ]
         - 
           camera: LIDAR-View
           eye: [ -2.22687542, -3.99500953, 1.86939247 ]
@@ -416,11 +443,10 @@ views:
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: false
   - 
-    id: 6
+    id: 7
     name: "LIDAR"
     plugin: Base
     class: SceneView
-    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -462,7 +488,7 @@ views:
           far: 200
           eye: [ 4, 2, 1.5 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
-          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
+          up: [ -0.0993807989, -0.0496903995, 0.99380799 ]
         - 
           camera: [ System, Orthographic ]
           orthoHeight: 20
@@ -481,42 +507,39 @@ views:
       dedicatedItemTreeViewChecks: true
       checked: [ 6, 10, [ 11, "LRF" ] ]
   - 
-    id: 7
+    id: 8
     name: "Joystick"
     plugin: Base
     class: VirtualJoystickView
-    mounted: true
   - 
-    id: 8
+    id: 9
     plugin: Body
     class: BodyLinkView
     mounted: true
     state: 
       showRotationMatrix: false
   - 
-    id: 9
+    id: 10
     plugin: Body
     class: JointSliderView
     mounted: true
     state: 
       showAllJoints: true
-      jointId: true
+      jointId: false
       name: true
       numColumns: 1
       spinBox: true
       slider: true
       labelOnLeft: true
-      currentBodyItem: 21
   - 
-    id: 10
+    id: 11
     plugin: Body
     class: LinkSelectionView
     mounted: true
     state: 
       listingMode: "Link Tree"
-      currentBodyItem: 21
   - 
-    id: 11
+    id: 12
     name: "MultiCopterMonitor"
     plugin: Multicopter
     class: MulticopterMonitorView
@@ -539,8 +562,6 @@ toolbars:
     snapDistance: 0.025
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
-  "BodyBar": 
-    current: 21
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
@@ -582,87 +603,7 @@ Body:
   "EditableSceneBody": 
     editableSceneBodies: 
       - 
-        bodyItem: 5
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
         bodyItem: 6
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 7
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 8
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 9
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 10
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 11
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 12
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 13
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 14
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 15
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 16
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 17
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 18
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 19
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 20
-        showCenterOfMass: false
-        showPpcom: false
-        showZmp: false
-      - 
-        bodyItem: 21
         showCenterOfMass: false
         showPpcom: false
         showZmp: false
@@ -688,67 +629,50 @@ viewAreas:
     contents: 
       type: splitter
       orientation: horizontal
-      sizes: [ 351, 1498 ]
+      sizes: [ 315, 1534 ]
       children: 
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 508, 507 ]
+          sizes: [ 509, 508 ]
           children: 
             - 
               type: pane
-              views: [ 1 ]
-              current: 1
+              views: [ 2 ]
+              current: 2
             - 
               type: pane
-              views: [ 0, 10 ]
-              current: 0
+              views: [ 1, 11 ]
+              current: 1
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 726, 289 ]
+          sizes: [ 782, 235 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 699, 793 ]
+              sizes: [ 664, 864 ]
               children: 
                 - 
-                  type: splitter
-                  orientation: vertical
-                  sizes: [ 361, 359 ]
-                  children: 
-                    - 
-                      type: pane
-                      views: [ 5 ]
-                      current: 5
-                    - 
-                      type: pane
-                      views: [ 8, 9, 6 ]
-                      current: 6
+                  type: pane
+                  views: [ 9, 10, 5 ]
+                  current: 5
                 - 
                   type: pane
-                  views: [ 3 ]
-                  current: 3
+                  views: [ 4 ]
+                  current: 4
             - 
-              type: splitter
-              orientation: horizontal
-              sizes: [ 900, 592 ]
-              children: 
-                - 
-                  type: pane
-                  views: [ 2 ]
-                  current: 2
-                - 
-                  type: pane
-                  views: [ 7 ]
-                  current: 7
+              type: pane
+              views: [ 3 ]
+              current: 3
 layoutOfToolBars: 
   rows: 
     - 
       - { name: "FileBar", x: 0, priority: 0 }
-      - { name: "ScriptBar", x: 48, priority: 0 }
-      - { name: "SimulationBar", x: 95, priority: 1 }
-      - { name: "TimeBar", x: 96, priority: 0 }
-      - { name: "SceneBar", x: 1336, priority: 2 }
-      - { name: "BodyBar", x: 1702, priority: 0 }
+      - { name: "CaptureBar", x: 47, priority: 2 }
+      - { name: "ScriptBar", x: 47, priority: 0 }
+      - { name: "SimulationBar", x: 93, priority: 1 }
+      - { name: "TimeBar", x: 94, priority: 0 }
+      - { name: "SceneBar", x: 1324, priority: 4 }
+      - { name: "KinematicsBar", x: 1687, priority: 3 }
