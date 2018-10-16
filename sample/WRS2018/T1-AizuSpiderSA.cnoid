@@ -236,15 +236,12 @@ views:
       polygonMode: fill
       cullingMode: enabled
       defaultHeadLight: true
-      defaultHeadLightIntensity: 0.6
+      defaultHeadLightIntensity: 0.8
       headLightLightingFromBack: false
       worldLight: true
-      worldLightIntensity: 0.4
-      worldLightAmbient: 0
+      worldLightIntensity: 0.7
+      worldLightAmbient: 0.3
       additionalLights: true
-      shadowLights: 
-        - 0
-        - 1
       fog: true
       floorGrid: false
       floorGridSpan: 10
@@ -282,15 +279,15 @@ views:
         - 
           camera: BodyTrackingCamera
           isCurrent: true
-          eye: [ -5.59600677, -0.746972712, 2.80295125 ]
-          direction: [ 0.904921051, -0.00710085589, -0.425520235 ]
-          up: [ 0.425507172, -0.00333412777, 0.90494891 ]
+          eye: [ -6.78216281, -2.58080797, 4.11127512 ]
+          direction: [ 0.898583034, 0.361190903, -0.249177975 ]
+          up: [ 0.231199668, 0.0929321094, 0.96845771 ]
         - 
           camera: LIDAR-View
-          eye: [ -2.2268871, -3.99500266, 1.8693927 ]
-          direction: [ 0.66345884, 0.683103395, -0.305273842 ]
-          up: [ 0.212689602, 0.218986876, 0.952264607 ]
-      backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
+          eye: [ -2.22687542, -3.99500953, 1.86939247 ]
+          direction: [ 0.663457093, 0.683105111, -0.3052738 ]
+          up: [ 0.212689028, 0.218987375, 0.95226462 ]
+      backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -300,6 +297,7 @@ views:
     name: "Camera Scene"
     plugin: Base
     class: SceneView
+    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -350,26 +348,25 @@ views:
           far: 200
         - 
           camera: BodyTrackingCamera
-          eye: [ -5.59600677, -0.746972712, 2.80295125 ]
-          direction: [ 0.904921051, -0.00710085589, -0.425520235 ]
-          up: [ 0.425507172, -0.00333412777, 0.90494891 ]
+          eye: [ -6.78216281, -2.58080797, 4.11127512 ]
+          direction: [ 0.898583034, 0.361190903, -0.249177975 ]
+          up: [ 0.231199668, 0.0929321094, 0.96845771 ]
         - 
           camera: LIDAR-View
-          eye: [ -2.2268871, -3.99500266, 1.8693927 ]
-          direction: [ 0.66345884, 0.683103395, -0.305273842 ]
-          up: [ 0.212689602, 0.218986876, 0.952264607 ]
+          eye: [ -2.22687542, -3.99500953, 1.86939247 ]
+          direction: [ 0.663457093, 0.683105111, -0.3052738 ]
+          up: [ 0.212689028, 0.218987375, 0.95226462 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 4, 5, 6, 7, 8, 9, 10, 11, 12 ]
+      checked: [ 5, 6, 7, 8, 9, 10, 11, 12, 13 ]
   - 
     id: 6
     name: "Scene 2"
     plugin: Base
     class: SceneView
-    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -440,7 +437,6 @@ views:
     name: "LIDAR"
     plugin: Base
     class: SceneView
-    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -505,7 +501,6 @@ views:
     name: "Joystick"
     plugin: Base
     class: VirtualJoystickView
-    mounted: true
   - 
     id: 9
     plugin: Body
@@ -520,7 +515,7 @@ views:
     mounted: true
     state: 
       showAllJoints: true
-      jointId: true
+      jointId: false
       name: true
       numColumns: 1
       spinBox: true
@@ -624,7 +619,7 @@ viewAreas:
     contents: 
       type: splitter
       orientation: horizontal
-      sizes: [ 351, 1498 ]
+      sizes: [ 315, 1534 ]
       children: 
         - 
           type: splitter
@@ -683,8 +678,9 @@ layoutOfToolBars:
   rows: 
     - 
       - { name: "FileBar", x: 0, priority: 0 }
-      - { name: "ScriptBar", x: 48, priority: 0 }
-      - { name: "SimulationBar", x: 95, priority: 1 }
-      - { name: "TimeBar", x: 96, priority: 0 }
-      - { name: "SceneBar", x: 1336, priority: 2 }
-      - { name: "BodyBar", x: 1702, priority: 0 }
+      - { name: "CaptureBar", x: 47, priority: 2 }
+      - { name: "ScriptBar", x: 47, priority: 0 }
+      - { name: "SimulationBar", x: 93, priority: 1 }
+      - { name: "TimeBar", x: 94, priority: 0 }
+      - { name: "SceneBar", x: 1324, priority: 4 }
+      - { name: "KinematicsBar", x: 1687, priority: 3 }
