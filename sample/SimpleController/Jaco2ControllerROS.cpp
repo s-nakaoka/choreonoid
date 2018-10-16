@@ -38,7 +38,7 @@ public:
     for(int i=0; i<body->numJoints(); i++){
       Link* joint = body->joint(i);
       // joint = io->body()->link("SHOULDER");
-      joint->setActuationMode(Link::JOINT_TORQUE);
+      joint->setActuationMode(Link::JOINT_DISPLACEMENT);
       io->enableIO(joint);
       q_ref.push_back(joint->q());
     }
@@ -51,36 +51,21 @@ public:
   virtual bool control() override
   {
     // Super SHIMOE Params
-    static const double P = 200.0;
-    static const double D = 50.0;
-
+    static const double P = 20.0;
+    static const double D = 5.0;
     
     for(int i=0; i < body->numJoints(); ++i){
       Link* joint = body->joint(i);
       double q = joint->q();
       double dq = (q - q_prev[i]) / dt;
-      double u = (q_ref[i] - q) * P + (0.0 - dq) * D;
+      double rq = (q_ref[i] - q) * P + (0.0 - dq) * D;
       cout << "=== q : " << q << " === " << endl;
       cout << "=== dq : " << dq << " ===" << endl;
-      cout << "=== u : " << u << " ===" << endl;
+      cout << "=== rq : " << rq << " ===" << endl;
       q_prev[i] = q;
-      joint->u() = u;
+      joint->q() = rq;
     }
     return true;
-
-
-    // Super SHIMOE TIME
-    // // PD gains
-    // static const double P = 200.0;
-    // static const double D = 50.0;
-
-    // double q = joint->q(); // input
-    // double dq = (q - q_prev) / dt;
-    // double dq_ref = 0.0;
-    // joint->u() = P * (q_ref - q) + D * (dq_ref - dq); // output
-    // q_prev = q;
-
-    // return true;
   }
 };
 
