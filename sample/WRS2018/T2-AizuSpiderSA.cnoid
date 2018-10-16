@@ -5,7 +5,7 @@ items:
   class: RootItem
   children: 
     - 
-      id: 2
+      id: 1
       name: "World"
       plugin: Body
       class: WorldItem
@@ -15,7 +15,7 @@ items:
         materialTableFile: "${SHARE}/default/materials.yaml"
       children: 
         - 
-          id: 3
+          id: 2
           name: "T2"
           plugin: Base
           class: SubProjectItem
@@ -24,7 +24,7 @@ items:
             format: PROJECT
             saveMode: "Manual save"
         - 
-          id: 4
+          id: 3
           name: "AGXSimulator"
           plugin: AGXDynamics
           class: AGXSimulatorItem
@@ -50,7 +50,7 @@ items:
             DebugMessageOnConsole: 2
           children: 
             - 
-              id: 5
+              id: 4
               name: "GLVisionSimulator"
               plugin: Body
               class: GLVisionSimulatorItem
@@ -68,22 +68,22 @@ items:
                 enableAdditionalLights: true
                 antiAliasing: false
         - 
-          id: 6
+          id: 5
           name: "AizuSpider"
           plugin: Body
           class: BodyItem
           data: 
             modelFile: "${SHARE}/model/AizuSpider/AizuSpiderSA.body"
             currentBaseLink: "CHASSIS"
-            rootPosition: [ 0.994333098, -4.78010842e-05, 0.0366734973 ]
+            rootPosition: [ 1.59815553, -0.119101773, 0.0366611479 ]
             rootAttitude: [ 
-              0.999999668, -0.000371536724, -0.000725542436, 
-              0.000371510196, 0.99999993, -3.66976428e-05, 
-              0.00072555602, 3.64280841e-05, 0.999999736 ]
+              0.949842193, 0.31272914, -0.00054162078, 
+              -0.312729114, 0.949842347, 0.000133729266, 
+              0.000556275391, 4.23588874e-05, 0.999999844 ]
             jointPositions: [ 
-              -0.177920, -0.177980, -0.172861, -0.172943, -3.907394,  0.872665,  0.331613,  0.236942,  3.578008, -4.099523, 
-               0.292487,  1.153488,  2.007129, -0.084011, -0.091824, -0.084044, -0.091853, -0.451500, -0.034577, -0.451445, 
-              -0.034506, -0.022384, -0.172237, -0.022338, -0.172296 ]
+               0.126031,  0.126031,  0.126031,  0.126031, -1.676913,  0.959705,  0.951907,  0.024360,  0.193043, -0.015934, 
+               0.006396,  0.010721,  0.001988,  6.917800,  6.906598,  8.190699,  8.168996,  11.850778,  6.917795,  13.632685, 
+               8.190698,  12.120469,  6.917800,  14.155073,  8.190698 ]
             initialRootPosition: [ 1, 0, 0.035 ]
             initialRootAttitude: [ 
               1, 0, 0, 
@@ -99,7 +99,7 @@ items:
             isEditable: true
           children: 
             - 
-              id: 7
+              id: 6
               name: "AizuSpiderController"
               plugin: Body
               class: SimpleControllerItem
@@ -112,7 +112,7 @@ items:
                 isOldTargetVariableMode: false
               children: 
                 - 
-                  id: 8
+                  id: 7
                   name: "Jaco2Controller"
                   plugin: Body
                   class: SimpleControllerItem
@@ -122,6 +122,18 @@ items:
                     controller: "Jaco2Controller.so"
                     baseDirectory: "Controller directory"
                     reloading: true
+                    isOldTargetVariableMode: false
+                - 
+                  id: 8
+                  name: "JoySubscriber"
+                  plugin: Body
+                  class: SimpleControllerItem
+                  data: 
+                    isNoDelayMode: false
+                    controllerOptions: ""
+                    controller: "JoyTopicSubscriberController.so"
+                    baseDirectory: "Controller directory"
+                    reloading: false
                     isOldTargetVariableMode: false
             - 
               id: 9
@@ -157,24 +169,28 @@ views:
   - 
     id: 0
     plugin: Base
+    class: GeneralSliderView
+  - 
+    id: 1
+    plugin: Base
     class: ItemPropertyView
     mounted: true
   - 
-    id: 1
+    id: 2
     plugin: Base
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 10 ]
-      checked: [3, 4, 5, 6, 7, 8, 9, 10, 11 ]
-      expanded: [ 2, 4, 6, 7, 10 ]
+      selected: [ 3 ]
+      checked: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]
+      expanded: [ 1, 3, 5, 6, 10 ]
   - 
-    id: 2
+    id: 3
     plugin: Base
     class: MessageView
     mounted: true
   - 
-    id: 3
+    id: 4
     plugin: Base
     class: SceneView
     mounted: true
@@ -228,7 +244,7 @@ views:
         - 
           camera: BodyTrackingCamera
           isCurrent: true
-          eye: [ -0.607748018, -0.423728299, 0.857768182 ]
+          eye: [ -0.00392558936, -0.542782271, 0.857755833 ]
           direction: [ 0.962129087, 0.147434452, -0.229283016 ]
           up: [ 0.226637528, 0.0347294144, 0.973359799 ]
       backgroundColor: [ 0, 0, 0 ]
@@ -237,7 +253,7 @@ views:
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: false
   - 
-    id: 4
+    id: 5
     name: "Camera Scene"
     plugin: Base
     class: SceneView
@@ -294,7 +310,7 @@ views:
           isCurrent: true
         - 
           camera: BodyTrackingCamera
-          eye: [ -0.607748018, -0.423728299, 0.857768182 ]
+          eye: [ -0.00392558936, -0.542782271, 0.857755833 ]
           direction: [ 0.962129087, 0.147434452, -0.229283016 ]
           up: [ 0.226637528, 0.0347294144, 0.973359799 ]
       backgroundColor: [ 0, 0, 0 ]
@@ -302,16 +318,16 @@ views:
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 6, 9 ]
+      checked: [ 5, 9 ]
   - 
-    id: 5
+    id: 6
     plugin: Body
     class: BodyLinkView
     mounted: true
     state: 
       showRotationMatrix: false
   - 
-    id: 6
+    id: 7
     plugin: Body
     class: JointSliderView
     mounted: true
@@ -323,23 +339,23 @@ views:
       spinBox: true
       slider: true
       labelOnLeft: true
-      currentBodyItem: 6
+      currentBodyItem: 5
   - 
-    id: 7
+    id: 8
     plugin: Body
     class: LinkSelectionView
     mounted: true
     state: 
       listingMode: "Link List"
-      currentBodyItem: 6
+      currentBodyItem: 5
 toolbars: 
   "TimeBar": 
     minTime: 0
-    maxTime: 30
+    maxTime: 68.88
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
-    currentTime: 5.45
+    currentTime: 68.88
     speedScale: 1
     syncToOngoingUpdates: true
     autoExpansion: true
@@ -352,7 +368,7 @@ toolbars:
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
   "BodyBar": 
-    current: 6
+    current: 5
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
@@ -394,7 +410,7 @@ Body:
   "EditableSceneBody": 
     editableSceneBodies: 
       - 
-        bodyItem: 6
+        bodyItem: 5
         showCenterOfMass: false
         showPpcom: false
         showZmp: false
@@ -429,12 +445,12 @@ viewAreas:
           children: 
             - 
               type: pane
-              views: [ 1 ]
-              current: 1
+              views: [ 2 ]
+              current: 2
             - 
               type: pane
-              views: [ 0, 7 ]
-              current: 0
+              views: [ 1, 8 ]
+              current: 1
         - 
           type: splitter
           orientation: vertical
@@ -447,16 +463,16 @@ viewAreas:
               children: 
                 - 
                   type: pane
-                  views: [ 5, 6, 4 ]
-                  current: 4
+                  views: [ 6, 7, 5 ]
+                  current: 5
                 - 
                   type: pane
-                  views: [ 3 ]
-                  current: 3
+                  views: [ 4 ]
+                  current: 4
             - 
               type: pane
-              views: [ 2 ]
-              current: 2
+              views: [ 3 ]
+              current: 3
 layoutOfToolBars: 
   rows: 
     - 

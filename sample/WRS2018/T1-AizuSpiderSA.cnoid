@@ -75,15 +75,15 @@ items:
           data: 
             modelFile: "${SHARE}/model/AizuSpider/AizuSpiderSA.body"
             currentBaseLink: "CHASSIS"
-            rootPosition: [ 0.999997641, -1.01505485e-06, 0.0366692036 ]
+            rootPosition: [ 0.999997645, -1.04768036e-06, 0.0366691911 ]
             rootAttitude: [ 
-              0.999999852, -5.27098338e-05, -0.000541154198, 
-              5.27018988e-05, 0.999999999, -1.46773011e-05, 
-              0.000541154971, 1.46487791e-05, 0.999999853 ]
+              0.999999852, -5.26921757e-05, -0.000541047329, 
+              5.26843628e-05, 0.999999999, -1.44545068e-05, 
+              0.00054104809, 1.44259999e-05, 0.999999854 ]
             jointPositions: [ 
               -0.000000, -0.000000, -0.000000, -0.000000, -1.570796,  2.635447,  0.471239, -1.623156,  0.104720,  1.745329, 
-               0.000000,  0.000000,  0.000000,  0.000000, -0.008322,  0.000000, -0.008340, -0.013689, -0.000001, -0.013649, 
-              -0.000001, -0.023005,  0.000000, -0.023045,  0.000000 ]
+               0.000000,  0.000000,  0.000000,  0.000000, -0.008322,  0.000000, -0.008340, -0.013647, -0.000002, -0.013639, 
+              -0.000002, -0.023005,  0.000000, -0.023045,  0.000000 ]
             initialRootPosition: [ 1, 0, 0.035 ]
             initialRootAttitude: [ 
               1, 0, 0, 
@@ -183,15 +183,27 @@ items:
                       - 
                         class: CameraImageVisualizer
                         name: ARM_CAMERA
+                - 
+                  id: 11
+                  name: "JoySubscriber"
+                  plugin: Body
+                  class: SimpleControllerItem
+                  data: 
+                    isNoDelayMode: false
+                    controllerOptions: ""
+                    controller: "JoyTopicSubscriberController.so"
+                    baseDirectory: "Controller directory"
+                    reloading: false
+                    isOldTargetVariableMode: false
             - 
-              id: 11
+              id: 12
               name: "BodyRos"
               plugin: RosBody
               class: BodyRosItem
               data: 
                 jointStateUpdateRate: 100
         - 
-          id: 12
+          id: 13
           name: "WorldRos"
           plugin: RosBody
           class: WorldRosItem
@@ -217,8 +229,9 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      checked: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ]
-      expanded: [ 1, 2, 3, 5, 6 ]
+      selected: [ 11 ]
+      checked: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ]
+      expanded: [ 1, 3, 5, 6 ]
   - 
     id: 3
     plugin: Base
@@ -279,14 +292,14 @@ views:
         - 
           camera: BodyTrackingCamera
           isCurrent: true
-          eye: [ -6.78216281, -2.58080797, 4.11127512 ]
-          direction: [ 0.898583034, 0.361190903, -0.249177975 ]
-          up: [ 0.231199668, 0.0929321094, 0.96845771 ]
+          eye: [ -5.59600648, -0.746972012, 2.80295211 ]
+          direction: [ 0.904921005, -0.00710096666, -0.42552033 ]
+          up: [ 0.425507269, -0.00333393368, 0.904948866 ]
         - 
           camera: LIDAR-View
-          eye: [ -2.22687542, -3.99500953, 1.86939247 ]
-          direction: [ 0.663457093, 0.683105111, -0.3052738 ]
-          up: [ 0.212689028, 0.218987375, 0.95226462 ]
+          eye: [ -2.22688697, -3.99500223, 1.86939392 ]
+          direction: [ 0.66345882, 0.683103315, -0.305274065 ]
+          up: [ 0.212689708, 0.218987084, 0.952264536 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -297,7 +310,6 @@ views:
     name: "Camera Scene"
     plugin: Base
     class: SceneView
-    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -348,25 +360,26 @@ views:
           far: 200
         - 
           camera: BodyTrackingCamera
-          eye: [ -6.78216281, -2.58080797, 4.11127512 ]
-          direction: [ 0.898583034, 0.361190903, -0.249177975 ]
-          up: [ 0.231199668, 0.0929321094, 0.96845771 ]
+          eye: [ -5.59600648, -0.746972012, 2.80295211 ]
+          direction: [ 0.904921005, -0.00710096666, -0.42552033 ]
+          up: [ 0.425507269, -0.00333393368, 0.904948866 ]
         - 
           camera: LIDAR-View
-          eye: [ -2.22687542, -3.99500953, 1.86939247 ]
-          direction: [ 0.663457093, 0.683105111, -0.3052738 ]
-          up: [ 0.212689028, 0.218987375, 0.95226462 ]
+          eye: [ -2.22688697, -3.99500223, 1.86939392 ]
+          direction: [ 0.66345882, 0.683103315, -0.305274065 ]
+          up: [ 0.212689708, 0.218987084, 0.952264536 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 5, 6, 7, 8, 9, 10, 11, 12, 13 ]
+      checked: [ 5, 6, 7, 8, 9, 10, 12, 13 ]
   - 
     id: 6
     name: "Scene 2"
     plugin: Base
     class: SceneView
+    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -419,14 +432,14 @@ views:
           far: 100
         - 
           camera: BodyTrackingCamera
-          eye: [ -5.59600677, -0.746972712, 2.80295125 ]
-          direction: [ 0.904921051, -0.00710085589, -0.425520235 ]
-          up: [ 0.425507172, -0.00333412777, 0.90494891 ]
+          eye: [ -5.59600648, -0.746972012, 2.80295211 ]
+          direction: [ 0.904921005, -0.00710096666, -0.42552033 ]
+          up: [ 0.425507269, -0.00333393368, 0.904948866 ]
         - 
           camera: LIDAR-View
-          eye: [ -2.2268871, -3.99500266, 1.8693927 ]
-          direction: [ 0.66345884, 0.683103395, -0.305273842 ]
-          up: [ 0.212689602, 0.218986876, 0.952264607 ]
+          eye: [ -2.22688697, -3.99500223, 1.86939392 ]
+          direction: [ 0.66345882, 0.683103315, -0.305274065 ]
+          up: [ 0.212689708, 0.218987084, 0.952264536 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -437,6 +450,7 @@ views:
     name: "LIDAR"
     plugin: Base
     class: SceneView
+    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -487,9 +501,9 @@ views:
         - 
           camera: LIDAR-View
           isCurrent: true
-          eye: [ -2.2268871, -3.99500266, 1.8693927 ]
-          direction: [ 0.66345884, 0.683103395, -0.305273842 ]
-          up: [ 0.212689602, 0.218986876, 0.952264607 ]
+          eye: [ -2.22688697, -3.99500223, 1.86939392 ]
+          direction: [ 0.66345882, 0.683103315, -0.305274065 ]
+          up: [ 0.212689708, 0.218987084, 0.952264536 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -501,6 +515,7 @@ views:
     name: "Joystick"
     plugin: Base
     class: VirtualJoystickView
+    mounted: true
   - 
     id: 9
     plugin: Body
@@ -521,6 +536,7 @@ views:
       spinBox: true
       slider: true
       labelOnLeft: true
+      currentBodyItem: 5
   - 
     id: 11
     plugin: Body
@@ -528,6 +544,7 @@ views:
     mounted: true
     state: 
       listingMode: "Link Tree"
+      currentBodyItem: 5
   - 
     id: 12
     name: "MultiCopterMonitor"
@@ -536,11 +553,11 @@ views:
 toolbars: 
   "TimeBar": 
     minTime: 0
-    maxTime: 46.46
+    maxTime: 77.335
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
-    currentTime: 24.155
+    currentTime: 77.335
     speedScale: 1
     syncToOngoingUpdates: true
     autoExpansion: true
@@ -552,6 +569,8 @@ toolbars:
     snapDistance: 0.025
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
+  "BodyBar": 
+    current: 5
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
@@ -624,7 +643,7 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 497, 496 ]
+          sizes: [ 508, 507 ]
           children: 
             - 
               type: pane
@@ -637,17 +656,17 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 710, 283 ]
+          sizes: [ 726, 289 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 699, 793 ]
+              sizes: [ 716, 812 ]
               children: 
                 - 
                   type: splitter
                   orientation: vertical
-                  sizes: [ 353, 351 ]
+                  sizes: [ 361, 359 ]
                   children: 
                     - 
                       type: pane
@@ -664,7 +683,7 @@ viewAreas:
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 900, 592 ]
+              sizes: [ 922, 606 ]
               children: 
                 - 
                   type: pane
