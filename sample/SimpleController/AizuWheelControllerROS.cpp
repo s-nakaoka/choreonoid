@@ -2,7 +2,8 @@
 #include <cnoid/SharedJoystick>
 #include <boost/format.hpp>
 #include <ros/ros.h>
-#include <std_msgs/twist>
+#include <ros/console.h>
+#include <geometry_msgs/twist>
 
 using namespace std;
 using namespace cnoid;
@@ -50,12 +51,13 @@ bool AizuWheelController::initialize(SimpleControllerIO* io)
   dt = io->timeStep();
   actuationMode = Link::JOINT_TORQUE;
 
+  //initialize ROS
   static bool initialized = false;
   int argc = 0;
   char** argv;
   
   if (!ros::isInitialized()) ros::init(argc, argv, "choreonoid");
-  
+  /************/
   string option = io->optionString();
   if(!option.empty()){
     if(option == "velocity" || option == "position"){
@@ -78,6 +80,29 @@ bool AizuWheelController::initialize(SimpleControllerIO* io)
   return true;
 }
 
+bool AizuWheelController::start()
+{
+  rosnode_ = boost::shared_ptr<ros::NodeHandle>(new ros::NodeHandle(name));
+  async_ros_spin_.reset(new ros::AsyncSpinner(0));
+  async_ros_spin_->start();
+
+  return true;
+}
+
+void BodyRosItem::stop()
+{
+  if (ros::ok()) {
+    if (async_ros_spin_) {
+      async_ros_spin_->stop();
+    }
+
+    if (rosnode_) {
+      rosnode_->shutdown();
+    }
+  }
+
+  return;
+}
 
 bool AizuWheelController::initializeWheels(SimpleControllerIO* io, vector<string>& names)
 {
