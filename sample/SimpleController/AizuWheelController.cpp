@@ -93,8 +93,8 @@ bool AizuWheelController::control()
         joystick->getPosition(targetMode, Joystick::L_STICK_V_AXIS, STICK_THRESH) +
         0.8 * joystick->getPosition(Joystick::DIRECTIONAL_PAD_V_AXIS));
     
-    double dq_L = 4.0 * (vpos + 0.4 * hpos);
-    double dq_R = 4.0 * (vpos - 0.4 * hpos);
+    double dq_L = 4.5 * (vpos + 0.4 * hpos);
+    double dq_R = 4.5 * (vpos - 0.4 * hpos);
 
     switch(actuationMode){
 
