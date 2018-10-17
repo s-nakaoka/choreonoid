@@ -118,7 +118,7 @@ items:
                   class: SimpleControllerItem
                   data: 
                     isNoDelayMode: false
-                    controllerOptions: ""
+                    controllerOptions: "AizuSpider/joy"
                     controller: "Jaco2Controller.so"
                     baseDirectory: "Controller directory"
                     reloading: true
@@ -306,6 +306,7 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
+      selected: [ 11 ]
       checked: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ]
       expanded: [ 1, 3, 5, 6, 13, 14 ]
   - 
@@ -368,17 +369,17 @@ views:
           far: 10000
         - 
           camera: BodyTrackingCamera
-          eye: [ 12.8823843, 1.1808219, 1.50072892 ]
-          direction: [ -0.993792722, 0.00104803304, -0.111242651 ]
-          up: [ -0.111242761, -4.76885658e-05, 0.993793262 ]
+          eye: [ 4, 2, 1.5 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
         - 
           camera: LIDAR-View
           eye: [ 4.62912565, -1.3880322, 1.86860809 ]
           direction: [ 0.899274324, 0.31339675, -0.305103535 ]
-          up: [ 0.2881475, 0.100295549, 0.952319181 ]
+          up: [ 0.288147501, 0.100295549, 0.95231918 ]
         - 
           camera: BodyTrackingCamera
-          eye: [ 5.24334714, 2.05257596, 1.64940012 ]
+          eye: [ 4, 2, 1.5 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
           up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0, 0, 0 ]
@@ -440,20 +441,20 @@ views:
           far: 200
         - 
           camera: BodyTrackingCamera
-          eye: [ 12.8823843, 1.1808219, 1.50072892 ]
-          direction: [ -0.993792722, 0.00104803304, -0.111242651 ]
-          up: [ -0.111242761, -4.76885658e-05, 0.993793262 ]
+          eye: [ 4, 2, 1.5 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
         - 
           camera: LIDAR-View
           eye: [ 4.62912565, -1.3880322, 1.86860809 ]
           direction: [ 0.899274324, 0.31339675, -0.305103535 ]
-          up: [ 0.2881475, 0.100295549, 0.952319181 ]
+          up: [ 0.288147501, 0.100295549, 0.95231918 ]
         - 
           camera: [ DoubleArmV7, FRAME_FRONT_CAMERA ]
           isCurrent: true
         - 
           camera: BodyTrackingCamera
-          eye: [ 5.24334714, 2.05257596, 1.64940012 ]
+          eye: [ 4, 2, 1.5 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
           up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0, 0, 0 ]
@@ -520,17 +521,17 @@ views:
           far: 100
         - 
           camera: BodyTrackingCamera
-          eye: [ 12.8823843, 1.1808219, 1.50072892 ]
-          direction: [ -0.993792722, 0.00104803304, -0.111242651 ]
-          up: [ -0.111242761, -4.76885658e-05, 0.993793262 ]
+          eye: [ 4, 2, 1.5 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
         - 
           camera: LIDAR-View
           eye: [ 4.62912565, -1.3880322, 1.86860809 ]
           direction: [ 0.899274324, 0.31339675, -0.305103535 ]
-          up: [ 0.2881475, 0.100295549, 0.952319181 ]
+          up: [ 0.288147501, 0.100295549, 0.95231918 ]
         - 
           camera: BodyTrackingCamera
-          eye: [ 5.24334714, 2.05257596, 1.64940012 ]
+          eye: [ 4, 2, 1.5 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
           up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
@@ -596,7 +597,7 @@ views:
           isCurrent: true
           eye: [ 4.62912565, -1.3880322, 1.86860809 ]
           direction: [ 0.899274324, 0.31339675, -0.305103535 ]
-          up: [ 0.2881475, 0.100295549, 0.952319181 ]
+          up: [ 0.288147501, 0.100295549, 0.95231918 ]
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -662,8 +663,6 @@ toolbars:
     snapDistance: 0.025
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
-  "BodyBar": 
-    current: 13
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
