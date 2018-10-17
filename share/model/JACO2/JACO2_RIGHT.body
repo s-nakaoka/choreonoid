@@ -44,7 +44,7 @@ links:
     jointType: fixed
     centerOfMass: [ 0, 0, 0.1255 ]
     mass: 0.46734
-    inertia: [a
+    inertia: [
       0.00095, 0,       0,
       0,       0.00095, 0,
       0,       0,       0.000374
