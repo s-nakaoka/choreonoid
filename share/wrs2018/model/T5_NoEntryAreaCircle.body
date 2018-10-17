@@ -1,0 +1,24 @@
+format: ChoreonoidBody
+formatVersion: 1.0
+name: NoEntryAreaCircle
+
+links:
+  -
+    name: body
+    jointType: fixed
+    autoSleep: true
+    elements:
+      -
+        type: Visual
+        elements:
+          -
+            type: Shape
+            rotation: [ 1, 0,  0, 90 ]
+            geometry:
+              type: Cylinder
+              radius: 5
+              height: 0.05
+            appearance:
+              material:
+                diffuseColor: [ 0.8, 0, 0 ]
+                transparency: 0.6

@@ -336,7 +336,7 @@ items:
         isEditable: true
     - 
       id: 15
-      name: "TargetT2_35-50-F-r"
+      name: "TargetT2_35-50"
       plugin: Body
       class: BodyItem
       data: 
@@ -348,7 +348,7 @@ items:
           0, 1, 0, 
           0, 0, 1 ]
         jointPositions: [  ]
-        initialRootPosition: [ 7.5, 0.8, 0 ]
+        initialRootPosition: [ 11.5, 0.76, 0.8721 ]
         initialRootAttitude: [ 
           1, 0, 0, 
           0, 1, 0, 
@@ -359,7 +359,7 @@ items:
         isEditable: false
     - 
       id: 16
-      name: "TargetT2_35-50-R-r"
+      name: "TargetT2_35-50"
       plugin: Body
       class: BodyItem
       data: 
