@@ -26,6 +26,13 @@ definitions:
     width: &CAMERA_SPEC_width 640
     height: &CAMERA_SPEC_height 480
     frameRate: &CAMERA_SPEC_frameRate 30
+  RANGE_CAMERA_SPEC:
+    format: &RANGE_CAMERA_SPEC_format COLOR_DEPTH
+    fieldOfView: &RANGE_CAMERA_SPEC_fieldOfView 117.5
+    width: &RANGE_CAMERA_SPEC_width 640
+    height: &RANGE_CAMERA_SPEC_height 480
+    frameRate: &RANGE_CAMERA_SPEC_frameRate 30
+    
 
 STL: &STL
   type: Resource
@@ -37,7 +44,7 @@ links:
     jointType: fixed
     centerOfMass: [ 0, 0, 0.1255 ]
     mass: 0.46734
-    inertia: [
+    inertia: [a
       0.00095, 0,       0,
       0,       0.00095, 0,
       0,       0,       0.000374
@@ -410,6 +417,18 @@ links:
         on: true
         nearClipDistance: 0.02
         #farClipDistance: 3.5
+      -
+        type: RangeCamera
+        name: REALSENSE
+        translation: [ 0, 0, 0.1055 ]
+        rotation: [ 0, 1, 0, 180 ]
+        format: *RANGE_CAMERA_SPEC_format
+        fieldOfView: *RANGE_CAMERA_SPEC_fieldOfView
+        width: *RANGE_CAMERA_SPEC_width
+        height: *RANGE_CAMERA_SPEC_height
+        frameRate: *RANGE_CAMERA_SPEC_frameRate
+        on: true
+        nearClipDistance: 0.02
   -
     name: FINGER1
     parent: HAND
