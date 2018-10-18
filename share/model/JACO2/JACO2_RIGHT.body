@@ -421,7 +421,8 @@ links:
         type: Camera
         name: Kinect
         translation: [ 0.03116, 0, 0.11498 ]
-        rotation: [ [ 0, 0, 1, 180 ], [ 0, -1, 0, 55 ] ]
+        rotation: [ 0, 1, 0, 180 ]
+        #rotation: [ [ 0, 0, 1, 180 ], [ 0, -1, 0, 55 ] ]
         #rotation: [ [ 1, 0, 0, 90 ], [ 0, 1, 0, -90 ] ]
         format: COLOR_DEPTH
         fieldOfView: 62
