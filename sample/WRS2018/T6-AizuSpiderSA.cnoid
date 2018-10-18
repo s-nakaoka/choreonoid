@@ -75,15 +75,15 @@ items:
           data: 
             modelFile: "${SHARE}/model/AizuSpider/AizuSpiderSA.body"
             currentBaseLink: "CHASSIS"
-            rootPosition: [ 3, -1, 0.035 ]
+            rootPosition: [ 3.30413749, -0.700863105, 0.0366597562 ]
             rootAttitude: [ 
-              1, 0, 0, 
-              0, 1, 0, 
-              0, 0, 1 ]
+              0.702179503, -0.711999859, -0.000382284631, 
+              0.711999753, 0.702179607, -0.000388404995, 
+              0.000544976773, 5.43463361e-07, 0.999999851 ]
             jointPositions: [ 
-               0.000000,  0.000000,  0.000000,  0.000000, -1.570796,  0.872665,  0.872665,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000,  0.000000,  0.000000,  0.000000 ]
+              -0.000000, -0.000000, -0.000000, -0.000000, -1.571843,  0.873007,  0.866221, -0.003008,  0.003567, -0.000258, 
+               0.000404,  0.004724, -0.000000,  6.793868,  6.780898,  3.558454,  3.549651,  11.093853,  6.793867,  5.304991, 
+               3.558453,  11.969430,  6.793867,  5.998063,  3.558454 ]
             initialRootPosition: [ 3, -1, 0.035 ]
             initialRootAttitude: [ 
               1, 0, 0, 
@@ -163,16 +163,16 @@ items:
           data: 
             modelFile: "${SHARE}/model/DoubleArmV7/DoubleArmV7A.body"
             currentBaseLink: "TFRAME"
-            rootPosition: [ 1.5, 1, 0.5376 ]
+            rootPosition: [ 1.50007377, 1.00002722, 0.537593069 ]
             rootAttitude: [ 
-              1, 0, 0, 
-              0, 1, 0, 
-              0, 0, 1 ]
+              0.999999953, 2.39215545e-06, -0.000307308909, 
+              -2.37660739e-06, 0.999999999, 5.05945918e-05, 
+              0.000307309029, -5.05938591e-05, 0.999999952 ]
             jointPositions: [ 
-               0.391500, -0.762258, -1.310742,  2.654646,  0.000000,  0.101593, -0.349066, -0.349066, -0.000000, -0.000000, 
-               0.000000,  0.000000, -0.000000, -0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000 ]
+               0.391500, -0.762258, -1.310731,  2.654647,  0.000001,  0.101593, -0.349066, -0.349066,  0.000000, -0.000000, 
+               0.000001,  0.000001, -0.000000, -0.000000, -0.000000,  0.000000,  0.000012, -0.000012, -0.000031,  0.000041, 
+              -0.000033, -0.000032,  0.000042, -0.000033,  0.000061,  0.000318,  0.000305,  0.001240,  0.000058,  0.000319, 
+               0.000305,  0.001179 ]
             initialRootPosition: [ 1.5, 1, 0.5376 ]
             initialRootAttitude: [ 
               1, 0, 0, 
@@ -208,7 +208,7 @@ items:
                   class: SimpleControllerItem
                   data: 
                     isNoDelayMode: false
-                    controllerOptions: "DoubleArm/joy"
+                    controllerOptions: "DoubleArmV7/joy"
                     controller: "JoyTopicSubscriberController.so"
                     baseDirectory: "Controller directory"
                     reloading: false
@@ -259,7 +259,7 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 11 ]
+      selected: [ 13 ]
       checked: [ 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
       expanded: [ 1, 3, 5, 6, 7, 11, 12 ]
   - 
@@ -308,6 +308,7 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
+          isCurrent: true
           fieldOfView: 0.698132
           near: 0.05
           far: 200
@@ -321,15 +322,14 @@ views:
           far: 200
         - 
           camera: BodyTrackingCamera
-          isCurrent: true
-          eye: [ -2.4699402, -0.313257779, 4.41128745 ]
-          direction: [ 0.651419241, 0.0013386001, -0.758716798 ]
-          up: [ 0.758715196, 0.00155908235, 0.651420617 ]
+          eye: [ 4.30413752, 2.29913682, 1.50165977 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
         - 
           camera: BodyTrackingCamera
-          eye: [ 4, 2, 1.5 ]
+          eye: [ 4.00007378, 2.00002722, 1.49999307 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
-          up: [ -0.0993807989, -0.0496903995, 0.99380799 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -390,17 +390,17 @@ views:
           far: 200
         - 
           camera: BodyTrackingCamera
-          eye: [ -2.4699402, -0.313257779, 4.41128745 ]
-          direction: [ 0.651419241, 0.0013386001, -0.758716798 ]
-          up: [ 0.758715196, 0.00155908235, 0.651420617 ]
+          eye: [ 4.30413752, 2.29913682, 1.50165977 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
         - 
           camera: [ DoubleArmV7, FRAME_FRONT_CAMERA ]
           isCurrent: true
         - 
           camera: BodyTrackingCamera
-          eye: [ 4, 2, 1.5 ]
+          eye: [ 4.00007378, 2.00002722, 1.49999307 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
-          up: [ -0.0993807989, -0.0496903995, 0.99380799 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -439,11 +439,11 @@ views:
 toolbars: 
   "TimeBar": 
     minTime: 0
-    maxTime: 30
+    maxTime: 60.035
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
-    currentTime: 0
+    currentTime: 60.035
     speedScale: 1
     syncToOngoingUpdates: true
     autoExpansion: true
@@ -455,8 +455,6 @@ toolbars:
     snapDistance: 0.025
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
-  "BodyBar": 
-    current: 11
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
@@ -534,7 +532,7 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 508, 507 ]
+          sizes: [ 509, 508 ]
           children: 
             - 
               type: pane
@@ -547,7 +545,7 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 780, 235 ]
+          sizes: [ 782, 235 ]
           children: 
             - 
               type: splitter
