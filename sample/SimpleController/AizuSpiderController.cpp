@@ -236,8 +236,8 @@ void AizuSpiderController::controlTracks()
         joystick->getPosition(targetMode, Joystick::L_STICK_V_AXIS, STICK_THRESH) +
         0.8 * joystick->getPosition(Joystick::DIRECTIONAL_PAD_V_AXIS));
     
-    double dq_L = trackVelocityRatio * (vpos + 0.4 * hpos);
-    double dq_R = trackVelocityRatio * (vpos - 0.4 * hpos);
+    double dq_L = trackVelocityRatio * (vpos + 0.4 * hpos) * 1.2;
+    double dq_R = trackVelocityRatio * (vpos - 0.4 * hpos) * 1.2;
 
     switch(trackActuationMode){
 
