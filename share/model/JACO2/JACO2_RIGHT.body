@@ -417,18 +417,18 @@ links:
         on: true
         nearClipDistance: 0.02
         #farClipDistance: 3.5
-      -
-        type: RangeCamera
-        name: REALSENSE
-        translation: [ 0, 0, 0.1055 ]
-        rotation: [ 0, 1, 0, 180 ]
-        format: *RANGE_CAMERA_SPEC_format
-        fieldOfView: *RANGE_CAMERA_SPEC_fieldOfView
-        width: *RANGE_CAMERA_SPEC_width
-        height: *RANGE_CAMERA_SPEC_height
-        frameRate: *RANGE_CAMERA_SPEC_frameRate
-        on: true
-        nearClipDistance: 0.02
+      # -
+      #   type: RangeCamera
+      #   name: REALSENSE
+      #   translation: [ 0, 0, 0.1055 ]
+      #   rotation: [ 0, 1, 0, 180 ]
+      #   format: *RANGE_CAMERA_SPEC_format
+      #   fieldOfView: *RANGE_CAMERA_SPEC_fieldOfView
+      #   width: *RANGE_CAMERA_SPEC_width
+      #   height: *RANGE_CAMERA_SPEC_height
+      #   frameRate: *RANGE_CAMERA_SPEC_frameRate
+      #   on: true
+      #   nearClipDistance: 0.02
   -
     name: FINGER1
     parent: HAND
