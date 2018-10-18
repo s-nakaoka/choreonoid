@@ -417,18 +417,19 @@ links:
         on: true
         nearClipDistance: 0.02
         #farClipDistance: 3.5
-      # -
-      #   type: RangeCamera
-      #   name: REALSENSE
-      #   translation: [ 0, 0, 0.1055 ]
-      #   rotation: [ 0, 1, 0, 180 ]
-      #   format: *RANGE_CAMERA_SPEC_format
-      #   fieldOfView: *RANGE_CAMERA_SPEC_fieldOfView
-      #   width: *RANGE_CAMERA_SPEC_width
-      #   height: *RANGE_CAMERA_SPEC_height
-      #   frameRate: *RANGE_CAMERA_SPEC_frameRate
-      #   on: true
-      #   nearClipDistance: 0.02
+      -
+        type: Camera
+        name: Kinect
+        translation: [ 0.03116, 0, 0.11498 ]
+        rotation: [ 0, 1, 0, 180 ]
+        #rotation: [ [ 0, 0, 1, 180 ], [ 0, -1, 0, 55 ] ]
+        #rotation: [ [ 1, 0, 0, 90 ], [ 0, 1, 0, -90 ] ]
+        format: COLOR_DEPTH
+        fieldOfView: 62
+        width: 320
+        height: 240
+        frameRate: 30
+        on: true
   -
     name: FINGER1
     parent: HAND

@@ -28,3 +28,4 @@ qrc_*.cxx
 /Doxyfile
 messages.pot
 /build
+*.log
