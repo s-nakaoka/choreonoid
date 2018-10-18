@@ -75,15 +75,15 @@ items:
           data: 
             modelFile: "${SHARE}/model/AizuSpider/AizuSpiderSA.body"
             currentBaseLink: "CHASSIS"
-            rootPosition: [ 2, -2, 0.035 ]
+            rootPosition: [ 17.8749691, 0.337255902, 0.0366930202 ]
             rootAttitude: [ 
-              1, 0, 0, 
-              0, 1, 0, 
-              0, 0, 1 ]
+              -0.999970377, -0.00767210135, 0.000619921798, 
+              0.0076722367, -0.999970545, 0.000216247971, 
+              0.000618244461, 0.000220997752, 0.999999784 ]
             jointPositions: [ 
-               0.000000,  0.000000,  0.000000,  0.000000, -1.570796,  0.872665,  0.872665,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000,  0.000000,  0.000000,  0.000000 ]
+              -0.006702, -0.006702, -0.006702, -0.006702, -1.145809,  1.455354,  1.307158, -0.951145,  0.003065,  0.539078, 
+               0.004569,  0.009851,  0.001065,  435.777289,  435.634977,  448.997049,  448.795332,  724.409159,  435.777204,  745.405534, 
+               448.996963,  778.938688,  435.777221,  802.168697,  448.996980 ]
             initialRootPosition: [ 2, -2, 0.035 ]
             initialRootAttitude: [ 
               1, 0, 0, 
@@ -162,16 +162,16 @@ items:
           data: 
             modelFile: "${SHARE}/model/DoubleArmV7/DoubleArmV7A.body"
             currentBaseLink: "TFRAME"
-            rootPosition: [ 1.5, 2, 0.5376 ]
+            rootPosition: [ 1.50012692, 1.99998079, 0.537665172 ]
             rootAttitude: [ 
-              1, 0, 0, 
-              0, 1, 0, 
-              0, 0, 1 ]
+              0.999999949, 4.44053477e-06, -0.000319799295, 
+              -4.45220688e-06, 0.999999999, -3.64975281e-05, 
+              0.000319799133, 3.649895e-05, 0.999999948 ]
             jointPositions: [ 
-               0.391500, -0.762258, -1.310742,  2.654646,  0.000000,  0.101593, -0.349066, -0.349066, -0.000000, -0.000000, 
-               0.000000,  0.000000, -0.000000, -0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000 ]
+               0.391500, -0.762258, -1.310731,  2.654647,  0.000001,  0.101593, -0.349066, -0.349066,  0.000000,  0.000000, 
+               0.000001,  0.000001, -0.000000, -0.000000, -0.000000,  0.000000,  0.000012, -0.000012, -0.000031,  0.000041, 
+              -0.000033, -0.000032,  0.000042, -0.000033,  0.000298,  0.000374,  0.000311,  0.001502,  0.000277,  0.000371, 
+               0.000308,  0.001380 ]
             initialRootPosition: [ 1.5, 2, 0.5376 ]
             initialRootAttitude: [ 
               1, 0, 0, 
@@ -207,7 +207,7 @@ items:
                   class: SimpleControllerItem
                   data: 
                     isNoDelayMode: false
-                    controllerOptions: "DoubleArm/joy"
+                    controllerOptions: "DoubleArmV7/joy"
                     controller: "JoyTopicSubscriberController.so"
                     baseDirectory: "Controller directory"
                     reloading: false
@@ -307,12 +307,13 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
+          isCurrent: true
           fieldOfView: 0.698132
           near: 0.05
           far: 200
-          eye: [ 4, 2, 1.5 ]
-          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
-          up: [ -0.0993807989, -0.0496903995, 0.99380799 ]
+          eye: [ -3.14088513, -2.43338396, 2.63864425 ]
+          direction: [ 0.890832615, 0.307179095, -0.334751034 ]
+          up: [ 0.316465083, 0.109124269, 0.942306609 ]
         - 
           camera: [ System, Orthographic ]
           orthoHeight: 20
@@ -320,15 +321,14 @@ views:
           far: 200
         - 
           camera: BodyTrackingCamera
-          isCurrent: true
-          eye: [ 4.45131349, -11.6463694, 7.88119186 ]
-          direction: [ -0.140801773, 0.865561451, -0.48060195 ]
-          up: [ -0.0771657064, 0.474366618, 0.876938861 ]
+          eye: [ 19.8749688, 4.3372559, 1.50169307 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
         - 
           camera: BodyTrackingCamera
-          eye: [ 4, 2, 1.5 ]
+          eye: [ 4.00012692, 1.99998079, 1.50006517 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
-          up: [ -0.0993807989, -0.0496903995, 0.99380799 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -389,17 +389,17 @@ views:
           far: 200
         - 
           camera: BodyTrackingCamera
-          eye: [ 4.45131349, -11.6463694, 7.88119186 ]
-          direction: [ -0.140801773, 0.865561451, -0.48060195 ]
-          up: [ -0.0771657064, 0.474366618, 0.876938861 ]
+          eye: [ 19.8749688, 4.3372559, 1.50169307 ]
+          direction: [ -0.888888889, -0.444444444, -0.111111111 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
         - 
           camera: [ DoubleArmV7, FRAME_FRONT_CAMERA ]
           isCurrent: true
         - 
           camera: BodyTrackingCamera
-          eye: [ 4, 2, 1.5 ]
+          eye: [ 4.00012692, 1.99998079, 1.50006517 ]
           direction: [ -0.888888889, -0.444444444, -0.111111111 ]
-          up: [ -0.0993807989, -0.0496903995, 0.99380799 ]
+          up: [ -0.099380799, -0.0496903995, 0.99380799 ]
       backgroundColor: [ 0, 0, 0 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -438,11 +438,11 @@ views:
 toolbars: 
   "TimeBar": 
     minTime: 0
-    maxTime: 30
+    maxTime: 286.925
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
-    currentTime: 0
+    currentTime: 286.925
     speedScale: 1
     syncToOngoingUpdates: true
     autoExpansion: true
@@ -528,12 +528,12 @@ viewAreas:
     contents: 
       type: splitter
       orientation: horizontal
-      sizes: [ 315, 1534 ]
+      sizes: [ 316, 1533 ]
       children: 
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 508, 507 ]
+          sizes: [ 509, 508 ]
           children: 
             - 
               type: pane
@@ -546,12 +546,12 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 780, 235 ]
+          sizes: [ 782, 235 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 664, 864 ]
+              sizes: [ 664, 863 ]
               children: 
                 - 
                   type: pane
