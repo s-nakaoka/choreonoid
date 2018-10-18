@@ -20,7 +20,7 @@ items:
           plugin: Base
           class: SubProjectItem
           data: 
-            filename: "${SHARE}/wrs2018/project/T1L_201810_01.cnoid"
+            filename: "${SHARE}/wrs2018/project/T1L_201810_02.cnoid"
             format: PROJECT
             saveMode: "Manual save"
         - 

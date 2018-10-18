@@ -284,7 +284,7 @@ void DoubleArmV7Controller::controlTracks()
     trackR->dq() = 0.0;
     
     const double k1 = 0.4;
-    const double k2 = 0.6;
+    const double k2 = 0.8;
 
     double pos[2];
     pos[0] = k1 * joystick->getPosition(currentJoystickMode, Joystick::DIRECTIONAL_PAD_H_AXIS);
