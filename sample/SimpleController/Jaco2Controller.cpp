@@ -240,8 +240,8 @@ void Jaco2Controller::setFingerTargetJointAngles()
     if(rt > 0.1){
         fingerJointTargetAngle += dt * 0.4 * rt;
     }
-    double q_max = -100.0;
-    double q_min = 100.0;
+    double q_max = -200.0;
+    double q_min = 200.0;
 
     for(auto& id : vector<int>{ FINGER1, FINGER2, FINGER3 }){
         auto& info = jointInfos[id];
