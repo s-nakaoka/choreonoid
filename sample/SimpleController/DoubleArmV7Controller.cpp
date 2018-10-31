@@ -184,7 +184,7 @@ void DoubleArmV7Controller::initPDGain()
         if(mainActuationMode == Link::ActuationMode::JOINT_EFFORT){
             trackgain = 2000.0;
         } else {
-            trackgain = 2.0;
+            trackgain = 2.0 * 1.05;
         }
     } else if(trackType == PSEUDO_TRACKS){
         trackgain = 1.0;
@@ -284,7 +284,7 @@ void DoubleArmV7Controller::controlTracks()
     trackR->dq() = 0.0;
     
     const double k1 = 0.4;
-    const double k2 = 0.6;
+    const double k2 = 0.8;
 
     double pos[2];
     pos[0] = k1 * joystick->getPosition(currentJoystickMode, Joystick::DIRECTIONAL_PAD_H_AXIS);

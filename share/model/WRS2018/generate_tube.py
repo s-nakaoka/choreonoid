@@ -14,6 +14,7 @@ box_description = '''\
       rotation: [ {axis}, {theta:.7} ]
       translation: [ {x:.5}, {y:.5}, {z:.5} ]
       geometry: {{ type: Box, size: [ {sx:.7}, {sy:.7}, {sz:.7} ] }}
+      appearance: *TUBE_APPEARANCE
 '''
 
 def generate_tube(verticalAxisIndex, verticalTranslation, radius, height, widthRatio, thickness, resolution):
@@ -74,6 +75,20 @@ def generate_tube(verticalAxisIndex, verticalTranslation, radius, height, widthR
 #    verticalAxisIndex = 0, verticalTranslation = -0.035,
 #    radius = 0.0235, height = 0.07, widthRatio = 0.84, thickness = 0.0125, resolution = 24)
 
+# Nozzle Slot
+#generate_tube(
+#    verticalAxisIndex = 0, verticalTranslation = -0.025,
+#    radius = 0.0235, height = 0.05, widthRatio = 0.84, thickness = 0.0125, resolution = 24)
+
+# Ceiling Hole
+#thickness = 0.032
+#generate_tube(
+#    verticalAxisIndex = 2, verticalTranslation = 0.0,
+#    radius = 0.08 + thickness / 2, height = 0.091, widthRatio = 1.0, thickness = thickness, resolution = 24)
+
+# Fire Circle
+thickness = 0.1
 generate_tube(
-    verticalAxisIndex = 0, verticalTranslation = -0.025,
-    radius = 0.0235, height = 0.05, widthRatio = 0.84, thickness = 0.0125, resolution = 24)
+    verticalAxisIndex = 2, verticalTranslation = 0.0,
+    radius = 5.0 + thickness / 2, height = 0.002, widthRatio = 1.0, thickness = thickness, resolution = 48)
+
