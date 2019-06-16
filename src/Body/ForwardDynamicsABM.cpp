@@ -8,6 +8,8 @@
 #include "LinkTraverse.h"
 #include <cnoid/EigenUtil>
 
+#include <iostream>  // Added by Rafa
+
 using namespace std;
 using namespace cnoid;
 
@@ -95,6 +97,9 @@ void ForwardDynamicsABM::calcMotionWithEulerMethod()
     if(!sensorHelper.forceSensors().empty()){
         updateForceSensors();
     }
+    if(!sensorHelper.tactileSensors().empty()){
+        updateTactileSensors();
+    }
 
     DyLink* root = body->rootLink();
 
@@ -176,6 +181,9 @@ void ForwardDynamicsABM::calcMotionWithRungeKuttaMethod()
 
     if(!sensorHelper.forceSensors().empty()){
         updateForceSensors();
+    }
+    if(!sensorHelper.tactileSensors().empty()){
+        updateTactileSensors();
     }
 
     integrateRungeKuttaOneStep(1.0 / 6.0, timeStep / 2.0);
@@ -498,6 +506,8 @@ void ForwardDynamicsABM::calcABMPhase3()
 
 void ForwardDynamicsABM::updateForceSensors()
 {
+    // std::cout << "Rafa, in ForwardDynamicsABM::updateForceSensors" << std::endl;
+  
     const DeviceList<ForceSensor>& sensors = sensorHelper.forceSensors();
     for(size_t i=0; i < sensors.size(); ++i){
         ForceSensor* sensor = sensors[i];
@@ -513,5 +523,47 @@ void ForwardDynamicsABM::updateForceSensors()
         sensor->f().noalias()   = R.transpose() * f;
         sensor->tau().noalias() = R.transpose() * (tau - p.cross(f));
         sensor->notifyStateChange();
+    }
+}
+
+
+void ForwardDynamicsABM::updateTactileSensors()
+{
+    const double EPSILON = 1e-6;
+  
+    const DeviceList<TactileSensor>& sensors = sensorHelper.tactileSensors();
+
+    for(size_t i=0; i < sensors.size(); ++i){
+
+        TactileSensor* sensor = sensors[i];
+
+	DyLink* link = static_cast<DyLink*>(sensor->link());
+
+	std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, for sensor " << i << " link->name() = " << link->name() << std::endl;
+	
+	DyLink::ConstraintForceArray& forces = link->constraintForces();
+	if(!forces.empty()){
+
+	    std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, forces are not empty" << std::endl;
+	  
+	    for(size_t j=0; j < forces.size(); ++j){
+	        const DyLink::ConstraintForce& force = forces[i];
+
+		Vector3 p_surf = link->R().transpose() * (force.point - link->p());
+		if (p_surf.z() < EPSILON) {
+		    std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), force.force);
+		    sensor->forceData().push_back(xy_f);
+		    sensor->notifyStateChange();
+		    std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, in link "
+			      << link->name() << " at point ("
+			      << sensor->forceData().back().first.x() << ", "
+			      << sensor->forceData().back().first.y() << ") there is a force ("
+			      << sensor->forceData().back().second.x() << ", "
+			      << sensor->forceData().back().second.y() << ", "
+			      << sensor->forceData().back().second.z() << ")"
+			      << std::endl;
+		}
+	    }
+	}
     }
 }

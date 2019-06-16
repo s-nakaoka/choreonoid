@@ -80,10 +80,12 @@ void BasicSensorSimulationHelper::initialize(Body* body, double timeStep, const 
     DeviceList<> devices = body->devices();
     if(!devices.empty()){
         forceSensors_.extractFrom(devices);
+	tactileSensors_.extractFrom(devices);
         rateGyroSensors_.extractFrom(devices);
         accelerationSensors_.extractFrom(devices);
 
         if(!forceSensors_.empty() ||
+	   !tactileSensors_.empty() ||
            !rateGyroSensors_.empty() ||
            !accelerationSensors_.empty()){
             impl->initialize(body, timeStep, gravityAcceleration);

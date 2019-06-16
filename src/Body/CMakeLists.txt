@@ -36,6 +36,7 @@ set(sources
   Camera.cpp
   RangeCamera.cpp
   RangeSensor.cpp
+  TactileSensor.cpp
   Light.cpp
   PointLight.cpp
   SpotLight.cpp
@@ -110,6 +111,7 @@ set(headers
   Camera.h
   RangeCamera.h
   RangeSensor.h
+  TactileSensor.h
   Light.h
   PointLight.h
   SpotLight.h

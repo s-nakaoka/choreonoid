@@ -52,6 +52,7 @@ private:
     inline void calcABMLastHalf();
 
     void updateForceSensors();
+    void updateTactileSensors();
 
     // Buffers for the Runge Kutta Method
     Position T0;

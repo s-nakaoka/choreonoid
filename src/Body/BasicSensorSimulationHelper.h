@@ -8,6 +8,7 @@
 
 #include "DeviceList.h"
 #include "ForceSensor.h"
+#include "TactileSensor.h"
 #include "RateGyroSensor.h"
 #include "AccelerationSensor.h"
 #include "exportdecl.h"
@@ -31,6 +32,7 @@ public:
     bool hasGyroOrAccelerationSensors() const { return !rateGyroSensors_.empty() || !accelerationSensors_.empty(); }
 
     const DeviceList<ForceSensor>& forceSensors() const { return forceSensors_; }
+    const DeviceList<TactileSensor>& tactileSensors() const { return tactileSensors_; }
     const DeviceList<RateGyroSensor>& rateGyroSensors() const { return rateGyroSensors_; }
     const DeviceList<AccelerationSensor>& accelerationSensors() const { return accelerationSensors_; }
         
@@ -40,6 +42,7 @@ private:
     BasicSensorSimulationHelperImpl* impl;
     bool isActive_;
     DeviceList<ForceSensor> forceSensors_;
+    DeviceList<TactileSensor> tactileSensors_;
     DeviceList<RateGyroSensor> rateGyroSensors_;
     DeviceList<AccelerationSensor> accelerationSensors_;
 
