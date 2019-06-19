@@ -34,6 +34,7 @@ public:
 
     const Body* body() const;
     const DeviceList<ForceSensor>& forceSensors() const;
+    const DeviceList<TactileSensor>& tactileSensors() const;
     const DeviceList<RateGyroSensor>& rateGyroSensors() const;
     const DeviceList<AccelerationSensor>& accelerationSensors() const;
 

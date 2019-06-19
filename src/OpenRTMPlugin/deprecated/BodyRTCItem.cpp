@@ -61,6 +61,7 @@ public:
 
     BodyPtr simulationBody;
     DeviceList<ForceSensor> forceSensors_;
+    DeviceList<TactileSensor> tactileSensors_;
     DeviceList<RateGyroSensor> gyroSensors_;
     DeviceList<AccelerationSensor> accelSensors_;
     double timeStep_;
@@ -354,6 +355,16 @@ void BodyRTCItemImpl::setdefaultPort(BodyPtr body)
             outPortInfoMap.insert(make_pair(portInfo.portName, portInfo));
         }
     }
+    for(size_t i=0; i < tactileSensors_.size(); ++i){
+        if(Device* sensor = tactileSensors_[i]){
+	    portInfo.dataTypeId = TACTILE_SENSOR;
+	    portInfo.dataOwnerNames.clear();
+	    portInfo.dataOwnerNames.push_back(sensor->name());
+	    portInfo.portName = sensor->name();
+	    portInfo.stepTime = 0;
+	    outPortInfoMap.insert(make_pair(portInfo.portName, portInfo));
+        }
+    }
     for(size_t i=0; i < gyroSensors_.size(); ++i){
         if(Device* sensor = gyroSensors_[i]){
             portInfo.dataTypeId = RATE_GYRO_SENSOR;
@@ -399,6 +410,7 @@ void BodyRTCItemImpl::onPositionChanged()
         Body* body = ownerBodyItem->body();
         if(bodyName != body->name()){
             forceSensors_ = body->devices<ForceSensor>().getSortedById();
+	    tactileSensors_ = body->devices<TactileSensor>().getSortedById();
             gyroSensors_ = body->devices<RateGyroSensor>().getSortedById();
             accelSensors_ = body->devices<AccelerationSensor>().getSortedById();
             bodyName = body->name();
@@ -446,6 +458,7 @@ bool BodyRTCItemImpl::initialize(ControllerIO* io)
     }
 
     forceSensors_ = simulationBody->devices<ForceSensor>().getSortedById();
+    tactileSensors_ = simulationBody->devices<TactileSensor>().getSortedById();
     gyroSensors_ = simulationBody->devices<RateGyroSensor>().getSortedById();
     accelSensors_ = simulationBody->devices<AccelerationSensor>().getSortedById();
 
@@ -596,6 +609,12 @@ const Body* BodyRTCItem::body() const
 const DeviceList<ForceSensor>& BodyRTCItem::forceSensors() const
 {
     return impl->forceSensors_;
+}
+
+
+const DeviceList<TactileSensor>& BodyRTCItem::tactileSensors() const
+{
+    return impl->tactileSensors_;
 }
 
 

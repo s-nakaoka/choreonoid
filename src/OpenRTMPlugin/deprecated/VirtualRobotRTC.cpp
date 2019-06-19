@@ -106,6 +106,7 @@ bool VirtualRobotRTC::createOutPortHandler(PortInfo& portInfo)
         case JOINT_ACCELERATION:
         case JOINT_TORQUE:
         case FORCE_SENSOR:
+	case TACTILE_SENSOR:
         case RATE_GYRO_SENSOR:
         case ACCELERATION_SENSOR:
             ret = registerOutPortHandler(new SensorStateOutPortHandler(portInfo));
@@ -142,6 +143,8 @@ bool VirtualRobotRTC::createOutPortHandler(PortInfo& portInfo)
             break;
 
         case FORCE_SENSOR:
+	case TACTILE_SENSOR:
+	  std::cout << "Rafa, in VirtualRobotRTC::createOutPortHandler, TACTILE_SENSOR" << std::endl;
         case RATE_GYRO_SENSOR:
         case ACCELERATION_SENSOR:
             ret = registerOutPortHandler(new SensorDataOutPortHandler(portInfo));

@@ -5,6 +5,8 @@
 
 #include "TactileSensor.h"
 
+#include <iostream>  // Rafa, this is temporal
+
 using namespace cnoid;
 
 
@@ -63,13 +65,14 @@ void TactileSensor::forEachActualType(std::function<bool(const std::type_info& t
 
 void TactileSensor::clearState()
 {
-  //forceData_ = std::make_shared<ForceData>(std::make_pair(Vector2::Zero(), Vector3::Zero()));
   forceData_->clear();
 }
 
 
 int TactileSensor::stateSize() const
 {
+  std::cout << "Rafa, in TactileSensor::stateSize, forceData_->size() = " << forceData_->size() << std::endl;
+  
   return 0;
 }
 

@@ -539,12 +539,12 @@ void ForwardDynamicsABM::updateTactileSensors()
 
 	DyLink* link = static_cast<DyLink*>(sensor->link());
 
-	std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, for sensor " << i << " link->name() = " << link->name() << std::endl;
+	// std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, for sensor " << i << " link->name() = " << link->name() << std::endl;
 	
 	DyLink::ConstraintForceArray& forces = link->constraintForces();
 	if(!forces.empty()){
 
-	    std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, forces are not empty" << std::endl;
+	    // std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, forces are not empty" << std::endl;
 	  
 	    for(size_t j=0; j < forces.size(); ++j){
 	        const DyLink::ConstraintForce& force = forces[i];
