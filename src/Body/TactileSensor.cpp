@@ -73,7 +73,7 @@ int TactileSensor::stateSize() const
 {
   std::cout << "Rafa, in TactileSensor::stateSize, forceData_->size() = " << forceData_->size() << std::endl;
   
-  return 0;
+  return forceData_->size() * 5;
 }
 
 
@@ -85,5 +85,12 @@ const double* TactileSensor::readState(const double* buf)
 
 double* TactileSensor::writeState(double* out_buf) const
 {
+  for (size_t i = 0; i < forceData_->size(); i++) {
+    Eigen::Map<Vector2>(out_buf) << (*forceData_)[i].first;
+    out_buf = out_buf + 2;
+    Eigen::Map<Vector3>(out_buf) << (*forceData_)[i].second;
+    out_buf = out_buf + 3;
+  }
+  
   return out_buf;
 }

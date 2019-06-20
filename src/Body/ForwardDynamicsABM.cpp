@@ -545,13 +545,14 @@ void ForwardDynamicsABM::updateTactileSensors()
 	if(!forces.empty()){
 
 	    // std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, forces are not empty" << std::endl;
+
+            sensor->forceData().clear();
 	  
 	    for(size_t j=0; j < forces.size(); ++j){
-	        const DyLink::ConstraintForce& force = forces[i];
-
-		Vector3 p_surf = link->R().transpose() * (force.point - link->p());
+                const DyLink::ConstraintForce& force_surf = forces[j];
+		Vector3 p_surf = link->R().transpose() * (force_surf.point - link->p());
 		if (p_surf.z() < EPSILON) {
-		    std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), force.force);
+		    std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), link->R().transpose() * force_surf.force);
 		    sensor->forceData().push_back(xy_f);
 		    sensor->notifyStateChange();
 		    std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, in link "

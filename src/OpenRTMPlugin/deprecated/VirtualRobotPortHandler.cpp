@@ -312,7 +312,7 @@ SensorDataOutPortHandler::SensorDataOutPortHandler(PortInfo& info)
       outPort(info.portName.c_str(), value),
       sensorNames(info.dataOwnerNames)
 {
-
+  std::cout << "Rafa, in SensorDataOutPortHandler::SensorDataOutPortHandler, sensorNames.size() = " << sensorNames.size() << std::endl; 
 }
 
 
