@@ -312,7 +312,7 @@ SensorDataOutPortHandler::SensorDataOutPortHandler(PortInfo& info)
       outPort(info.portName.c_str(), value),
       sensorNames(info.dataOwnerNames)
 {
-  std::cout << "Rafa, in SensorDataOutPortHandler::SensorDataOutPortHandler, sensorNames.size() = " << sensorNames.size() << std::endl; 
+  // std::cout << "Rafa, in SensorDataOutPortHandler::SensorDataOutPortHandler, sensorNames.size() = " << sensorNames.size() << std::endl; 
 }
 
 
@@ -327,13 +327,13 @@ void SensorDataOutPortHandler::inputDataFromSimulator(BodyRTCItem* bodyRTC)
     auto body = bodyRTC->body();
     if(!sensorNames.empty()){
         if(Device* sensor = body->findDevice(sensorNames[0])){
-	    std::cout << "Rafa, in SensorDataOutPortHandler::inputDataFromSimulator, first check, sensor->typeName = " << sensor->typeName() << std::endl;
+	    // std::cout << "Rafa, in SensorDataOutPortHandler::inputDataFromSimulator, first check, sensor->typeName = " << sensor->typeName() << std::endl;
             const int dataSize = sensor->stateSize();
             value.data.length(dataSize);
             if(dataSize > 0){
                 for(size_t i=0; i < sensorNames.size(); ++i){
                     if(Device* sensor = body->findDevice(sensorNames[i])){
-		      std::cout << "Rafa, in SensorDataOutPortHandler::inputDataFromSimulator, if dataSize > 0, sensor->typeName = " << sensor->typeName() << std::endl;
+		        // std::cout << "Rafa, in SensorDataOutPortHandler::inputDataFromSimulator, if dataSize > 0, sensor->typeName = " << sensor->typeName() << std::endl;
                         sensor->writeState(&value.data[i * dataSize]);
                     }
                 }

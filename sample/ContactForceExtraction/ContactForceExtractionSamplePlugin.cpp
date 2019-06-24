@@ -116,16 +116,16 @@ void ContactForceExtractorItem::extractBodyContactPoints(DyBody* body, ostream& 
         DyLink::ConstraintForceArray& forces = link->constraintForces();
         if(!forces.empty()){
             if(!put){
-                os << body->name() << ":\n";
+	        // os << body->name() << ":\n";  // Rafa commented this
                 put = true;
             }
-            os << " " << link->name() << ":\n";
+            // os << " " << link->name() << ":\n";  // Rafa commented this
             for(size_t i=0; i < forces.size(); ++i){
                 const DyLink::ConstraintForce& force = forces[i];
                 const Vector3& p = force.point;
                 const Vector3& f = force.force;
-                os << "  point(" << p.x() << ", " << p.y() << ", " << p.z()
-                   << "), force(" << f.x() << ", " << f.y() << ", " << f.z() << ")\n";
+                // os << "  point(" << p.x() << ", " << p.y() << ", " << p.z()
+                //    << "), force(" << f.x() << ", " << f.y() << ", " << f.z() << ")\n";  // Rafa commented this
             }
         }
     }

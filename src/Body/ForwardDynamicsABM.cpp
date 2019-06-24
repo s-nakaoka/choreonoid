@@ -552,9 +552,12 @@ void ForwardDynamicsABM::updateTactileSensors()
                 const DyLink::ConstraintForce& force_surf = forces[j];
 		Vector3 p_surf = link->R().transpose() * (force_surf.point - link->p());
 		if (p_surf.z() < EPSILON) {
-		    std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), link->R().transpose() * force_surf.force);
+		    // std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), link->R().transpose() * force_surf.force);  // Rafa commented this
+		    Vector2 xy_f = Vector2(p_surf.x(), p_surf.y());  // Rafa, temporal implementation
 		    sensor->forceData().push_back(xy_f);
 		    sensor->notifyStateChange();
+		    // Rafa commented this
+		    /*
 		    std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, in link "
 			      << link->name() << " at point ("
 			      << sensor->forceData().back().first.x() << ", "
@@ -563,6 +566,14 @@ void ForwardDynamicsABM::updateTactileSensors()
 			      << sensor->forceData().back().second.y() << ", "
 			      << sensor->forceData().back().second.z() << ")"
 			      << std::endl;
+		    */
+		    /*
+		    std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, in link "
+			      << link->name() << " at point ("
+			      << sensor->forceData().back().x() << ", "
+			      << sensor->forceData().back().y() << ") there is a force"
+			      << std::endl;  // Rafa, temporal implementation
+		    */
 		}
 	    }
 	}
