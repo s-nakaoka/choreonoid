@@ -30,8 +30,8 @@ class CNOID_EXPORT TactileSensor : public Device
   virtual const double* readState(const double* buf) override;
   virtual double* writeState(double* out_buf) const override;
 
-  // typedef std::vector< std::pair<Vector2, Vector3> > ForceData;  // Rafa commented this
-  typedef std::vector<Vector2> ForceData;  // Rafa, temporal implementation
+  typedef std::vector< std::pair<Vector2, Vector3> > ForceData;
+  // typedef std::vector<Vector2> ForceData;  // Rafa, temporal implementation
   
   const ForceData& forceData() const { return *forceData_; }
   ForceData& forceData() { return *forceData_; }

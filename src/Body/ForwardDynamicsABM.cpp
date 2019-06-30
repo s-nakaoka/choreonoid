@@ -551,9 +551,10 @@ void ForwardDynamicsABM::updateTactileSensors()
 	    for(size_t j=0; j < forces.size(); ++j){
                 const DyLink::ConstraintForce& force_surf = forces[j];
 		Vector3 p_surf = link->R().transpose() * (force_surf.point - link->p());
+		Vector3 f_surf = link->R().transpose() * force_surf.force;
 		if (p_surf.z() < EPSILON) {
-		    // std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), link->R().transpose() * force_surf.force);  // Rafa commented this
-		    Vector2 xy_f = Vector2(p_surf.x(), p_surf.y());  // Rafa, temporal implementation
+		    std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), f_surf);
+		    // Vector2 xy_f = Vector2(p_surf.x(), p_surf.y());  // Rafa, temporal implementation
 		    sensor->forceData().push_back(xy_f);
 		    sensor->notifyStateChange();
 		    // Rafa commented this
