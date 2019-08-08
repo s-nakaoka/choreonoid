@@ -6,12 +6,37 @@
 #ifndef CNOID_OPENRTM_PLUGIN_RTS_COMMON_UTIL_H_INCLUDED
 #define CNOID_OPENRTM_PLUGIN_RTS_COMMON_UTIL_H_INCLUDED
 
+#include <cnoid/CorbaUtil>
 #include <vector>
-#include "RTSystemItem.h"
+#include <string>
+#include <memory>
 
 using namespace std;
 
+namespace {
+// Old conf filename. This should be deprecated, but continue to use for a while
+const char* DEFAULT_CONF_FILENAME = "./rtc.conf.choreonoid";
+
+// New conf filename. It is desirable to use this.
+//const char* DEFAUT_CONF_FILENAME = "./choreonoid.rtc.conf"
+
+};
+
 namespace cnoid {
+
+class NamedValue
+{
+public:
+    std::string name_;
+    std::string value_;
+
+    NamedValue(std::string name, std::string value)
+    {
+        name_ = name;
+        value_ = value;
+    };
+};
+typedef std::shared_ptr<NamedValue> NamedValuePtr;
 
 /*!
   * @brief Common processing of RTS.
@@ -42,8 +67,8 @@ struct NameServerInfo
 
     NameServerInfo()
     {
-        this->hostAddress = "";
-        this->portNo = -1;
+        this->hostAddress = "localhost";
+        this->portNo = 2809;
         this->isRtmDefaultNameServer = false;
     };
     NameServerInfo(std::string host, int port, bool isRtmDefaultNameServer)
@@ -59,24 +84,11 @@ public:
     static void splitPortName(std::string& value, std::vector<std::string>& result);
 
     static std::vector<std::string> split(const std::string &str, char delim);
-    static bool isAllowAnyDataType(RTSPort* source, RTSPort* target);
-
-    static std::vector<std::string> getAllowDataTypes(RTSPort* source, RTSPort* target);
-    static std::vector<std::string> getAllowInterfaceTypes(RTSPort* source, RTSPort* target);
-    static std::vector<std::string> getAllowDataflowTypes(RTSPort* source, RTSPort* target);
-    static std::vector<std::string> getAllowSubscriptionTypes(RTSPort* source, RTSPort* target);
 
     static bool isIFR(std::string type);
     static bool compareIgnoreCase(const std::string& lhs, const std::string& rhs);
 
     static NameServerInfo getManagerAddress();
-
-private:
-    static std::vector<std::string> getAllowList(std::vector<std::string>& source, std::vector<std::string>& target, TypeComparer& comparer);
-    static bool isAnyString(std::string target);
-    static bool isExistAny(std::vector<std::string> target);
-
-
 };
 
 struct ServerFullComparator
@@ -136,7 +148,8 @@ public:
     void addRtmDefaultNameServer();
     bool isExistingNameServer(NameServerInfo source);
     bool isRtmDefaultNameServer(string hostAddress, int portNo);
-    void removeNameServer(string target);
+    void removeNameServer(NameServerInfo target);
+    void clearNameServer();
 
 private:
     static NameServerManager* handler;

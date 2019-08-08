@@ -9,13 +9,13 @@
 #include "YAMLWriter.h"
 #include "EigenUtil.h"
 #include "GeneralSeqReader.h"
-#include <boost/format.hpp>
+#include <fmt/format.h>
 #include <fstream>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
+using fmt::format;
 
 
 MultiSE3Seq::MultiSE3Seq()
@@ -39,7 +39,7 @@ MultiSE3Seq::MultiSE3Seq(const MultiSE3Seq& org)
 }
 
 
-AbstractSeqPtr MultiSE3Seq::cloneSeq() const
+std::shared_ptr<AbstractSeq> MultiSE3Seq::cloneSeq() const
 {
     return std::make_shared<MultiSE3Seq>(*this);
 }
@@ -61,19 +61,23 @@ bool MultiSE3Seq::doReadSeq(const Mapping* archive, std::ostream& os)
 {
     GeneralSeqReader reader(os);
 
+    reader.setCustomSeqTypeChecker(
+        [&](GeneralSeqReader& reader, const string& type){
+            if(reader.formatVersion() >= 2.0){
+                return reader.checkSeqType(type);
+            } else {
+                return (type == "MultiSE3Seq" || type == "MultiSe3Seq" || type == "MultiAffine3Seq");
+            }
+        });
+
     if(!reader.readHeaders(archive, this)){
         return false;
     }
     
     string se3format;
-
     if(reader.formatVersion() >= 2.0){
         se3format = archive->get<string>("SE3Format");
     } else {
-        reader.setFuncToCheckSeqType(
-            [&](const string& type){
-                return (type == "MultiSE3Seq" || type == "MultiSe3Seq" || type == "MultiAffine3Seq");
-            });
         se3format = archive->get<string>("format");
     }
 
@@ -118,7 +122,7 @@ bool MultiSE3Seq::doReadSeq(const Mapping* archive, std::ostream& os)
             });
 
     } else {
-        os << format(_("SE3 format \"%1%\" is not supported.")) % se3format << endl;
+        os << format(_("SE3 format \"{}\" is not supported."), se3format) << endl;
     }
 
     return result;
@@ -189,8 +193,8 @@ bool MultiSE3Seq::loadPlainMatrixFormat(const std::string& filename, std::ostrea
 
     int n = loader.numParts();
     if(n < 12 || (n % 12) != 0){
-        os << format(_("\"%1%\" does not have elements in multiple of twelve (each 3 for position vectors, 9 for attitde matrices)"))
-            % filename << endl;
+        os << format(_("\"{}\" does not have elements in multiple of twelve (each 3 for position vectors, 9 for attitde matrices)"),
+            filename) << endl;
         return false;
     }
     int m = n / 12;
@@ -199,7 +203,6 @@ bool MultiSE3Seq::loadPlainMatrixFormat(const std::string& filename, std::ostrea
     setTimeStep(loader.timeStep());
 
     int f = 0;
-    Part base = part(0);
     for(PlainSeqFileLoader::iterator it = loader.begin(); it != loader.end(); ++it){
         vector<double>& data = *it;
         int i = 0;
@@ -232,7 +235,7 @@ bool MultiSE3Seq::loadPlainRpyFormat(const std::string& filename, std::ostream& 
 
     int n = loader.numParts();
     if(n != 3){
-        os << format(_("\"%1%\" does not have a multiple of 3 elements (R,P,Y)")) % filename << endl;
+        os << format(_("\"{}\" does not have a multiple of 3 elements (R,P,Y)"), filename) << endl;
         return false;
     }
 
@@ -240,7 +243,6 @@ bool MultiSE3Seq::loadPlainRpyFormat(const std::string& filename, std::ostream& 
     setTimeStep(loader.timeStep());
 
     int f = 0;
-    Part base = part(0);
     for(PlainSeqFileLoader::iterator it = loader.begin(); it != loader.end(); ++it){
         vector<double>& data = *it;
         Frame frame = MultiSE3Seq::frame(f++);
@@ -261,14 +263,13 @@ bool MultiSE3Seq::loadPlainRpyFormat(const std::string& filename, std::ostream& 
 
 bool MultiSE3Seq::saveTopPartAsPlainMatrixFormat(const std::string& filename, std::ostream& os)
 {
-    boost::format f("%1$.4f");
     const int nFrames = numFrames();
 
     if(nFrames > 0 && numParts() > 0){
 
         ofstream file(filename.c_str());
         if(!file){
-            os << format(_("\"%1%\" cannot be opened.")) % filename << endl;
+            os << format(_("\"{}\" cannot be opened."), filename) << endl;
             return false;
         }
 
@@ -276,7 +277,7 @@ bool MultiSE3Seq::saveTopPartAsPlainMatrixFormat(const std::string& filename, st
 
         Part base = part(0);
         for(int i=0; i < nFrames; ++i){
-            file << (f % (i / r));
+            file << format("{0:.4f}", (i / r));
             const SE3& x = base[i];
             for(int j=0; j < 3; ++j){
                 file << " " << x.translation()[j];

@@ -3,19 +3,22 @@
 */
 
 #include "MulticopterPluginHeader.h"
+#include <fmt/format.h>
 
 using namespace std;
+using namespace std::placeholders;
 using namespace cnoid;
 using namespace Multicopter;
+using fmt::format;
 
 void
 UtilityImpl::printMessage(const std::string& msg, bool sync)
 {
     if( sync == true ){
-        callSynchronously(boost::bind(&UtilityImpl::printMessageImpl, msg));
+        callSynchronously(std::bind(&UtilityImpl::printMessageImpl, msg));
     }
     else{
-        callLater(boost::bind(&UtilityImpl::printMessageImpl, msg));
+        callLater(std::bind(&UtilityImpl::printMessageImpl, msg));
     }
 }
 
@@ -23,11 +26,11 @@ void
 UtilityImpl::printErrorMessage(const std::string& msg, bool sync)
 {
     if( sync == true ){
-        callSynchronously(boost::bind(&UtilityImpl::printErrorMessageImpl, msg));
+        callSynchronously(std::bind(&UtilityImpl::printErrorMessageImpl, msg));
 
     }
     else{
-        callLater(boost::bind(&UtilityImpl::printErrorMessageImpl, msg));
+        callLater(std::bind(&UtilityImpl::printErrorMessageImpl, msg));
     }
 }
 
@@ -36,10 +39,10 @@ void
 UtilityImpl::printWarningMessage(const std::string& msg,  bool sync)
 {
     if( sync == true ){
-        callSynchronously(boost::bind(&UtilityImpl::printWarningMessageImpl, msg));
+        callSynchronously(std::bind(&UtilityImpl::printWarningMessageImpl, msg));
     }
     else{
-        callLater(boost::bind(&UtilityImpl::printWarningMessageImpl, msg));
+        callLater(std::bind(&UtilityImpl::printWarningMessageImpl, msg));
     }
 }
 
@@ -216,9 +219,8 @@ UtilityImpl::splitStringArray(const string& line, std::vector<string>& retAry)
 {
     const string RF = "\r";
     retAry.clear();
-	retAry.reserve(10);
-    boost::escaped_list_separator<char> escSep('\\', ',','\"');
-    boost::tokenizer<boost::escaped_list_separator<char>> tokens(line, escSep);
+    retAry.reserve(10);
+    Tokenizer<EscapedListSeparator<char>> tokens(line, EscapedListSeparator<char>('\\', ',','\"'));
     for(auto it=begin(tokens) ; it!=end(tokens) ; ++it){
         if( (*it).empty() == false ){
             if( *it != RF ){
@@ -231,7 +233,6 @@ UtilityImpl::splitStringArray(const string& line, std::vector<string>& retAry)
 void
 UtilityImpl::removeSelfNodeFromParent(SgNode* self)
 {
-
     vector<SgObject*> parents;
     for(SgObject::const_parentIter it = self->parentBegin() ; it != self->parentEnd() ; ++it){
         parents.push_back(*it);
@@ -363,7 +364,7 @@ UtilityImpl::toString(const std::vector<double>& ary, const std::string& fmt)
 {
     vector<string> strAry;
     for(size_t i=0 ; i<ary.size() ; ++i){
-        strAry.push_back((boost::format(fmt) % ary[i]).str());
+        strAry.push_back(format(fmt, ary[i]));
     }
     return toString(strAry);
 }
@@ -391,8 +392,7 @@ UtilityImpl::toIntegerArray(const string& str, vector<int>& ary)
 {
     ary.clear();
 
-    boost::char_separator<char> sep(",", "");
-    boost::tokenizer<boost::char_separator<char>> tokens(str, sep);
+    Tokenizer<CharSeparator<char>> tokens(str, CharSeparator<char>(","));
 
     vector<string> tmpAry;
     tmpAry.reserve(10);
@@ -409,7 +409,7 @@ UtilityImpl::toIntegerArray(const string& str, vector<int>& ary)
     retAry.reserve(tmpAry.size());
     try{
         for(auto& tmp : tmpAry){
-            retAry.push_back(boost::lexical_cast<int>(tmp));
+            retAry.push_back(std::stoi(tmp));
         }
     }
     catch(...){
@@ -426,15 +426,14 @@ UtilityImpl::toFloatArray(const string& str, vector<double>& ary)
 {
     ary.clear();
 
-    boost::char_separator<char> sep(",", "");
-    boost::tokenizer<boost::char_separator<char>> tokens(str, sep);
+    Tokenizer<CharSeparator<char>> tokens(str, CharSeparator<char>(","));
 
     vector<double> tmpAry;
     tmpAry.reserve(10);
 
     try{
         for(auto& token : tokens){
-            tmpAry.push_back(boost::lexical_cast<double>(token.data()));
+            tmpAry.push_back(std::stod(token.data()));
         }
     }
     catch(...){
@@ -482,22 +481,19 @@ UtilityImpl::printWarningMessageImpl(const string& msg)
 void
 UtilityImpl::printSomethingWrongAtBody(const string& key, const string& bodyName)
 {
-    boost::format fmt = cnoid::fmt(_("[%1%] tag is false in body[%2%].")) % key % bodyName;
-    UtilityImpl::printWarningMessage(fmt.str());
+    UtilityImpl::printWarningMessage(format(_("[{0}] tag is false in body[{1}]."), key, bodyName));
 }
 
 void
 UtilityImpl::printSomethingWrongAtLink(const string& key, const string& linkName)
 {    
-    boost::format fmt = cnoid::fmt(_("[%1%] tag is missing, or wrong parameter in link[%2%].")) % key % linkName;
-    UtilityImpl::printWarningMessage(fmt.str());
+    UtilityImpl::printWarningMessage(format(_("[{0}] tag is missing, or wrong parameter in link[{1}]."), key, linkName));
 }
 
 void
 UtilityImpl::printSomethingWrongAtRotor(const string& key)
 {
-    boost::format fmt = cnoid::fmt(_("[%1%] tag is missing, or wrong parameter in RotorDevice.")) % key;
-    UtilityImpl::printWarningMessage(fmt.str());
+    UtilityImpl::printWarningMessage(format(_("[{}] tag is missing, or wrong parameter in RotorDevice."), key));
 }
 
 

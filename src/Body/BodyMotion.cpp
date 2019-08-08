@@ -10,12 +10,12 @@
 #include <cnoid/Vector3Seq>
 #include <cnoid/YAMLReader>
 #include <cnoid/YAMLWriter>
-#include <boost/format.hpp>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
+using fmt::format;
 
 namespace {
 //bool TRACE_FUNCTIONS = false;
@@ -63,7 +63,7 @@ BodyMotion& BodyMotion::operator=(const BodyMotion& rhs)
 }
 
 
-AbstractSeqPtr BodyMotion::cloneSeq() const
+std::shared_ptr<AbstractSeq> BodyMotion::cloneSeq() const
 {
     return std::make_shared<BodyMotion>(*this);
 }
@@ -167,7 +167,7 @@ void BodyMotion::setDimension(int numFrames, int numJoints, int numLinks, bool c
 }
 
 
-void BodyMotion::setExtraSeq(const std::string& name, AbstractSeqPtr seq)
+void BodyMotion::setExtraSeq(const std::string& name, std::shared_ptr<AbstractSeq> seq)
 {
     extraSeqs[name] = seq;
     sigExtraSeqsChanged_();
@@ -309,7 +309,7 @@ bool BodyMotion::doReadSeq(const Mapping* archive, std::ostream& os)
         version = 1.0;
     }
     if(version >= 4.0){
-        os << (format(_("Format version %1% is not supported")) % version) << endl;
+        os << format(_("Format version {} is not supported"), version) << endl;
         return false;
     }
     
@@ -364,7 +364,7 @@ bool BodyMotion::doReadSeq(const Mapping* archive, std::ostream& os)
                     if(!loaded) break;
                     linkPosSeq()->setSeqContentName("MultiLinkPositionSeq");
                 } else {
-                    os << (format(_("Unknown content \"%1%\" of type \"%2%\".")) % content % type) << endl;
+                    os << format(_("Unknown content \"{0}\" of type \"{1}\"."), content, type) << endl;
                 }
             } else if(type == "MultiValueSeq"){
                 if(content == jointContent){
@@ -372,7 +372,7 @@ bool BodyMotion::doReadSeq(const Mapping* archive, std::ostream& os)
                     if(!loaded) break;
                     jointPosSeq_->setSeqContentName("MultiJointDisplacementSeq");
                 } else {
-                    os << (format(_("Unknown content \"%1%\" of type \"%2%\".")) % content % type) << endl;
+                    os << format(_("Unknown content \"{0}\" of type \"{1}\"."), content, type) << endl;
                 }
             } else if(type == "Vector3Seq") {
                 if((version >= 3.0 && content == "ZMPSeq") ||
@@ -395,7 +395,7 @@ bool BodyMotion::doReadSeq(const Mapping* archive, std::ostream& os)
                     }
                 }
             } else {
-                os << (format(_("Unknown type \"%1%\".")) % type) << endl;
+                os << format(_("Unknown type \"{}\"."), type) << endl;
             }
         }
     }
@@ -450,7 +450,7 @@ bool BodyMotion::doWriteSeq(YAMLWriter& writer, std::function<void()> additional
             }
             
             for(ExtraSeqMap::iterator p = extraSeqs.begin(); p != extraSeqs.end(); ++p){
-                AbstractSeqPtr& seq = p->second;
+                auto& seq = p->second;
                 seq->writeSeq(writer);
             }
             

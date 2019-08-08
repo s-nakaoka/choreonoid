@@ -14,17 +14,19 @@
 #include <cnoid/LazyCaller>
 #include <cnoid/AppUtil>
 #include <cnoid/ConnectionSet>
+#include <cnoid/stdx/optional>
 #include <QBoxLayout>
 #include <QLabel>
 #include <QEventLoop>
 #include <QApplication>
 #include <set>
 #include <iostream>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
+using fmt::format;
 
 namespace {
 
@@ -102,10 +104,10 @@ public:
     int lastUsualPhaseIndex;
     int configPhaseIndex;
     Signal<void()> sigCurrentPhaseChanged;
-    boost::optional<int> nextPhaseIndex;
+    stdx::optional<int> nextPhaseIndex;
     enum { NO_CURRENT_COMMAND = -2, PRE_COMMAND = -1 };
     int currentCommandIndex;
-    boost::optional<int> nextCommandIndex; // -1 means the pre-command
+    stdx::optional<int> nextCommandIndex; // -1 means the pre-command
 
     LazyCaller goToNextCommandLater;
     
@@ -484,7 +486,7 @@ void TaskViewImpl::addTask(Task* task)
         setCurrentTask(0, true);
     }
 
-    os << format(_("Task \"%1%\" has been added.")) % task->name() << endl;
+    os << format(_("Task \"{}\" has been added."), task->name()) << endl;
 }
 
 
@@ -505,8 +507,8 @@ bool TaskViewImpl::updateTask(Task* task)
     } else {
         if(isWaiting()){
             mv->putln(MessageView::WARNING,
-                      format(_("Task \"%1%\" cannot be updated now because it is wating for a command to finish."))
-                      % task->name());
+                      format(_("Task \"{}\" cannot be updated now because it is wating for a command to finish."),
+                      task->name()));
         } else {
             TaskInfo& info = tasks[index];
             TaskPtr oldTask = info.task;
@@ -539,7 +541,7 @@ bool TaskViewImpl::updateTask(Task* task)
                     task->restoreState(self, *info.state);
                 }
             }
-            os << format(_("Task \"%1%\" has been updated with the new one.")) % task->name() << endl;
+            os << format(_("Task \"{}\" has been updated with the new one."), task->name()) << endl;
             updated = true;
         }
     }
@@ -1112,7 +1114,7 @@ void TaskViewImpl::executeCommandSuccessively(int commandIndex)
     
     cancelWaiting(false);
 
-    nextCommandIndex = boost::none;
+    nextCommandIndex = stdx::nullopt;
 
     setBusyState(true);
     
@@ -1149,7 +1151,7 @@ void TaskViewImpl::executeCommandSuccessively(int commandIndex)
                 commandFunc = command->function();
                 nextPhaseIndex = command->nextPhaseIndex(currentPhaseIndex_);
                 if(nextPhaseIndex >= currentTask->numPhases()){
-                    nextPhaseIndex = boost::none;
+                    nextPhaseIndex = stdx::nullopt;
                     isCommandToFinishTask = true;
                 }
                 nextCommandIndex = command->nextCommandIndex(commandIndex);
@@ -1196,7 +1198,7 @@ void TaskViewImpl::setTransitionToNextCommand()
         } else {
             if(nextCommandIndex && *nextCommandIndex != currentCommandIndex){
                 int index = *nextCommandIndex;
-                nextCommandIndex = boost::none;
+                nextCommandIndex = stdx::nullopt;
                 bool executeNext = autoModeToggle.isChecked();
                 if(!executeNext){
                     if(currentCommandIndex >= 0){
@@ -1240,17 +1242,18 @@ void TaskViewImpl::goToNextTask()
     
     setBusyState(false);
 
-    for(int i=currentIndexInSerializedTasks; i < serializedTasks.size(); ++i){
+    int n = serializedTasks.size();
+    for(int i=currentIndexInSerializedTasks; i < n; ++i){
         if(serializedTasks[i] == currentTask->name()){
             int nextIndex = i + 1;
-            if(nextIndex < serializedTasks.size()){
+            if(nextIndex < n){
                 const auto& nextTask = serializedTasks[nextIndex];
                 if(setCurrentTaskByName(nextTask, true, true)){
                     ++currentIndexInSerializedTasks;
                 } else {
                     mv->putln(MessageView::WARNING,
-                              format(_("Next task \"%1%\" is not found."))
-                              % nextTask);
+                              format(_("Next task \"{}\" is not found."),
+                              nextTask));
                 }
             }
             break;
@@ -1299,8 +1302,8 @@ void TaskViewImpl::onNextOrPrevButtonClicked(int direction)
 
 void TaskViewImpl::breakSequence()
 {
-    nextPhaseIndex = boost::none;
-    nextCommandIndex = boost::none;
+    nextPhaseIndex = stdx::nullopt;
+    nextCommandIndex = stdx::nullopt;
 
     mv->putln(MessageView::HIGHLIGHT,
               "Transition to the next task-command was interrupted.");
@@ -1417,8 +1420,8 @@ void TaskViewImpl::cancelWaiting(bool doBreak)
     } else {
         if(eventLoop.isRunning()){
             autoModeToggle.setChecked(false); // stop the auto mode, too
-            nextPhaseIndex = boost::none;
-            nextCommandIndex = boost::none;
+            nextPhaseIndex = stdx::nullopt;
+            nextCommandIndex = stdx::nullopt;
             stopWaiting(false);
         }
         if(doBreak){
@@ -1593,12 +1596,12 @@ void TaskViewImpl::applyMenuItem(int index, bool on)
 }
                 
 
-boost::dynamic_bitset<> TaskView::menuItemCheckStates() const
+std::vector<bool> TaskView::menuItemCheckStates() const
 {
-    boost::dynamic_bitset<> states;
+    std::vector<bool> states;
     impl->updateMenuItems(false);
     int n = impl->menuItems.size();
-    states.resize(n);
+    states.resize(n, false);
     for(int i=0; i < n; ++i){
         Action* action = impl->menuItems[i].action;
         if(action){
@@ -1615,7 +1618,7 @@ SignalProxy<void()> TaskView::sigMenuRequest()
 }
 
 
-void TaskView::showMenu(boost::dynamic_bitset<> checkStates)
+void TaskView::showMenu(std::vector<bool> checkStates)
 {
     impl->updateMenuItems(true);
 

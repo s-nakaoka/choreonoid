@@ -315,11 +315,7 @@ ItemTreeViewImpl::ItemTreeViewImpl(ItemTreeView* self, RootItem* rootItem)
     
     setColumnCount(1);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    header()->setResizeMode(0, QHeaderView::Stretch);
-#else
     header()->setSectionResizeMode(0, QHeaderView::Stretch);
-#endif
     header()->setMinimumSectionSize(0);
 
     // default check column
@@ -428,11 +424,7 @@ int ItemTreeViewImpl::addCheckColumn()
 
     checkColumns[id] = new CheckColumn;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    header()->setResizeMode(id + 1, QHeaderView::ResizeToContents);
-#else
     header()->setSectionResizeMode(id + 1, QHeaderView::ResizeToContents);
-#endif
 
     initializeCheckState(invisibleRootItem(), id + 1);
     
@@ -844,7 +836,13 @@ bool ItemTreeViewImpl::selectItem(Item* item, bool select)
     ItvItem* itvItem = getItvItem(item);
     if(itvItem){
         QModelIndex index = indexFromItem(itvItem);
-        selectionModel()->select(index, (select ? QItemSelectionModel::Select : QItemSelectionModel::Deselect));
+        QItemSelectionModel::SelectionFlags flags;
+        if(select){
+            flags = QItemSelectionModel::Select;
+        } else {
+            flags = QItemSelectionModel::Deselect | QItemSelectionModel::Current;
+        }
+        selectionModel()->select(index, flags);
         return select;
     }
     return false;
@@ -874,7 +872,7 @@ bool ItemTreeViewImpl::isItemChecked(Item* item, int id)
     ItvItem* itvItem = getItvItem(item);
     if(itvItem){
         if(id == ItemTreeView::ID_ANY){
-            for(int i=0; i < checkColumns.size(); ++i){
+            for(size_t i=0; i < checkColumns.size(); ++i){
                 if(itvItem->checkState(i + 1) == Qt::Checked){
                     return true;
                 }

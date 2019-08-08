@@ -9,6 +9,7 @@
 #include <cnoid/EigenUtil>
 #include <cnoid/NullOut>
 #include <cnoid/GaussianFilter>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace std;
@@ -421,7 +422,7 @@ bool WaistBalancer::calcWaistTranslationWithCmAboveZmp
         provider->getJointPositions(jointPositions);
         for(int j=0; j < n; ++j){
             Link* joint = body_->joint(j);
-            const boost::optional<double>& q = jointPositions[j];
+            const auto& q = jointPositions[j];
             joint->q() = q ? *q : 0.0;
         }
         fkTraverse.calcForwardKinematics(true);
@@ -463,7 +464,7 @@ void WaistBalancer::initBodyKinematics(int frame, const Vector3& cmTranslation)
     provider->getJointPositions(jointPositions);
     for(int i=0; i < n; ++i){
         Link* joint = body_->joint(i);
-        const boost::optional<double>& q = jointPositions[i];
+        const auto& q = jointPositions[i];
         joint->q() = q ? *q : 0.0;
         joint->dq() = 0.0;
     }
@@ -501,9 +502,10 @@ void WaistBalancer::updateCmAndZmp(int frame)
         inertial_g = g + ddz;
         
         if(inertial_g < inertial_g_thresh){
-            os() << str(
-                fmt(_("Warning: The body is floating at %1% (Vertical CM acceleration is %2%)."))
-                % (frame * timeStep) % (ddz)) << endl;
+            os() << fmt::format(
+                _("Warning: The body is floating at {0} (Vertical CM acceleration is {1})."),
+                (frame * timeStep), (ddz))
+                 << endl;
 
             if(DoVerticalAccCompensation){
                 dP.z() = m * (inertial_g_thresh - g);
@@ -551,7 +553,7 @@ bool WaistBalancer::updateBodyKinematics1(int frame)
             provider->getJointPositions(jointPositions);
             for(int i=0; i < n; ++i){
                 Link* joint = body_->joint(i);
-                const boost::optional<double>& q = jointPositions[i];
+                const auto& q = jointPositions[i];
                 if(q){
                     joint->dq() = (*q - joint->q()) / dt;
                 } else {
@@ -573,7 +575,7 @@ void WaistBalancer::updateBodyKinematics2()
     provider->getJointPositions(jointPositions);
     for(int i=0; i < n; ++i){
         Link* joint = body_->joint(i);
-        const boost::optional<double>& q = jointPositions[i];
+        const auto& q = jointPositions[i];
         if(q){
             joint->q() = *q;
         }
@@ -848,7 +850,7 @@ bool WaistBalancer::applyCmTranslations(BodyMotion& motion, bool putAllLinkPosit
 
     MultiValueSeq& qseq = *motion.jointPosSeq();
     MultiSE3Seq& pseq = *motion.linkPosSeq();
-    ZMPSeqPtr zmpseq = getOrCreateZMPSeq(motion);
+    auto zmpseq = getOrCreateZMPSeq(motion);
     zmpseq->setRootRelative(false);
 
     initBodyKinematics(beginningFrame, totalCmTranslations[beginningFrame]);

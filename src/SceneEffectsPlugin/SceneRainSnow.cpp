@@ -7,6 +7,7 @@
 #include "SceneRainSnow.h"
 #include "ParticlesProgram.h"
 #include <cnoid/EigenUtil>
+#include <cnoid/GLSLProgram>
 
 using namespace std;
 using namespace cnoid;
@@ -113,7 +114,10 @@ SgObject* SceneSnow::clone(SgCloneMap& cloneMap) const
 
 
 RainSnowProgram::RainSnowProgram(GLSLSceneRenderer* renderer)
-    : ParticlesProgram(renderer)
+    : ParticlesProgram(
+        renderer,
+        ":/SceneEffectsPlugin/shader/RainSnow.vert",
+        ":/SceneEffectsPlugin/shader/Particles.frag")
 {
 
 }
@@ -121,10 +125,6 @@ RainSnowProgram::RainSnowProgram(GLSLSceneRenderer* renderer)
 
 bool RainSnowProgram::initializeRendering(SceneParticles* particles)
 {
-    loadVertexShader(":/SceneEffectsPlugin/shader/RainSnow.vert");
-    loadFragmentShader(":/SceneEffectsPlugin/shader/Particles.frag");
-    link();
-    
     if(!ParticlesProgramBase::initializeRendering(particles)){
         return false;
     }
@@ -139,8 +139,8 @@ bool RainSnowProgram::initializeRendering(SceneParticles* particles)
     for(GLuint i = 0; i < ps.numParticles(); ++i) {
         float x, y;
         while(true){
-            x = 2.0 * r * random() - r;
-            y = 2.0 * r * random() - r;
+            x = 2.0 * r * frandom() - r;
+            y = 2.0 * r * frandom() - r;
             if(x * x + y * y <= r2){
                 break;
             }
@@ -178,8 +178,9 @@ bool RainSnowProgram::initializeRendering(SceneParticles* particles)
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
 
-    velocityLocation = getUniformLocation("velocity");
-    lifeTimeLocation = getUniformLocation("lifeTime");
+    auto& glsl = glslProgram();
+    velocityLocation = glsl.getUniformLocation("velocity");
+    lifeTimeLocation = glsl.getUniformLocation("lifeTime");
 
     return true;
 }

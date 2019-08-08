@@ -22,11 +22,12 @@
 #include <QBoxLayout>
 #include <QLabel>
 #include <QDialogButtonBox>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
+using fmt::format;
 
 namespace {
 
@@ -310,53 +311,53 @@ void SplineFilterDialog::onAccepted()
 
     ItemList<MultiValueSeqItem> vItems = items;
     for(int i=0; i < vItems.size(); ++i){
-        MultiValueSeqPtr seq = vItems[i]->seq();
+        auto seq = vItems[i]->seq();
         double ifps = inputFrameRateCheck.isChecked()  ? inputFrameRateSpin.value()  : seq->frameRate();
         double ofps = outputFrameRateCheck.isChecked() ? outputFrameRateSpin.value() : seq->frameRate();
         
-        os << str(format(_("Applying B-Spline filter to %1%: input frame rate = %2%, output frame rate = %3%"))
-               % vItems[i]->name() % ifps % ofps) << endl;
+        os << format(_("Applying B-Spline filter to {0}: input frame rate = {1}, output frame rate = {2}"),
+                     vItems[i]->name(), ifps, ofps) << endl;
         
         applySplineFilter(*seq, ifps, ofps, ratio);
     }
 
     ItemList<MultiVector3SeqItem> v3Items = items;
     for(int i=0; i < v3Items.size(); ++i){
-        MultiVector3SeqPtr seq = v3Items[i]->seq();
+        auto seq = v3Items[i]->seq();
         double ifps = inputFrameRateCheck.isChecked()  ? inputFrameRateSpin.value()  : seq->frameRate();
         double ofps = outputFrameRateCheck.isChecked() ? outputFrameRateSpin.value() : seq->frameRate();
         
-        os << str(format(_("Applying B-Spline filter to %1%: input frame rate = %2%, output frame rate = %3%"))
-               % v3Items[i]->name() % ifps % ofps) << endl;
+        os << format(_("Applying B-Spline filter to {0}: input frame rate = {1}, output frame rate = {2}"),
+                     v3Items[i]->name(), ifps, ofps) << endl;
         
         applySplineFilter(*seq, ifps, ofps, ratio);
     }
 
     ItemList<MultiSE3SeqItem> sItems = items;
     for(int i=0; i < sItems.size(); ++i){
-        MultiSE3SeqPtr seq = sItems[i]->seq();
+        auto seq = sItems[i]->seq();
         double ifps = inputFrameRateCheck.isChecked()  ? inputFrameRateSpin.value()  : seq->frameRate();
         double ofps = outputFrameRateCheck.isChecked() ? outputFrameRateSpin.value() : seq->frameRate();
         
-        os << str(format(_("Applying B-Spline filter to %1%: input frame rate = %2%, output frame rate = %3%"))
-               % sItems[i]->name() % ifps % ofps) << endl;
+        os << format(_("Applying B-Spline filter to {0}: input frame rate = {1}, output frame rate = {2}"),
+                     sItems[i]->name(), ifps, ofps) << endl;
         
         applySplineFilter(*seq, ifps, ofps, ratio);
     }
 
     ItemList<BodyMotionItem> bItems = items;
     for(int i=0; i < bItems.size(); ++i){
-        BodyMotionPtr motion = bItems[i]->motion();
+        auto motion = bItems[i]->motion();
         double ifps = inputFrameRateCheck.isChecked()  ? inputFrameRateSpin.value()  : motion->frameRate();
         double ofps = outputFrameRateCheck.isChecked() ? outputFrameRateSpin.value() : motion->frameRate();
         
-        os << str(format(_("Applying B-Spline filter to %1%: input frame rate = %2%, output frame rate = %3%"))
-                  % bItems[i]->name() % ifps % ofps) << endl;
+        os << format(_("Applying B-Spline filter to {0}: input frame rate = {1}, output frame rate = {2}"),
+                     bItems[i]->name(), ifps, ofps) << endl;
 
         applySplineFilter(*motion->jointPosSeq(), ifps, ofps, ratio);
         applySplineFilter(*motion->linkPosSeq(), ifps, ofps, ratio);
 
-        if(ZMPSeqPtr zmpSeq = getZMPSeq(*motion)){
+        if(auto zmpSeq = getZMPSeq(*motion)){
             applySplineFilter(*zmpSeq, ifps, ofps, ratio);
         }
     }

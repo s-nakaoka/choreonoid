@@ -9,10 +9,9 @@
 #include <rtm/DataFlowComponentBase.h>
 #include <rtm/DataInPort.h>
 #include <rtm/idl/BasicDataTypeSkel.h>
-#include <boost/format.hpp>
+#include <fmt/format.h>
 
 using namespace cnoid;
-using boost::format;
 
 class JoystickInputRTC : public RTC::DataFlowComponentBase, public JoystickInterface
 {
@@ -129,9 +128,17 @@ public:
             joystickInputRTC = 0;
         }
         
-        auto args = str(
-            format("JoystickInput?instance_name=%1%&exec_cxt.periodic.type=ChoreonoidExecutionContext")
-            % config->controllerName());
+#if defined(OPENRTM_VERSION11)
+        std::string args =
+            fmt::format(
+                "JoystickInput?instance_name={}&exec_cxt.periodic.type=ChoreonoidExecutionContext",
+                config->controllerName());
+#elif defined(OPENRTM_VERSION12)
+        std::string args =
+            fmt::format(
+                "JoystickInput?instance_name={}&execution_contexts=SimulationExecutionContext&exec_cxt.periodic.type=ChoreonoidExecutionContext",
+                config->controllerName());
+#endif
             
         joystickInputRTC = dynamic_cast<JoystickInputRTC*>(cnoid::createManagedRTC(args));
 

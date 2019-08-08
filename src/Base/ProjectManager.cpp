@@ -22,15 +22,15 @@
 #include <cnoid/ExecutablePath>
 #include <QFileDialog>
 #include <QCoreApplication>
-#include <boost/filesystem.hpp>
 #include <string>
 #include <vector>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-namespace filesystem = boost::filesystem;
-using boost::format;
+namespace filesystem = cnoid::stdx::filesystem;
+using fmt::format;
 
 namespace {
 
@@ -204,8 +204,8 @@ bool ProjectManagerImpl::restoreObjectStates
                 }
             } catch(const ValueNode::Exception& ex){
                 mv->putln(
-                    format(_("The state of the \"%1%\" %2% was not completely restored.\n%3%"))
-                    % name % nameSuffix % ex.message(),
+                    format(_("The state of the \"{0}\" {1} was not completely restored.\n{2}"),
+                    name, nameSuffix, ex.message()),
                     MessageView::WARNING);
             }
         }
@@ -231,7 +231,7 @@ ItemList<> ProjectManagerImpl::loadProject(const std::string& filename, Item* pa
     reader.setMappingClass<Archive>();
 
     try {
-        mv->notify(format(_("Loading project file \"%1%\" ...")) % filename);
+        mv->notify(format(_("Loading project file \"{}\" ..."), filename));
         if(!isInvokingApplication){
             mv->flush();
         }
@@ -335,11 +335,11 @@ ItemList<> ProjectManagerImpl::loadProject(const std::string& filename, Item* pa
                 
                 numArchivedItems = itemTreeArchiver.numArchivedItems();
                 numRestoredItems = itemTreeArchiver.numRestoredItems();
-                mv->putln(format(_("%1% / %2% item(s) have been loaded.")) % numRestoredItems % numArchivedItems);
+                mv->putln(format(_("{0} / {1} item(s) have been loaded."), numRestoredItems, numArchivedItems));
 
                 if(numRestoredItems < numArchivedItems){
                     mv->putln(
-                        format(_("%1% item(s) were not loaded.")) % (numArchivedItems - numRestoredItems),
+                        format(_("{} item(s) were not loaded."), (numArchivedItems - numRestoredItems)),
                         MessageView::WARNING);
                 }
                 
@@ -359,9 +359,9 @@ ItemList<> ProjectManagerImpl::loadProject(const std::string& filename, Item* pa
                 archive->callPostProcesses();
 
                 if(numRestoredItems == numArchivedItems){
-                    mv->notify(format(_("Project \"%1%\" has been completely loaded.")) % filename);
+                    mv->notify(format(_("Project \"{}\" has been completely loaded."), filename));
                 } else {
-                    mv->notify(format(_("Project \"%1%\" has been partially loaded.")) % filename);
+                    mv->notify(format(_("Project \"{}\" has been partially loaded."), filename));
                 }
             }
         }
@@ -371,7 +371,7 @@ ItemList<> ProjectManagerImpl::loadProject(const std::string& filename, Item* pa
 
     if(!loaded){                
         mv->notify(
-            format(_("Loading project \"%1%\" failed. Any valid objects were not loaded.")) % filename,
+            format(_("Loading project \"{}\" failed. Any valid objects were not loaded."), filename),
             MessageView::ERROR);
         lastAccessedProjectFile.clear();
     }
@@ -432,7 +432,7 @@ void ProjectManagerImpl::saveProject(const string& filename, Item* item)
     YAMLWriter writer(filename);
     if(!writer.isOpen()){
         mv->put(
-            format(_("Can't open file \"%1%\" for writing.\n")) % filename,
+            format(_("Can't open file \"{}\" for writing.\n"), filename),
             MessageView::ERROR);
         return;
     }
@@ -447,9 +447,9 @@ void ProjectManagerImpl::saveProject(const string& filename, Item* item)
     
     mv->putln();
     if(isSubProject){
-        mv->notify(format(_("Saving sub project %1% as \"%2%\" ...")) % item->name() % filename);
+        mv->notify(format(_("Saving sub project {0} as \"{1}\" ..."), item->name(), filename));
     } else {
-        mv->notify(format(_("Saving the project as \"%1%\" ...")) % filename);
+        mv->notify(format(_("Saving the project as \"{}\" ..."), filename));
     }
     mv->flush();
     
@@ -617,7 +617,7 @@ void ProjectManagerImpl::openDialogToSaveProject()
         AppConfig::archive()->writePath("currentFileDialogDirectory", dialog.directory().absolutePath().toStdString());        
         filesystem::path path(dialog.selectedFiles().front().toStdString());
         string filename = getNativePathString(path);
-        string ext = filesystem::extension(path);
+        string ext = path.extension().string();
         if(ext != ".cnoid"){
             filename += ".cnoid";
         }

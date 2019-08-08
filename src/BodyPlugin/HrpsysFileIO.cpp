@@ -11,38 +11,27 @@
 #include <cnoid/BodyMotionUtil>
 #include <cnoid/ZMPSeq>
 #include <cnoid/Config>
+#include <cnoid/Tokenizer>
+#include <cnoid/stdx/filesystem>
 #include <QMessageBox>
-#include <boost/tokenizer.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/format.hpp>
+#include <fmt/format.h>
 #include <boost/iostreams/filtering_stream.hpp>
 #ifndef _WINDOWS
 #include <boost/iostreams/filter/gzip.hpp>
 #include <boost/iostreams/filter/bzip2.hpp>
 #endif
-#include <boost/filesystem.hpp>
 #include <fstream>
 #include <list>
 #include <vector>
 #include <map>
-
-#ifdef CNOID_USE_BOOST_REGEX
-#include <boost/regex.hpp>
-using boost::regex;
-using boost::regex_match;
-using boost::smatch;
-#else
 #include <regex>
-#endif
-
 #include <iostream>
-
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-namespace filesystem = boost::filesystem;
-using boost::format;
+namespace filesystem = cnoid::stdx::filesystem;
+using fmt::format;
 
 namespace {
 
@@ -57,9 +46,6 @@ public:
            FORCE, TORQUE, ACC, OMEGA,
            ZMP, WAIST, RPY,
            NUM_DATA_TYPES };
-    
-    typedef boost::char_separator<char> Separator;
-    typedef boost::tokenizer<Separator> Tokenizer;
     
     struct Element {
         Element(){
@@ -104,7 +90,7 @@ public:
         boost::iostreams::filtering_istream is;
 
 #ifndef _WINDOWS
-        string ext = filesystem::extension(filesystem::path(filename));
+        string ext = filesystem::path(filename).extension().string();
         if(ext == ".gz"){
             is.push(boost::iostreams::gzip_decompressor());
         } else if(ext == ".bz2"){
@@ -112,48 +98,46 @@ public:
         }
 #endif
         ifstream ifs(filename.c_str());
-
         if(!ifs){
-            os << (format("\"%1%\" cannot be opened.") % filename) << endl;
+            os << format(_("\"{}\" cannot be opened."), filename) << endl;
             return false;
         }
-
         is.push(ifs);
         
         elements.clear();
         frames.clear();
-        Separator sep(" \t\r\n", "%");
         string line;
-        
+
+        regex header("(^\\s*%)(.*$)");
+        smatch match; 
         while(getline(is, line)){
-            Tokenizer tokens(line, sep);
-            Tokenizer::iterator it = tokens.begin();
-            if(it != tokens.end()){
-                if(*it == "%"){
-                    readHeader(++it, tokens.end());
+            if(regex_match(line, match, header)){
+                if(match.size() == 3){
+                    readHeader(match[2].str());
+                    break;
                 }
-                break;
             }
         }
-
         if(elements.empty()){
             return false;
         }
 
         const size_t numElements = elements.size();
 
+        Tokenizer<CharSeparator<char>> tokens(CharSeparator<char>(" \t\r\n"));
+
         while(getline(is, line)){
-            Tokenizer tokens(line, sep);
-            Tokenizer::iterator it = tokens.begin();
+            tokens.assign(line);
+            auto it = tokens.begin();
             if(it != tokens.end()){
                 frames.push_back(vector<double>(numElements));
                 vector<double>& frame = frames.back();
                 size_t i;
                 for(i=0; (i < numElements) && (it != tokens.end()); ++i, ++it){
-                    frame[i] = boost::lexical_cast<double>(*it);
+                    frame[i] = std::stod(*it);
                 }
                 if(i < numElements /* || it != tokens.end() */ ){
-                    os << (format("\"%1%\" contains different size columns.") % filename) << endl;
+                    os << format(_("\"{}\" contains different size columns."), filename) << endl;
                     return false;
                 }
             }
@@ -161,16 +145,14 @@ public:
 
         const size_t numFrames = frames.size();
 
-        BodyMotionPtr motion = item->motion();
+        auto motion = item->motion();
         motion->setDimension(numFrames, numComponents[JOINT_POS], 0);
         motion->setFrameRate(200);
 
-        MultiValueSeqPtr qseq = item->motion()->jointPosSeq();
-        //MultiValueSeqPtr dqseq;
-        //MultiValueSeqPtr useq;
-        ZMPSeqPtr zmpseq = getOrCreateZMPSeq(*item->motion());
+        auto qseq = item->motion()->jointPosSeq();
+        auto zmpseq = getOrCreateZMPSeq(*item->motion());
 
-        std::list< std::vector<double> >::iterator p = frames.begin();
+        std::list<std::vector<double>>::iterator p = frames.begin();
         
         for(size_t i=0; i < numFrames; ++i){
             vector<double>& frame = *p++;
@@ -191,28 +173,22 @@ public:
         return true;
     }
 
-    void readHeader(Tokenizer::iterator it, Tokenizer::iterator end)
+    void readHeader(const string& line)
     {
-        smatch match;
-
         for(int i=0; i < NUM_DATA_TYPES; ++i){
             numComponents[i] = 0;
         }
 
+        smatch match;
         int waistIndex = 0;
-        
-        while(it != end){
+        Tokenizer<CharSeparator<char>> tokens(line, CharSeparator<char>(" \t\r\n"));
 
+        for(auto it = tokens.begin(); it != tokens.end(); ++it){
             Element element;
-
             if(regex_match(*it, match, labelPattern)){
-
                 map<string,int>::iterator p = labelToTypeMap.find(match.str(1));
-
                 if(p != labelToTypeMap.end()){
-
                     element.type = p->second;
-
                     const string& axisString = match.str(2);
                     if(!axisString.empty()){
                         if(element.type != WAIST || waistIndex < 3){
@@ -229,12 +205,10 @@ public:
                             }
                         }
                     }
-                    
                     const string& indexString = match.str(3);
                     if(!indexString.empty()){
-                        element.index = boost::lexical_cast<int>(indexString);
+                        element.index = std::stoi(indexString);
                     }
-                    
                     if(element.type == WAIST){
                         waistIndex++;
                     }
@@ -242,7 +216,6 @@ public:
             }
             elements.push_back(element);
             numComponents[element.type] += 1;
-            ++it;
         }
     }
 };
@@ -276,11 +249,12 @@ bool exportHrpsysSeqFileSet(BodyMotionItem* item, const std::string& filename, s
 {
     double frameRate = item->motion()->frameRate();
     if(frameRate != 200.0){
-        static format m1(_("The frame rate of a body motion exported as HRPSYS files should be standard value 200, "
-                           "but the frame rate of \"%1%\" is %2%. The exported data may cause a problem.\n\n"
-                           "Do you continue to export ?"));
-        
-        if(!confirm(str(m1 % item->name() % frameRate))){
+        if(!confirm(
+               format(
+                   _("The frame rate of a body motion exported as HRPSYS files should be standard value 200, "
+                     "but the frame rate of \"{0}\" is {1}. The exported data may cause a problem.\n\n"
+                     "Do you continue to export ?"),
+                   item->name(), frameRate))){
             return false;
         }
     }
@@ -292,17 +266,15 @@ bool exportHrpsysSeqFileSet(BodyMotionItem* item, const std::string& filename, s
         KinematicFaultChecker* checker = KinematicFaultChecker::instance();
         int numFaults = checker->checkFaults(bodyItem, item, os);
         if(numFaults > 0){
-            static string m2(_("A fault has been detected. Please check the report in the MessageView.\n\n"
-                               "Do you continue to export ?"));
-            static format m3(_("%1% faults have been detected. Please check the report in the MessageView.\n\n"
-                               "Do you continue to export ?"));
-            
             bool result;
-            
             if(numFaults == 1){
-                result = confirm(m2);
+                result = confirm(_("A fault has been detected. Please check the report in the MessageView.\n\n"
+                                   "Do you continue to export ?"));
             } else {
-                result = confirm(str(m3 % numFaults));
+                result = confirm(
+                    format(
+                        _("{} faults have been detected. Please check the report in the MessageView.\n\n"
+                          "Do you continue to export ?"), numFaults));
             }
             
             if(!result){

@@ -9,7 +9,6 @@ set(plugin CnoidOpenRTMPlugin)
 set(plugin_sources
   OpenRTMPlugin.cpp
   RTSCommonUtil.cpp
-  ProfileHandler.cpp
   ControllerRTCItem.cpp
   BodyIoRTCItem.cpp
   RTCWrapper.cpp
@@ -22,6 +21,9 @@ set(plugin_sources
   RTSConfigurationView.cpp
   BodyStateSubscriberRTCItem.cpp
   LoggerUtil.cpp
+  RTSTypeUtil.cpp
+  ProfileHandler.cpp
+  PortConnectionDialog.cpp
   deprecated/BodyRTCItem.cpp
   deprecated/VirtualRobotRTC.cpp
   deprecated/VirtualRobotPortHandler.cpp
@@ -32,6 +34,10 @@ set(plugin_sources
   )
 
 set(plugin_headers
+  RTCItem.h
+  BodyIoRTCItem.h
+  ControllerRTCItem.h
+  deprecated/BodyRTCItem.h
   )
 
 set(qt_wrap_cpp_files
@@ -39,26 +45,31 @@ set(qt_wrap_cpp_files
   RTSConfigurationView.h)
 
 option(ENABLE_NEW_RT_SYSTEM_ITEM_IMPLEMENTATION "Enable the new implementation of RTSystemItem" OFF)
+#option(ENABLE_BACKGROUND_STATE_DETECTION "Enable background state detection" OFF)
+
 if(ENABLE_NEW_RT_SYSTEM_ITEM_IMPLEMENTATION)
   add_definitions(-DENABLE_NEW_RT_SYSTEM_ITEM_IMPLEMENTATION)
+  
+  #if(ENABLE_BACKGROUND_STATE_DETECTION)
+    #add_definitions(-DENABLE_BACKGROUND_STATE_DETECTION)
+  #endif()
+
   set(plugin_sources ${plugin_sources}
-    RTSystemExtItem.cpp
-    RTSDiagramExtView.cpp
-    ProfileHandlerExt.cpp
-    PortConnectionDialogExt.cpp
-    RTSCommonUtilExt.cpp)
-  set(qt_wrap_cpp_files ${qt_wrap_cpp_files} RTSDiagramExtView.h)
+    experimental/RTSystemItemEx.cpp
+    experimental/RTSDiagramViewEx.cpp
+    )
+  set(qt_wrap_cpp_files ${qt_wrap_cpp_files} experimental/RTSDiagramViewEx.h)
 else()
   set(plugin_sources ${plugin_sources}
     RTSystemItem.cpp
     RTSDiagramView.cpp
-    PortConnectionDialog.cpp)
+    )
   set(qt_wrap_cpp_files ${qt_wrap_cpp_files} RTSDiagramView.h)
 endif()  
 
-QTX_ADD_RESOURCES(RC_SRCS OpenRTMPlugin.qrc)
+QT5_ADD_RESOURCES(RC_SRCS OpenRTMPlugin.qrc)
 
-QTX_WRAP_CPP(qtsources ${qt_wrap_cpp_files})
+QT5_WRAP_CPP(qtsources ${qt_wrap_cpp_files})
 
 set(plugin_sources ${plugin_sources} ${qtsources})
 
@@ -87,11 +98,7 @@ target_link_libraries(${plugin} CnoidBodyPlugin CnoidCorbaPlugin CnoidBodyIoRTC 
 apply_common_setting_for_plugin(${plugin} "${plugin_headers}")
 
 if(ENABLE_PYTHON)
-  if(USE_PYBIND11)
-    add_subdirectory(pybind11)
-  elseif(USE_BOOST_PYTHON)
-    add_subdirectory(boostpython)
-  endif()
+  add_subdirectory(pybind11)
 endif()
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/${CNOID_PLUGIN_SUBDIR}/rtc)

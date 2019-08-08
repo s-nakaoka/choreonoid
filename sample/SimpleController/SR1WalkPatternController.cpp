@@ -33,7 +33,7 @@ class SR1WalkPatternController : public cnoid::SimpleController
     Body* ioBody;
     int currentFrameIndex;
     int lastFrameIndex;
-    MultiValueSeqPtr qseq;
+    std::shared_ptr<MultiValueSeq> qseq;
     MultiValueSeq::Frame qref0;
     MultiValueSeq::Frame qref1;
     vector<double> q0;
@@ -68,7 +68,7 @@ public:
         }
 
         string filename = getNativePathString(
-            boost::filesystem::path(shareDirectory()) / "motion" / "SR1" / patternFile);
+            cnoid::stdx::filesystem::path(shareDirectory()) / "motion" / "SR1" / patternFile);
         
         BodyMotion motion;
         if(!motion.loadStandardYAMLformat(filename)){

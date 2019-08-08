@@ -9,6 +9,7 @@
 #include <cnoid/SceneDrawables>
 #include <cnoid/MeshExtractor>
 #include <cnoid/ThreadPool>
+#include <algorithm>
 #include <random>
 #include <set>
 
@@ -41,7 +42,7 @@ class ColdetModelEx : public ColdetModel
 public:
     ReferencedPtr object;
     bool isStatic;
-    boost::optional<Position> localPosition;
+    stdx::optional<Position> localPosition;
     ColdetModelExPtr sibling;
     
     ColdetModelEx() : isStatic(false) { }
@@ -98,7 +99,6 @@ bool copyCollisionPairCollisions(ColdetModelPairEx* srcPair, CollisionPair& dest
         }
     }
 
-    bool hasCollisions = false;
     const std::vector<collision_data>& cdata = srcPair->collisions();
     const int n = cdata.size();
 
@@ -106,7 +106,7 @@ bool copyCollisionPairCollisions(ColdetModelPairEx* srcPair, CollisionPair& dest
         collisions.reserve(n);
     }
 
-    for(size_t j=0; j < n; ++j){
+    for(int j=0; j < n; ++j){
         const collision_data& cd = cdata[j];
         for(int k=0; k < cd.num_of_i_points; ++k){
             if(cd.i_point_new[k]){
@@ -138,7 +138,7 @@ public:
         
     AISTCollisionDetectorImpl();
     ~AISTCollisionDetectorImpl();
-    boost::optional<GeometryHandle> addGeometry(SgNode* geometry);
+    stdx::optional<GeometryHandle> addGeometry(SgNode* geometry);
     void addMesh(ColdetModelEx* model);
     bool makeReady();
     void detectCollisions(std::function<void(const CollisionPair&)> callback);
@@ -146,9 +146,10 @@ public:
 
     // for multithread version
     int numThreads;
-    std::unique_ptr<ThreadPool> threadPool;
+    unique_ptr<ThreadPool> threadPool;
     vector<int> shuffledPairIndices;
     vector<vector<CollisionPair>> collisionPairArrays;
+    mt19937 randomEngine;
     
     void extractCollisionsOfAssignedPairs(
         int pairIndexBegin, int pairIndexEnd, vector<CollisionPair>& collisionPairs);    
@@ -169,6 +170,11 @@ AISTCollisionDetectorImpl::AISTCollisionDetectorImpl()
     maxNumThreads = 0;
     numThreads = 0;
     meshExtractor = new MeshExtractor;
+
+    if(ENABLE_SHUFFLE){
+        random_device seed;
+        randomEngine.seed(seed());
+    }
 }
 
 
@@ -217,13 +223,13 @@ int AISTCollisionDetector::numGeometries() const
 }
 
 
-boost::optional<GeometryHandle> AISTCollisionDetector::addGeometry(SgNode* geometry)
+stdx::optional<GeometryHandle> AISTCollisionDetector::addGeometry(SgNode* geometry)
 {
     return impl->addGeometry(geometry);
 }
 
 
-boost::optional<GeometryHandle> AISTCollisionDetectorImpl::addGeometry(SgNode* geometry)
+stdx::optional<GeometryHandle> AISTCollisionDetectorImpl::addGeometry(SgNode* geometry)
 {
     if(geometry){
         ColdetModelExPtr model = new ColdetModelEx;
@@ -236,7 +242,7 @@ boost::optional<GeometryHandle> AISTCollisionDetectorImpl::addGeometry(SgNode* g
             }
         }
     }
-    return boost::none;
+    return stdx::nullopt;
 }
 
 
@@ -400,7 +406,7 @@ void AISTCollisionDetectorImpl::detectCollisions(std::function<void(const Collis
 void AISTCollisionDetectorImpl::detectCollisionsInParallel(std::function<void(const CollisionPair&)> callback)
 {
     if(ENABLE_SHUFFLE){
-        std::random_shuffle(shuffledPairIndices.begin(), shuffledPairIndices.end());
+        std::shuffle(shuffledPairIndices.begin(), shuffledPairIndices.end(), randomEngine);
     }
 
     const int numPairs = modelPairs.size();

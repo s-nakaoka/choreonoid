@@ -10,7 +10,7 @@
 #include <iosfwd>
 #include <functional>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <memory>
 #endif
 
@@ -108,26 +108,26 @@ public:
     ref_ptr() : px(0) { }
 
     ref_ptr(T* p) : px(p){
-        if(px != 0){
+        if(px != nullptr){
             px->addRef();
         }
     }
 
     template<class U>
     ref_ptr(ref_ptr<U> const & rhs) : px(rhs.get()){
-        if(px != 0){
+        if(px != nullptr){
             px->addRef();
         }
     }
 
     ref_ptr(ref_ptr const & rhs) : px(rhs.px){
-        if(px != 0){
+        if(px != nullptr){
             px->addRef();
         }
     }
 
     ~ref_ptr(){
-        if(px != 0){
+        if(px != nullptr){
             px->releaseRef();
         }
     }
@@ -137,11 +137,11 @@ public:
         return *this;
     }
 
-    ref_ptr(ref_ptr&& rhs) : px(rhs.px){
-        rhs.px = 0;
+    ref_ptr(ref_ptr&& rhs) noexcept : px(rhs.px){
+        rhs.px = nullptr;
     }
 
-    ref_ptr& operator=(ref_ptr&& rhs){
+    ref_ptr& operator=(ref_ptr&& rhs) {
         ref_ptr(static_cast<ref_ptr &&>(rhs)).swap(*this);
         return *this;
     }
@@ -171,9 +171,9 @@ public:
 
     T* retn(){
         T* p = px;
-        if(px != 0){
+        if(px != nullptr){
             px->decrementRef();
-            px = 0;
+            px = nullptr;
         }
         return p;
     }
@@ -184,12 +184,12 @@ public:
     }        
 
     T& operator*() const {
-        assert(px != 0);
+        assert(px != nullptr);
         return *px;
     }
 
     T* operator->() const {
-        assert(px != 0);
+        assert(px != nullptr);
         return px;
     }
 
@@ -204,7 +204,7 @@ private:
 
     template<class Y> friend class ref_ptr;
     template<class Y> friend class weak_ref_ptr;
-    friend class std::hash<ref_ptr<T>>;
+    friend struct std::hash<ref_ptr<T>>;
 };
 
 
@@ -310,13 +310,13 @@ public:
     }
 
     weak_ref_ptr(weak_ref_ptr&& rhs) : px(rhs.px), counter(rhs.counter){
-        rhs.px = 0;
+        rhs.px = nullptr;
         rhs.counter = 0;
     }
 
     weak_ref_ptr& operator=(weak_ref_ptr&& rhs){
         weak_ref_ptr(static_cast<weak_ref_ptr&&>(rhs)).swap(*this);
-        rhs.px = 0;
+        rhs.px = nullptr;
         rhs.counter = 0;
         return rhs;
     }
@@ -375,7 +375,7 @@ private:
 
     template<class Y> friend class weak_ref_ptr;
     template<class Y> friend class ref_ptr;
-    friend class std::hash<weak_ref_ptr<T>>;
+    friend struct std::hash<weak_ref_ptr<T>>;
 };
 
 template<class T, class U> inline bool operator<(weak_ref_ptr<T> const & a, weak_ref_ptr<U> const & b)
@@ -393,7 +393,7 @@ template<class T> void swap(weak_ref_ptr<T> & a, weak_ref_ptr<T> & b)
 namespace std {
 
 template<class T>
-class hash<cnoid::ref_ptr<T>>
+struct hash<cnoid::ref_ptr<T>>
 {
 public:
     size_t operator()(const cnoid::ref_ptr<T>& p) const
@@ -403,7 +403,7 @@ public:
 };
 
 template<class T>
-class hash<cnoid::weak_ref_ptr<T>>
+struct hash<cnoid::weak_ref_ptr<T>>
 {
 public:
     size_t operator()(const cnoid::weak_ref_ptr<T>& p) const

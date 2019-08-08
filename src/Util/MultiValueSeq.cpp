@@ -8,12 +8,13 @@
 #include "ValueTree.h"
 #include "YAMLWriter.h"
 #include "GeneralSeqReader.h"
+#include <fmt/format.h>
 #include <fstream>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
+using fmt::format;
 
 
 MultiValueSeq::MultiValueSeq()
@@ -37,7 +38,7 @@ MultiValueSeq::MultiValueSeq(const MultiValueSeq& org)
 }
 
 
-AbstractSeqPtr MultiValueSeq::cloneSeq() const
+std::shared_ptr<AbstractSeq> MultiValueSeq::cloneSeq() const
 {
     return std::make_shared<MultiValueSeq>(*this);
 }
@@ -108,7 +109,7 @@ bool MultiValueSeq::saveAsPlainFormat(const std::string& filename, std::ostream&
     file.setf(ios::fixed);
 
     if(!file){
-        os << format(_("\"%1%\" cannot be opened.")) % filename << endl;
+        os << format(_("\"{}\" cannot be opened."), filename) << endl;
         return false;
     }
 

@@ -26,8 +26,8 @@ struct NodeTypeRegistration {
 
 SgMaterial::SgMaterial()
 {
-    ambientIntensity_ = 0.2f;
-    diffuseColor_ << 0.8f, 0.8f, 0.8f;
+    ambientIntensity_ = 1.0f;
+    diffuseColor_ << 1.0f, 1.0f, 1.0f;
     emissiveColor_.setZero();
     specularColor_.setZero();
     shininess_ = 0.2f;
@@ -315,12 +315,6 @@ SgObject* SgMeshBase::childObject(int index)
 }
 
 
-const BoundingBox& SgMeshBase::boundingBox() const
-{
-    return bbox;
-}
-
-
 void SgMeshBase::updateBoundingBox()
 {
     if(!vertices_){
@@ -348,10 +342,12 @@ SgVertexArray* SgMeshBase::setVertices(SgVertexArray* vertices)
 }
 
 
-SgVertexArray* SgMeshBase::getOrCreateVertices()
+SgVertexArray* SgMeshBase::getOrCreateVertices(size_t size)
 {
     if(!vertices_){
-        setVertices(new SgVertexArray);
+        setVertices(new SgVertexArray(size));
+    } else if(size > 0){
+        vertices_->resize(size);
     }
     return vertices_;
 }
@@ -824,10 +820,12 @@ SgVertexArray* SgPlot::setVertices(SgVertexArray* vertices)
 }
 
 
-SgVertexArray* SgPlot::getOrCreateVertices()
+SgVertexArray* SgPlot::getOrCreateVertices(size_t size)
 {
     if(!vertices_){
-        setVertices(new SgVertexArray);
+        setVertices(new SgVertexArray(size));
+    } else if(size > 0){
+        vertices_->resize(size);
     }
     return vertices_;
 }

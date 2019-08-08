@@ -15,15 +15,14 @@
 #include <cnoid/ProjectManager>
 #include <cnoid/ItemManager>
 #include <QLibrary>
-#include <boost/format.hpp>
-#include <boost/dynamic_bitset.hpp>
+#include <fmt/format.h>
 #include <set>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
-namespace filesystem = boost::filesystem;
+using fmt::format;
+namespace filesystem = cnoid::stdx::filesystem;
 
 namespace {
 
@@ -41,8 +40,8 @@ struct SharedInfo : public Referenced
 {
     BodyPtr ioBody;
     ScopedConnectionSet inputDeviceStateConnections;
-    boost::dynamic_bitset<> inputEnabledDeviceFlag;
-    boost::dynamic_bitset<> inputDeviceStateChangeFlag;
+    vector<bool> inputEnabledDeviceFlag;
+    vector<bool> inputDeviceStateChangeFlag;
 };
 
 typedef ref_ptr<SharedInfo> SharedInfoPtr;
@@ -71,7 +70,7 @@ public:
     bool isOldTargetVariableMode;
 
     ConnectionSet outputDeviceStateConnections;
-    boost::dynamic_bitset<> outputDeviceStateChangeFlag;
+    vector<bool> outputDeviceStateChangeFlag;
 
     vector<SimpleControllerItemPtr> childControllerItems;
 
@@ -86,6 +85,7 @@ public:
     filesystem::path controllerDirectory;
     QLibrary controllerModule;
     bool doReloading;
+    bool isSymbolExportEnabled;
     Selection baseDirectoryType;
 
     enum BaseDirectoryType {
@@ -112,6 +112,7 @@ public:
     void onOutputDeviceStateChanged(int deviceIndex);
     void output();
     bool onReloadingChanged(bool on);
+    bool setSymbolExportEnabled(bool on);
     void doPutProperties(PutPropertyFunction& putProperty);
     bool store(Archive& archive);
     bool restore(const Archive& archive);
@@ -172,6 +173,7 @@ SimpleControllerItemImpl::SimpleControllerItemImpl(SimpleControllerItem* self)
     isOldTargetVariableMode = false;
     mv = MessageView::instance();
     doReloading = false;
+    isSymbolExportEnabled = false;
 
     controllerDirectory = filesystem::path(executableTopDirectory()) / CNOID_PLUGIN_SUBDIR / "simplecontroller";
 
@@ -202,6 +204,7 @@ SimpleControllerItemImpl::SimpleControllerItemImpl(SimpleControllerItem* self, c
     isOldTargetVariableMode = org.isOldTargetVariableMode;
     mv = MessageView::instance();
     doReloading = org.doReloading;
+    isSymbolExportEnabled = org.isSymbolExportEnabled;
 }
 
 
@@ -283,11 +286,12 @@ bool SimpleControllerItemImpl::loadController()
             if(!projectDir.empty()){
                 modulePath = filesystem::path(projectDir) / modulePath;
             } else {
-                mv->putln(MessageView::ERROR,
-                          format(_("Controller module \"%1%\" of %2% is specified as a relative "
-                                   "path from the project directory, but the project directory "
-                                   "has not been determined yet."))
-                          % controllerModuleName % self->name());
+                mv->putln(
+                    format(_("Controller module \"{0}\" of {1} is specified as a relative "
+                             "path from the project directory, but the project directory "
+                             "has not been determined yet."),
+                           controllerModuleName, self->name()),
+                    MessageView::ERROR);
                 return false;
             }
         }
@@ -297,18 +301,18 @@ bool SimpleControllerItemImpl::loadController()
     controllerModule.setFileName(controllerModuleFilename.c_str());
         
     if(controllerModule.isLoaded()){
-        mv->putln(fmt(_("The controller module of %1% has already been loaded.")) % self->name());
+        mv->putln(format(_("The controller module of {} has already been loaded."), self->name()));
             
         // This should be called to make the reference to the DLL.
         // Otherwise, QLibrary::unload() unloads the DLL without considering this instance.
         controllerModule.load();
             
     } else {
-        mv->put(fmt(_("Loading the controller module \"%2%\" of %1% ... "))
-                % self->name() % controllerModuleFilename);
+        mv->put(format(_("Loading the controller module \"{1}\" of {0} ... "),
+                       self->name(), controllerModuleFilename));
         if(!controllerModule.load()){
             mv->put(_("Failed.\n"));
-            mv->putln(MessageView::ERROR, controllerModule.errorString());
+            mv->putln(controllerModule.errorString(), MessageView::ERROR);
             return false;
         }
         mv->putln(_("OK!"));
@@ -317,23 +321,22 @@ bool SimpleControllerItemImpl::loadController()
     SimpleController::Factory factory =
         (SimpleController::Factory)controllerModule.resolve("createSimpleController");
     if(!factory){
-        mv->putln(MessageView::ERROR,
-                  _("The factory function \"createSimpleController()\" is not found in the controller module."));
+        mv->putln(_("The factory function \"createSimpleController()\" is not found in the controller module."),
+                  MessageView::ERROR);
         return false;
     }
 
     controller = factory();
     if(!controller){
-        mv->putln(MessageView::ERROR,
-                  format(_("The controller factory of %1% failed to create a controller instance."))
-                  % self->name());
+        mv->putln(format(_("The controller factory of {} failed to create a controller instance."), self->name()),
+                  MessageView::ERROR);
         unloadController();
         return false;
     }
 
     if(!controller->configure(&config)){
-        mv->putln(MessageView::ERROR,
-                  format(_("%1% failed to configure the controller")) % self->name());
+        mv->putln(format(_("{} failed to configure the controller"), self->name()),
+                  MessageView::ERROR);
         return false;
     }
 
@@ -358,8 +361,8 @@ void SimpleControllerItemImpl::unloadController()
     }
 
     if(controllerModule.unload()){
-        mv->putln(fmt(_("The controller module \"%2%\" of %1% has been unloaded."))
-                  % self->name() % controllerModuleFilename);
+        mv->putln(format(_("The controller module \"{1}\" of {0} has been unloaded."),
+                         self->name(), controllerModuleFilename));
     }
 }
 
@@ -367,11 +370,11 @@ void SimpleControllerItemImpl::unloadController()
 void SimpleControllerItemImpl::updateInputEnabledDevices()
 {
     const DeviceList<>& devices = simulationBody->devices();
-    sharedInfo->inputDeviceStateChangeFlag.resize(devices.size());
-    sharedInfo->inputDeviceStateChangeFlag.reset();
+    sharedInfo->inputDeviceStateChangeFlag.clear();
+    sharedInfo->inputDeviceStateChangeFlag.resize(devices.size(), false);
     sharedInfo->inputDeviceStateConnections.disconnect();
 
-    const boost::dynamic_bitset<>& flag = sharedInfo->inputEnabledDeviceFlag;
+    const auto& flag = sharedInfo->inputEnabledDeviceFlag;
     for(size_t i=0; i < devices.size(); ++i){
         if(flag[i]){
             sharedInfo->inputDeviceStateConnections.add(
@@ -390,16 +393,16 @@ void SimpleControllerItemImpl::initializeIoBody()
 
     outputDeviceStateConnections.disconnect();
     const DeviceList<>& ioDevices = ioBody->devices();
-    outputDeviceStateChangeFlag.resize(ioDevices.size());
-    outputDeviceStateChangeFlag.reset();
+    outputDeviceStateChangeFlag.clear();
+    outputDeviceStateChangeFlag.resize(ioDevices.size(), false);
     for(size_t i=0; i < ioDevices.size(); ++i){
         outputDeviceStateConnections.add(
             ioDevices[i]->sigStateChanged().connect(
                 [this, i](){ onOutputDeviceStateChanged(i); }));
     }
 
-    sharedInfo->inputEnabledDeviceFlag.resize(simulationBody->numDevices());
-    sharedInfo->inputEnabledDeviceFlag.reset();
+    sharedInfo->inputEnabledDeviceFlag.clear();
+    sharedInfo->inputEnabledDeviceFlag.resize(simulationBody->numDevices(), false);
 
     sharedInfo->ioBody = ioBody;
 }
@@ -449,7 +452,7 @@ SimpleController* SimpleControllerItemImpl::initialize(ControllerIO* io, SharedI
     clearIoTargets();
 
     if(!controller->initialize(this)){
-        mv->putln(MessageView::ERROR, fmt(_("%1%'s initialize method failed.")) % self->name());
+        mv->putln(format(_("{}'s initialize method failed."), self->name()), MessageView::ERROR);
         sharedInfo.reset();
         return nullptr;
     }
@@ -678,7 +681,7 @@ void SimpleControllerItemImpl::setJointOutput(int stateTypes)
 
 void SimpleControllerItemImpl::enableInput(Device* device)
 {
-    sharedInfo->inputEnabledDeviceFlag.set(device->index());
+    sharedInfo->inputEnabledDeviceFlag[device->index()] = true;
 }
 
 
@@ -717,8 +720,7 @@ bool SimpleControllerItemImpl::start()
 {
     bool result = true;
     if(!controller->start()){
-        mv->putln(MessageView::WARNING,
-                  format(_("%1% failed to start")) % self->name());
+        mv->putln(format(_("{} failed to start"), self->name()), MessageView::WARNING);
         result = false;
     } else {
         for(auto& childController : childControllerItems){
@@ -776,27 +778,25 @@ void SimpleControllerItemImpl::input()
         }
     }
 
-    boost::dynamic_bitset<>& inputDeviceStateChangeFlag = sharedInfo->inputDeviceStateChangeFlag;
-    if(inputDeviceStateChangeFlag.any()){
-        const DeviceList<>& devices = simulationBody->devices();
-        const DeviceList<>& ioDevices = ioBody->devices();
-        boost::dynamic_bitset<>::size_type i = inputDeviceStateChangeFlag.find_first();
-        while(i != inputDeviceStateChangeFlag.npos){
+    auto& flag = sharedInfo->inputDeviceStateChangeFlag;
+    const auto& devices = simulationBody->devices();
+    const auto& ioDevices = ioBody->devices();
+    for(size_t i=0; i < flag.size(); ++i){
+        if(flag[i]){
             Device* ioDevice = ioDevices[i];
             ioDevice->copyStateFrom(*devices[i]);
             outputDeviceStateConnections.block(i);
             ioDevice->notifyStateChange();
             outputDeviceStateConnections.unblock(i);
-            i = inputDeviceStateChangeFlag.find_next(i);
+            flag[i] = false;
         }
-        inputDeviceStateChangeFlag.reset();
     }
 }
 
 
 void SimpleControllerItemImpl::onInputDeviceStateChanged(int deviceIndex)
 {
-    sharedInfo->inputDeviceStateChangeFlag.set(deviceIndex);
+    sharedInfo->inputDeviceStateChangeFlag[deviceIndex] = true;
 }
 
 
@@ -816,7 +816,7 @@ bool SimpleControllerItem::control()
 
 void SimpleControllerItemImpl::onOutputDeviceStateChanged(int deviceIndex)
 {
-    outputDeviceStateChangeFlag.set(deviceIndex);
+    outputDeviceStateChangeFlag[deviceIndex] = true;
 }
 
 
@@ -857,6 +857,8 @@ void SimpleControllerItemImpl::output()
             break;
         case Link::LINK_POSITION:
             simLink->T() = ioLink->T();
+            simLink->v() = ioLink->v();
+            simLink->w() = ioLink->w();
             break;
         default:
             break;
@@ -867,19 +869,17 @@ void SimpleControllerItemImpl::output()
         simulationBody->link(index)->F_ext() += ioBody->link(index)->F_ext();
     }
         
-    if(outputDeviceStateChangeFlag.any()){
-        const DeviceList<>& devices = simulationBody->devices();
-        const DeviceList<>& ioDevices = ioBody->devices();
-        boost::dynamic_bitset<>::size_type i = outputDeviceStateChangeFlag.find_first();
-        while(i != outputDeviceStateChangeFlag.npos){
+    const DeviceList<>& devices = simulationBody->devices();
+    const DeviceList<>& ioDevices = ioBody->devices();
+    for(size_t i=0; i < outputDeviceStateChangeFlag.size(); ++i){
+        if(outputDeviceStateChangeFlag[i]){
             Device* device = devices[i];
             device->copyStateFrom(*ioDevices[i]);
             sharedInfo->inputDeviceStateConnections.block(i);
             device->notifyStateChange();
             sharedInfo->inputDeviceStateConnections.unblock(i);
-            i = outputDeviceStateChangeFlag.find_next(i);
+            outputDeviceStateChangeFlag[i] = false;
         }
-        outputDeviceStateChangeFlag.reset();
     }
 }
 
@@ -910,6 +910,24 @@ bool SimpleControllerItemImpl::onReloadingChanged(bool on)
 }
 
 
+bool SimpleControllerItemImpl::setSymbolExportEnabled(bool on)
+{
+    if(on != isSymbolExportEnabled){
+        if(on){
+            if(controllerModule.isLoaded()){
+                unloadController();
+            }
+            controllerModule.setLoadHints(QLibrary::ExportExternalSymbolsHint);
+        } else {
+            // You cannot actually disable the symbol export after enabling it
+            // without restarting Choreonoid.
+        }
+        isSymbolExportEnabled = on;
+    }
+    return true;
+}
+
+
 void SimpleControllerItem::doPutProperties(PutPropertyFunction& putProperty)
 {
     ControllerItem::doPutProperties(putProperty);
@@ -921,7 +939,7 @@ void SimpleControllerItemImpl::doPutProperties(PutPropertyFunction& putProperty)
 {
     FilePathProperty moduleProperty(
         controllerModuleName,
-        { str(format(_("Simple Controller Module (*.%1%)")) % DLL_EXTENSION) });
+        { format(_("Simple Controller Module (*.{})"), DLL_EXTENSION) });
 
     if(baseDirectoryType.is(CONTROLLER_DIRECTORY)){
         moduleProperty.setBaseDirectory(controllerDirectory.string());
@@ -934,6 +952,8 @@ void SimpleControllerItemImpl::doPutProperties(PutPropertyFunction& putProperty)
     putProperty(_("Base directory"), baseDirectoryType, changeProperty(baseDirectoryType));
 
     putProperty(_("Reloading"), doReloading, [&](bool on){ return onReloadingChanged(on); });
+
+    putProperty(_("Export symbols"), isSymbolExportEnabled, [&](bool on){ return setSymbolExportEnabled(on); });
 
     putProperty(_("Old target value variable mode"), isOldTargetVariableMode, changeProperty(isOldTargetVariableMode));
 }
@@ -953,6 +973,7 @@ bool SimpleControllerItemImpl::store(Archive& archive)
     archive.writeRelocatablePath("controller", controllerModuleName);
     archive.write("baseDirectory", baseDirectoryType.selectedSymbol(), DOUBLE_QUOTED);
     archive.write("reloading", doReloading);
+    archive.write("exportSymbols", isSymbolExportEnabled);
     archive.write("isOldTargetVariableMode", isOldTargetVariableMode);
     return true;
 }
@@ -976,6 +997,11 @@ bool SimpleControllerItemImpl::restore(const Archive& archive)
         baseDirectoryType.select(value);
     }
     archive.read("reloading", doReloading);
+
+    bool on;
+    if(archive.read("exportSymbols", on)){
+        setSymbolExportEnabled(on);
+    }
 
     if(archive.read("controller", value)){
         controllerModuleName = archive.expandPathVariables(value);

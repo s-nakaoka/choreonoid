@@ -2,13 +2,6 @@
   @file
   @author Shin'ichiro Nakaoka
 */
-#ifdef WIN32
-#include <boost/version.hpp>
-#if (BOOST_VERSION >= 105900) 
-#define BOOST_NO_CXX11_ALLOCATOR
-#endif
-#endif
-
 #include "AISTSimulatorItem.h"
 #include "WorldItem.h"
 #include "BodyItem.h"
@@ -25,7 +18,7 @@
 #include <cnoid/EigenUtil>
 #include <cnoid/MessageView>
 #include <cnoid/IdPair>
-#include <boost/lexical_cast.hpp>
+#include <fmt/format.h>
 #include <mutex>
 #include <iomanip>
 #include <fstream>
@@ -33,7 +26,7 @@
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
+using fmt::format;
 
 // for Windows
 #undef min
@@ -109,7 +102,7 @@ public:
     typedef std::map<Link*, Link*> LinkMap;
     LinkMap orgLinkToInternalLinkMap;
 
-    boost::optional<int> forcedBodyPositionFunctionId;
+    stdx::optional<int> forcedBodyPositionFunctionId;
     std::mutex forcedBodyPositionMutex;
     DyBody* forcedPositionBody;
     Position forcedBodyPosition;
@@ -366,9 +359,8 @@ SimulationBody* AISTSimulatorItem::createSimulationBody(Body* orgBody)
         auto link = body->link(i);
         if(link->isFreeJoint() && !link->isRoot()){
             MessageView::instance()->putln(
-                format(_("The joint %1% of %2% is a free joint. AISTSimulator does not allow for a free joint except for the root link."))
-                % link->name() % body->name(),
-                MessageView::WARNING);
+                format(_("The joint {0} of {1} is a free joint. AISTSimulator does not allow for a free joint except for the root link."),
+                       link->name(), body->name(), MessageView::WARNING));
             link->setJointType(Link::FIXED_JOINT);
         }
     }
@@ -397,7 +389,7 @@ bool AISTSimulatorItemImpl::initializeSimulation(const std::vector<SimulationBod
 {
     if(ENABLE_DEBUG_OUTPUT){
         static int ntest = 0;
-        os.open((string("test-log-") + boost::lexical_cast<string>(ntest++) + ".log").c_str());
+        os.open((string("test-log-") + std::to_string(ntest++) + ".log").c_str());
         os << setprecision(30);
     }
 
@@ -429,7 +421,8 @@ bool AISTSimulatorItemImpl::initializeSimulation(const std::vector<SimulationBod
     }
 
     if(!highGainDynamicsList.empty()){
-        mvout() << (format(_("%1% uses the ForwardDynamicsCBM module to perform the high-gain control.")) % self->name()) << endl;
+        mvout() << format(_("{} uses the ForwardDynamicsCBM module to perform the high-gain control."),
+                          self->name()) << endl;
     }
 
     cfs.setFriction(staticFriction, dynamicFriction);
@@ -555,7 +548,7 @@ void AISTSimulatorItem::finalizeSimulation()
 }
 
 
-CollisionLinkPairListPtr AISTSimulatorItem::getCollisions()
+std::shared_ptr<CollisionLinkPairList> AISTSimulatorItem::getCollisions()
 {
     return impl->world.constraintForceSolver.getCollisions();
 }
@@ -609,7 +602,7 @@ void AISTSimulatorItem::clearForcedPositions()
 {
     if(impl->forcedBodyPositionFunctionId){
         removePostDynamicsFunction(*impl->forcedBodyPositionFunctionId);
-        impl->forcedBodyPositionFunctionId = boost::none;
+        impl->forcedBodyPositionFunctionId = stdx::nullopt;
     }
 }
     

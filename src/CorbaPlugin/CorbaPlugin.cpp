@@ -16,14 +16,15 @@
 #include <cnoid/ExecutablePath>
 #include <cnoid/FileUtil>
 #include <QTcpSocket>
-#include <boost/filesystem.hpp>
+#include <fmt/format.h>
 #include <thread>
 #include <iostream>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-namespace filesystem = boost::filesystem;
+using fmt::format;
+namespace filesystem = cnoid::stdx::filesystem;
 
 namespace {
 bool commonInitializationDone;
@@ -67,7 +68,7 @@ void checkOrInvokeCorbaNameServer()
             filesystem::path serverExecPath = filesystem::path(executableTopDirectory()) / "bin" / nameServerCommand;
 
             if(!filesystem::exists(serverExecPath)){
-                mv->putln(fmt(_("Namer server %1% is not found.")) % nameServerCommand);
+                mv->putln(format(_("Namer server {} is not found."), nameServerCommand));
                     
             } else {
                 string command = getNativePathString(serverExecPath);
@@ -77,9 +78,9 @@ void checkOrInvokeCorbaNameServer()
                 nameServerProcess.start(command.c_str());
 #endif
                 if(nameServerProcess.waitForStarted() && nameServerProcess.waitForReadyRead()){
-                    mv->putln(fmt(_("Name server process %1% has been invoked.")) % nameServerCommand);
+                    mv->putln(format(_("Name server process {} has been invoked."), nameServerCommand));
                 } else {
-                    mv->putln(fmt(_("Name server \"%1%\" cannot be invoked.")) % command);
+                    mv->putln(format(_("Name server \"{}\" cannot be invoked."), command));
                 }
             }
         }

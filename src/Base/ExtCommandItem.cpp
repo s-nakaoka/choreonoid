@@ -8,14 +8,13 @@
 #include <cnoid/MessageView>
 #include <cnoid/Archive>
 #include <cnoid/Sleep>
-#include <boost/filesystem.hpp>
-#include <functional>
+#include <cnoid/stdx/filesystem>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-namespace filesystem = boost::filesystem;
-using namespace std::placeholders;
+namespace filesystem = cnoid::stdx::filesystem;
 
 
 void ExtCommandItem::initializeClass(ExtensionManager* ext)
@@ -38,7 +37,7 @@ ExtCommandItem::ExtCommandItem()
     doExecuteOnLoading = true;
 
     process.sigReadyReadStandardOutput().connect(
-        std::bind(&ExtCommandItem::onReadyReadServerProcessOutput, this));
+        [&](){ onReadyReadServerProcessOutput(); });
 }
 
 
@@ -52,7 +51,7 @@ ExtCommandItem::ExtCommandItem(const ExtCommandItem& org)
     doExecuteOnLoading = org.doExecuteOnLoading;
 
     process.sigReadyReadStandardOutput().connect(
-        std::bind(&ExtCommandItem::onReadyReadServerProcessOutput, this));
+        [&](){ onReadyReadServerProcessOutput(); });
 }
 
 
@@ -110,9 +109,8 @@ bool ExtCommandItem::execute()
 #endif
 
         if(process.waitForStarted()){
-            mv->putln(fmt(_("External command \"%1%\" has been executed by item \"%2%\"."))
-                      % actualCommand % name());
-
+            mv->putln(fmt::format(_("External command \"{0}\" has been executed by item \"{1}\"."),
+                    actualCommand, name()));
             if(waitingTimeAfterStarted_ > 0.0){
                 msleep(waitingTimeAfterStarted_ * 1000.0);
             }
@@ -120,8 +118,8 @@ bool ExtCommandItem::execute()
             result = true;
 
         } else {
-            mv->put(fmt(_("External command \"%1%\" cannot be executed.")) % actualCommand);
-            if(!boost::filesystem::exists(actualCommand)){
+            mv->put(fmt::format(_("External command \"{}\" cannot be executed."), actualCommand));
+            if(!filesystem::exists(actualCommand)){
                 mv->putln(_(" The command does not exist."));
             } else {
                 mv->putln("");
@@ -151,7 +149,7 @@ void ExtCommandItem::onReadyReadServerProcessOutput()
 void ExtCommandItem::doPutProperties(PutPropertyFunction& putProperty)
 {
     putProperty(_("Command"), command_,
-                std::bind(&ExtCommandItem::setCommand, this, _1), true);
+                [&](const std::string& command){ setCommand(command); return true; });
     putProperty(_("Execute on loading"), doExecuteOnLoading,
                 changeProperty(doExecuteOnLoading));
     putProperty(_("Waiting time after started"), waitingTimeAfterStarted_,

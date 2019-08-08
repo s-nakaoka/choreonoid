@@ -7,7 +7,6 @@
 
 #include <cnoid/View>
 #include <QString>
-#include <boost/format.hpp>
 #include <string>
 #include <iosfwd>
 #include "exportdecl.h"
@@ -35,18 +34,15 @@ public:
 
     void put(const char* message, int type = NORMAL);
     void put(const std::string& message, int type = NORMAL);
-    void put(const boost::format& message, int type = NORMAL);
     void put(const QString& message, int type = NORMAL);
 
     void putln();
     void putln(const char* message, int type = NORMAL);
     void putln(const std::string& message, int type = NORMAL);
-    void putln(const boost::format& message, int type = NORMAL);
     void putln(const QString& message, int type = NORMAL);
 
     void notify(const char* message, int type = NORMAL);
     void notify(const std::string& message, int type = NORMAL);
-    void notify(const boost::format& message, int type = NORMAL);
     void notify(const QString& message, int type = NORMAL);
 
     //! \deprecated
@@ -54,16 +50,12 @@ public:
     //! \deprecated
     void put(int type, const std::string& message);
     //! \deprecated
-    void put(int type, const boost::format& message);
-    //! \deprecated
     void put(int type, const QString& message);
     
     //! \deprecated
     void putln(int type, const char* message);
     //! \deprecated
     void putln(int type, const std::string& message);
-    //! \deprecated
-    void putln(int type, const boost::format& message);
     //! \deprecated
     void putln(int type, const QString& message);
 
@@ -95,12 +87,10 @@ CNOID_EXPORT std::ostream& mvout(bool doFlush = false);
 #endif
 
 CNOID_EXPORT void showMessageBox(const std::string& message);
-CNOID_EXPORT void showMessageBox(const boost::format& message);
 CNOID_EXPORT void showMessageBox(const char* message);
 CNOID_EXPORT void showMessageBox(const QString& message);
 
 CNOID_EXPORT void showWarningDialog(const std::string& message);
-CNOID_EXPORT void showWarningDialog(const boost::format& message);
 CNOID_EXPORT void showWarningDialog(const char* message);
 CNOID_EXPORT void showWarningDialog(const QString& message);
 

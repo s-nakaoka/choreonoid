@@ -7,14 +7,15 @@
 #include "RootItem.h"
 #include "ItemPath.h"
 #include "ItemManager.h"
-#include <boost/filesystem.hpp>
+#include <cnoid/stdx/filesystem>
+#include <chrono>
 #include <typeinfo>
 #include <unordered_set>
 #include "gettext.h"
 
 using namespace std;
-namespace filesystem = boost::filesystem;
 using namespace cnoid;
+namespace filesystem = cnoid::stdx::filesystem;
 
 //tmp
 #include <iostream>
@@ -27,10 +28,6 @@ unordered_set<Item*> itemsToEmitSigSubTreeChanged;
 int recursiveTreeChangeCounter = 0;
 unordered_set<Item*> itemsBeingAddedOrRemoved;
 
-}
-
-namespace cnoid {
-Signal<void(const char* type_info_name)> Item::sigClassUnregistered_;
 }
 
 
@@ -187,14 +184,19 @@ bool Item::doInsertChildItem(ItemPtr item, Item* newNextItem, bool isManualOpera
     ++numChildren_;
 
     if(rootItem){
-        if(itemsBeingAddedOrRemoved.find(this) == itemsBeingAddedOrRemoved.end()){
-            // This must be before rootItem->notifyEventOnSubTreeAdded().
-            item->callSlotsOnPositionChanged();
-        }
         if(isMoving){
             rootItem->notifyEventOnSubTreeMoved(item);
         } else {
             rootItem->notifyEventOnSubTreeAdded(item);
+        }
+    }
+
+    if(rootItem){
+        if(!isMoving){
+            item->callFuncOnConnectedToRoot();
+        }
+        if(itemsBeingAddedOrRemoved.find(this) == itemsBeingAddedOrRemoved.end()){
+            item->callSlotsOnPositionChanged();
         }
     }
 
@@ -205,10 +207,6 @@ bool Item::doInsertChildItem(ItemPtr item, Item* newNextItem, bool isManualOpera
     if(recursiveTreeChangeCounter == 0){
         emitSigSubTreeChanged();
         itemsBeingAddedOrRemoved.clear();
-    }
-
-    if(rootItem && !isMoving){
-        item->callFuncOnConnectedToRoot();
     }
 
     return true;
@@ -478,6 +476,12 @@ Item* Item::findSubItem(const std::string& path) const
 }
 
 
+Item* Item::rootItem()
+{
+    return RootItem::instance();
+}
+
+
 RootItem* Item::findRootItem() const
 {
     Item* current = const_cast<Item*>(this);
@@ -732,16 +736,14 @@ void Item::updateFileInformation(const std::string& filename, const std::string&
 {
     filesystem::path fpath(filename);
     if(filesystem::exists(fpath)){
-        filePath_ = filename;
-        fileFormat_ = format;
-        fileModificationTime_ = filesystem::last_write_time(fpath);
+        fileModificationTime_ = filesystem::last_write_time_to_time_t(fpath);
         isConsistentWithFile_ = true;
     } else {
-        filePath_.clear();
-        fileFormat_.clear();
         fileModificationTime_ = 0;
         isConsistentWithFile_ = false;
-    }
+    }        
+    filePath_ = filename;
+    fileFormat_ = format;
 }
 
 

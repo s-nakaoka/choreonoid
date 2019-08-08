@@ -4,12 +4,10 @@
 
 #include "MultiValueSeqGraphView.h"
 #include "ViewManager.h"
-#include <boost/lexical_cast.hpp>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using namespace std::placeholders;
 
 
 void MultiValueSeqGraphView::initializeClass(ExtensionManager* ext)
@@ -46,21 +44,23 @@ ItemList<> MultiValueSeqGraphView::extractTargetItems(const ItemList<>& items) c
 
 void MultiValueSeqGraphView::addGraphDataHandlers(Item* item, int partIndex, std::vector<GraphDataHandlerPtr>& out_handlers)
 {
-    MultiValueSeqItem* seqItem = static_cast<MultiValueSeqItem*>(item);
-    MultiValueSeqPtr seq = seqItem->seq();
+    auto seqItem = static_cast<MultiValueSeqItem*>(item);
+    auto seq = seqItem->seq();
 
     if(partIndex < seq->numParts()){
 
         GraphDataHandlerPtr handler(new GraphDataHandler());
         handler->setID(partIndex);
-        handler->setLabel(boost::lexical_cast<string>(partIndex));
+        handler->setLabel(std::to_string(partIndex));
         //handler->setValueLimits(llimit, ulimit);
         //handler->setVelocityLimits(lvlimit, uvlimit);
         handler->setFrameProperties(seq->numFrames(), seq->frameRate());
         handler->setDataRequestCallback(
-            std::bind(&MultiValueSeqGraphView::onDataRequest, this, seq, partIndex, _1, _2, _3));
+            [this, seq, partIndex](int frame, int size, double* out_values){
+                onDataRequest(seq, partIndex, frame, size, out_values); });
         handler->setDataModifiedCallback(
-            std::bind(&MultiValueSeqGraphView::onDataModified, this, seqItem, partIndex, _1, _2, _3));
+            [this, seqItem, partIndex](int frame, int size, double* out_values){
+                onDataModified(seqItem, partIndex, frame, size, out_values); });
 
         out_handlers.push_back(handler);
     }
@@ -69,14 +69,14 @@ void MultiValueSeqGraphView::addGraphDataHandlers(Item* item, int partIndex, std
 
 void MultiValueSeqGraphView::updateGraphDataHandler(Item* item, GraphDataHandlerPtr handler)
 {
-    MultiValueSeqPtr seq = static_cast<MultiValueSeqItem*>(item)->seq();
+    auto seq = static_cast<MultiValueSeqItem*>(item)->seq();
     handler->setFrameProperties(seq->numFrames(), seq->frameRate());
     handler->update();
 }
 
 
 void MultiValueSeqGraphView::onDataRequest
-(MultiValueSeqPtr seq, int partIndex, int frame, int size, double* out_values)
+(std::shared_ptr<MultiValueSeq> seq, int partIndex, int frame, int size, double* out_values)
 {
     MultiValueSeq::Part part = seq->part(partIndex);
     for(int i=0; i < size; ++i){

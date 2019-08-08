@@ -11,18 +11,13 @@
 #include <cnoid/FileUtil>
 #include <cnoid/UTF8>
 #include <QRegExp>
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/tokenizer.hpp>
 #include <map>
-#include <iostream>
 #include <cstdlib>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using namespace std::placeholders;
-namespace filesystem = boost::filesystem;
+namespace filesystem = cnoid::stdx::filesystem;
 
 namespace {
 
@@ -204,7 +199,7 @@ void Archive::addPostProcess(const std::function<void()>& func, int priority) co
             shared->postProcesses.push_back(func);
         } else {
             shared->postProcesses.push_back(
-                std::bind(&Archive::addPostProcess, this, func, priority - 1));
+                [this, func, priority](){ addPostProcess(func, priority - 1); });
         }
     }
 }
@@ -340,6 +335,19 @@ bool Archive::readRelocatablePath(const std::string& key, std::string& out_value
 }
 
 
+bool Archive::loadItemFile(Item* item, const std::string& fileNameKey, const std::string& fileFormatKey) const
+{
+    string filename, format;
+    if(readRelocatablePath(fileNameKey, filename)){
+        if(!fileFormatKey.empty()){
+            read(fileFormatKey, format);
+        }
+        return item->load(filename, currentParentItem(), format);
+    }
+    return false;
+}
+            
+
 /**
    \todo Use integated nested map whose node is a single path element to be more efficient.
 */
@@ -350,7 +358,7 @@ std::string Archive::getRelocatablePath(const std::string& orgPathString) const
     string varName;
 
     // In the case where the path is originally relative one
-    if(!orgPath.is_complete()){
+    if(!orgPath.is_absolute()){
         return getGenericPathString(orgPath);
 
     } else if(findSubDirectory(shared->projectDirPath, orgPath, relativePath)){
@@ -449,7 +457,7 @@ Item* Archive::findItem(int id) const
             return p->second;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 
@@ -512,7 +520,7 @@ View* Archive::findView(int id) const
             return p->second;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 
@@ -521,7 +529,7 @@ Item* Archive::currentParentItem() const
     if(shared){
         return shared->currentParentItem;
     }
-    return 0;
+    return nullptr;
 }
 
 

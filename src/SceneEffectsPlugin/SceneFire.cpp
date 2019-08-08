@@ -7,6 +7,7 @@
 #include "SceneFire.h"
 #include "ParticlesProgram.h"
 #include <cnoid/EigenUtil>
+#include <cnoid/GLSLProgram>
 
 using namespace std;
 using namespace cnoid;
@@ -75,7 +76,10 @@ ParticleSystem* SceneFire::getParticleSystem()
 
 
 FireProgram::FireProgram(GLSLSceneRenderer* renderer)
-    : LuminousParticlesProgram(renderer),
+    : LuminousParticlesProgram(
+        renderer,
+        ":/SceneEffectsPlugin/shader/Fire.vert",
+        ":/SceneEffectsPlugin/shader/LuminousParticles.frag"),
       initVelBuffer(buffers[0]),
       offsetTimeBuffer(buffers[1])
 {
@@ -85,16 +89,13 @@ FireProgram::FireProgram(GLSLSceneRenderer* renderer)
 
 bool FireProgram::initializeRendering(SceneParticles* particles)
 {
-    loadVertexShader(":/SceneEffectsPlugin/shader/Fire.vert");
-    loadFragmentShader(":/SceneEffectsPlugin/shader/LuminousParticles.frag");
-    link();
-    
     if(!ParticlesProgramBase::initializeRendering(particles)){
         return false;
     }
 
-    lifeTimeLocation = getUniformLocation("lifeTime");
-    accelLocation = getUniformLocation("accel");
+    auto& glsl = glslProgram();
+    lifeTimeLocation = glsl.getUniformLocation("lifeTime");
+    accelLocation = glsl.getUniformLocation("accel");
 
     glGenBuffers(2, buffers);
     glGenVertexArrays(1, &vertexArray);
@@ -119,16 +120,16 @@ void FireProgram::updateParticleBuffers(SceneFire* fire)
     Vector3f v;
     float speed, theta, phi;
     vector<GLfloat> data(numParticles * 3);
-    srandom(0);
+    srand(0);
     for(GLuint i = 0; i < numParticles; ++i) {
-        theta = emissionRange / 2.0f * random();
-        phi = 2.0 * PI * random();
+        theta = emissionRange / 2.0f * frandom();
+        phi = 2.0 * PI * frandom();
 
         v.x() = sinf(theta) * cosf(phi);
         v.y() = sinf(theta) * sinf(phi);
         v.z() = cosf(theta);
 
-        speed = std::max(0.0f, initialSpeedAverage + initialSpeedVariation * (random() - 0.5f));
+        speed = std::max(0.0f, initialSpeedAverage + initialSpeedVariation * (frandom() - 0.5f));
         v = v.normalized() * speed;
 
         data[3*i]   = v.x();

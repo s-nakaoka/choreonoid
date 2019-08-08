@@ -13,7 +13,6 @@
 #include <cnoid/AppConfig>
 #include <cnoid/Buttons>
 #include <QVBoxLayout>
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <rtm/idl/RTC.hh>
 #include <rtm/NVUtil.h>
@@ -28,7 +27,6 @@
 using namespace RTC;
 using namespace cnoid;
 using namespace std;
-using namespace std::placeholders;
 
 namespace {
 static const string RTC_CONTEXT_KIND[3] = { _("PERIODIC"), _("EVENT_DRIVEN"), _("OTHER") };
@@ -124,7 +122,9 @@ RTSPropertiesViewImpl::RTSPropertiesViewImpl(RTSPropertiesView* self)
     if (nsView) {
         if (!selectionChangedConnection.connected()) {
             selectionChangedConnection = nsView->sigSelectionChanged().connect(
-                std::bind(&RTSPropertiesViewImpl::onItemSelectionChanged, this, _1));
+                [&](const list<NamingContextHelper::ObjectInfo>& items){
+                    onItemSelectionChanged(items);
+                });
         }
     }
 }
@@ -285,7 +285,7 @@ void RTSPropertiesViewImpl::showExecutionContext(RTC::RTObject_ptr rtc, Executio
 
         QTreeWidgetItem* ownedPropChild = new QTreeWidgetItem;
         ownedPropChild->setText(0, _("ID"));
-        ownedPropChild->setText(1, QString((boost::lexical_cast<string>(e)).c_str()));
+        ownedPropChild->setText(1, QString::number(e));
         ownedProp->addChild(ownedPropChild);
 
         ownedPropChild = new QTreeWidgetItem;
@@ -307,7 +307,7 @@ void RTSPropertiesViewImpl::showExecutionContext(RTC::RTObject_ptr rtc, Executio
 
         ownedPropChild = new QTreeWidgetItem;
         ownedPropChild->setText(0, _("Rate"));
-        ownedPropChild->setText(1, QString((boost::lexical_cast<string>(context->get_rate())).c_str()));
+        ownedPropChild->setText(1, QString::number(context->get_rate()));
         ownedProp->addChild(ownedPropChild);
 
     }
@@ -446,9 +446,7 @@ void RTSPropertiesViewImpl::showConnection(PortService_var port, string id, QTre
 SettingDialog::SettingDialog()
 {
     chkLog = new CheckBox(_("Log Output"));
-    chkLog->sigToggled().connect(
-        std::bind(
-            static_cast<void(SettingDialog::*)(bool)>(&SettingDialog::logChanged), this, _1));
+    chkLog->sigToggled().connect([&](bool on){ logChanged(on); });
 
     QLabel* lblLevel = new QLabel(_("Log Level:"));
     cmbLogLevel = new ComboBox();
@@ -500,14 +498,10 @@ SettingDialog::SettingDialog()
 
     auto okButton = new PushButton(_("&OK"));
     okButton->setDefault(true);
-    okButton->sigClicked().connect(
-        std::bind(
-            static_cast<void(SettingDialog::*)(void)>(&SettingDialog::oKClicked), this));
+    okButton->sigClicked().connect([&](){ oKClicked(); });
 
     auto cancelButton = new PushButton(_("&Cancel"));
-    cancelButton->sigClicked().connect(
-        std::bind(
-            static_cast<void(SettingDialog::*)(void)>(&SettingDialog::rejected), this));
+    cancelButton->sigClicked().connect([&](){ rejected(); });
 
     QHBoxLayout* buttonBotLayout = new QHBoxLayout(frmButton);
     buttonBotLayout->addWidget(cancelButton);
@@ -522,7 +516,7 @@ SettingDialog::SettingDialog()
     setWindowTitle(_("OpenRTM Preferences"));
 
     MappingPtr appVars = AppConfig::archive()->openMapping("OpenRTM");
-    leSetting->setText(QString::fromStdString(appVars->get("defaultSetting", "./choreonoid.rtc.conf")));
+    leSetting->setText(QString::fromStdString(appVars->get("defaultSetting", DEFAULT_CONF_FILENAME)));
     leName->setText(QString::fromStdString(appVars->get("defaultVendor", "AIST")));
     leVersion->setText(QString::fromStdString(appVars->get("defaultVersion", "1.0.0")));
 
@@ -533,18 +527,7 @@ SettingDialog::SettingDialog()
     chkLog->setChecked(appVars->get("outputLog", false));
 
     QString level = QString::fromStdString(appVars->get("logLevel", "INFO"));
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     cmbLogLevel->setCurrentText(level);
-#else
-    for (int i = 0; i < cmbLogLevel->count(); ++i) {
-        if (cmbLogLevel->itemText(i) == level) {
-            cmbLogLevel->setCurrentIndex(i);
-            break;
-        }
-    }
-#endif
-
     cmbLogLevel->setEnabled(chkLog->isChecked());
 }
 

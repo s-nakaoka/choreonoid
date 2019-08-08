@@ -2,41 +2,37 @@
 #define CNOID_OPENRTM_PLUGIN_RTC_ITEM_H
 
 #include <cnoid/Item>
-#include <cnoid/Process>
-#include <boost/filesystem.hpp>
-#include <rtm/Manager.h>
+#include <cnoid/stdx/filesystem>
+#include <map>
 #include "exportdecl.h"
+
+namespace RTC {
+
+class RTObject_impl;
+typedef RTObject_impl RtcBase;
+
+}
 
 namespace cnoid {
 
 class MessageView;
 typedef std::map<std::string, std::string> PropertyMap;
 
+class RTComponentImpl;
+
 class RTComponent
 {
 public:
-    RTComponent(const boost::filesystem::path& modulePath, PropertyMap& properties);
+    RTComponent(const stdx::filesystem::path& modulePath, PropertyMap& properties);
     ~RTComponent();
     void deleteRTC();
-    RTC::RtcBase* rtc() { return rtc_; };
+    RTC::RtcBase* rtc();
     bool isValid() const;
-    const std::string& name() const { return componentName; }
+    const std::string& name() const;
     void activate();
 
 private:
-    RTC::RTObject_var rtcRef;
-    RTC::RtcBase* rtc_;
-    boost::filesystem::path modulePath;
-    Process rtcProcess;
-    std::string componentName;
-    MessageView* mv;
-
-    void init(const std::string& moduleName, PropertyMap& properties);
-    void init(const boost::filesystem::path& modulePath, PropertyMap& properties);
-    bool createRTC(PropertyMap& properties);
-    void setupModules(std::string& fileName, std::string& initFuncName, std::string& componentName, PropertyMap& properties);
-    void createProcess(std::string& command, PropertyMap& properties);
-    void onReadyReadServerProcessOutput();
+    RTComponentImpl* impl;
 };
 
 class CNOID_EXPORT RTCItem : public Item
@@ -73,12 +69,12 @@ public:
     bool isActivationEnabled() const { return isActivationEnabled_; }
 
 protected:
-    virtual void onPositionChanged();
-    virtual void onDisconnectedFromRoot();
-    virtual Item* doDuplicate() const;
-    virtual void doPutProperties(PutPropertyFunction& putProperty);
-    virtual bool store(Archive& archive);
-    virtual bool restore(const Archive& archive);
+    virtual void onConnectedToRoot() override;
+    virtual void onDisconnectedFromRoot() override;
+    virtual Item* doDuplicate() const override;
+    virtual void doPutProperties(PutPropertyFunction& putProperty) override;
+    virtual bool store(Archive& archive) override;
+    virtual bool restore(const Archive& archive) override;
 
 private:
     std::ostream& os;
@@ -91,8 +87,8 @@ private:
     PropertyMap properties;
     Selection baseDirectoryType;
     int oldBaseDirectoryType;
-    boost::filesystem::path rtcDirectory;
-    boost::filesystem::path modulePath;
+    stdx::filesystem::path rtcDirectory;
+    stdx::filesystem::path modulePath;
     bool isActivationEnabled_;
 
     void deleteRTCInstance();

@@ -1,4 +1,3 @@
-
 # @author Shin'ichiro Nakaoka
 
 #set(CMAKE_BUILD_TYPE Debug)
@@ -9,7 +8,6 @@ set(sources
   MenuManager.cpp
   Menu.cpp
   ProjectManager.cpp
-  ParametricPathProcessor.cpp
   PathVariableEditor.cpp
   PluginManager.cpp
   MainWindow.cpp
@@ -41,10 +39,12 @@ set(sources
   Process.cpp
   Action.cpp
   ActionGroup.cpp
+  Widget.cpp
   SpinBox.cpp
   FloatingNumberBox.cpp
   ScrollBar.cpp
   Slider.cpp
+  Dial.cpp
   Splitter.cpp
   Buttons.cpp
   ButtonGroup.cpp
@@ -108,6 +108,7 @@ set(sources
   TaskView.cpp
   VirtualJoystickView.cpp
   MessageLogItem.cpp
+  LightingItem.cpp
   gl_core_3_3.c
   #gl_core_4_0.c
   #gl_core_4_4.c
@@ -128,10 +129,12 @@ set(headers
   Process.h
   Action.h
   ActionGroup.h
+  Widget.h
   SpinBox.h
   FloatingNumberBox.h
   ScrollBar.h
   Slider.h
+  Dial.h
   Splitter.h
   Buttons.h
   ButtonGroup.h
@@ -158,7 +161,6 @@ set(headers
   ProjectManager.h
   PluginManager.h
   Plugin.h
-  ParametricPathProcessor.h
   MessageView.h
   ItemTreeView.h
   ItemList.h
@@ -188,6 +190,7 @@ set(headers
   LazySignal.h
   LazyCaller.h
   SceneWidget.h
+  SceneWidgetEvent.h
   SceneProjector.h
   SceneDragProjector.h
   SceneDragger.h
@@ -212,6 +215,7 @@ set(headers
   TextEdit.h
   TaskView.h
   MessageLogItem.h
+  LightingItem.h
   exportdecl.h
   )
 
@@ -224,10 +228,12 @@ set(qtheaders
   Process.h
   Action.h
   ActionGroup.h
+  Widget.h
   SpinBox.h
   FloatingNumberBox.h
   ScrollBar.h
   Slider.h
+  Dial.h
   Splitter.h
   Buttons.h
   ButtonGroup.h
@@ -247,8 +253,9 @@ set(qtheaders
   TextEdit.h
   )
 
-QTX_ADD_RESOURCES(RC_SRCS Base.qrc)
-QTX_WRAP_CPP(qtsources ${qtheaders})
+QT5_ADD_RESOURCES(RC_SRCS Base.qrc)
+QT5_WRAP_CPP(qtsources ${qtheaders})
+
 set(sources ${sources} ${qtsources})
 
 make_gettext_mofiles(${target} mofiles)
@@ -278,11 +285,7 @@ endif()
 apply_common_setting_for_library(${target} "${headers}")
 
 if(ENABLE_PYTHON)
-  if(USE_PYBIND11)
-    add_subdirectory(pybind11)
-  elseif(USE_BOOST_PYTHON)
-    add_subdirectory(boostpython)
-  endif()
+  add_subdirectory(pybind11)
 endif()
 
 add_subdirectory(lua)

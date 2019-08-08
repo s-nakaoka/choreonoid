@@ -5,12 +5,10 @@
 #include "MultiSE3SeqGraphView.h"
 #include "ViewManager.h"
 #include <cnoid/EigenUtil>
-#include <boost/lexical_cast.hpp>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using namespace std::placeholders;
 
 
 void MultiSE3SeqGraphView::initializeClass(ExtensionManager* ext)
@@ -48,7 +46,7 @@ void MultiSE3SeqGraphView::setupElementToggleSet
 
         toggleConnections.add(
             toggles[i].sigToggled().connect(
-                std::bind(&MultiSE3SeqGraphView::updateSelections, this)));
+                [&](bool){ updateSelections(); }));
     }
 }
 
@@ -75,7 +73,7 @@ ItemList<> MultiSE3SeqGraphView::extractTargetItems(const ItemList<>& items) con
 void MultiSE3SeqGraphView::addGraphDataHandlers(Item* item, int partIndex, std::vector<GraphDataHandlerPtr>& out_handlers)
 {
     MultiSE3SeqItem* seqItem = static_cast<MultiSE3SeqItem*>(item);
-    MultiSE3SeqPtr seq = seqItem->seq();
+    auto seq = seqItem->seq();
     
     if(partIndex < seq->numParts()){
     
@@ -87,12 +85,14 @@ void MultiSE3SeqGraphView::addGraphDataHandlers(Item* item, int partIndex, std::
     
                     GraphDataHandlerPtr handler(new GraphDataHandler());
 
-                    handler->setLabel(boost::lexical_cast<string>(partIndex));
+                    handler->setLabel(std::to_string(partIndex));
                     handler->setFrameProperties(seq->numFrames(), seq->frameRate());
                     handler->setDataRequestCallback(
-                        std::bind(&MultiSE3SeqGraphView::onDataRequest, this, seq, partIndex, i, j, _1, _2, _3));
+                        [this, seq, partIndex, i, j](int frame, int size, double* out_values){
+                            onDataRequest(seq, partIndex, i, j, frame, size, out_values); });
                     handler->setDataModifiedCallback(
-                        std::bind(&MultiSE3SeqGraphView::onDataModified, this, seqItem, partIndex, i, j, _1, _2, _3));
+                        [this, seqItem, partIndex, i, j](int frame, int size, double* out_values){
+                            onDataModified(seqItem, partIndex, i, j, frame, size, out_values); });
 
                     out_handlers.push_back(handler);
                 }
@@ -104,14 +104,14 @@ void MultiSE3SeqGraphView::addGraphDataHandlers(Item* item, int partIndex, std::
 
 void MultiSE3SeqGraphView::updateGraphDataHandler(Item* item, GraphDataHandlerPtr handler)
 {
-    MultiSE3SeqPtr seq = static_cast<MultiSE3SeqItem*>(item)->seq();
+    auto seq = static_cast<MultiSE3SeqItem*>(item)->seq();
     handler->setFrameProperties(seq->numFrames(), seq->frameRate());
     handler->update();
 }
 
 
 void MultiSE3SeqGraphView::onDataRequest
-(MultiSE3SeqPtr seq, int partIndex, int type, int axis, int frame, int size, double* out_values)
+(std::shared_ptr<MultiSE3Seq> seq, int partIndex, int type, int axis, int frame, int size, double* out_values)
 {
     MultiSE3Seq::Part part = seq->part(partIndex);
     if(type == 0){ // xyz

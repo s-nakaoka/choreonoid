@@ -12,6 +12,7 @@
 
 #ifdef __linux__
 #include <sys/utsname.h>
+#include <unistd.h>
 #include <cstring>
 #endif
 
@@ -26,18 +27,20 @@
 #endif
 
 using namespace std;
-using namespace boost;
 
 namespace {
 string executablePath_;
 string executableDirectory_;
 string executableTopDirectory_;
+string pluginDirectory_;
 string shareDirectory_;
 string executableBasename_;
 }
 
 
 namespace cnoid {
+
+namespace filesystem = stdx::filesystem;
 
 void findExecutablePath()
 {
@@ -92,6 +95,9 @@ void findExecutablePath()
     
     filesystem::path topPath = path.parent_path().parent_path();
     executableTopDirectory_ = topPath.string();
+
+    filesystem::path pluginPath = topPath / CNOID_PLUGIN_SUBDIR;
+    pluginDirectory_ = pluginPath.string();
         
     filesystem::path sharePath = topPath / CNOID_SHARE_SUBDIR;
     if(filesystem::is_directory(sharePath)){
@@ -141,7 +147,15 @@ const std::string& executableTopDirectory()
     }
     return executableTopDirectory_;
 }
-    
+
+const std::string& pluginDirectory()
+{
+    if(executablePath_.empty()){
+        findExecutablePath();
+    }
+    return pluginDirectory_;
+}
+
 const std::string& shareDirectory()
 {
     if(executablePath_.empty()){

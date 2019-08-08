@@ -39,9 +39,6 @@ if(ENABLE_GUI)
   add_subdirectory(RobotAccessPlugin)
   add_subdirectory(Hrpsys31Plugin)
 
-  add_subdirectory(OpenHRPPlugin)
-  add_subdirectory(GrxUIPlugin)
-
   add_subdirectory(FCLPlugin)
   add_subdirectory(SDFPlugin)
   add_subdirectory(PCLPlugin)

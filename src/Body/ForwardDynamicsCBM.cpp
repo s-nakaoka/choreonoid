@@ -17,7 +17,7 @@ static const bool ROOT_ATT_NORMALIZATION_ENABLED = false;
 
 static const bool debugMode = false;
 
-#include <boost/format.hpp>
+#include <fmt/format.h>
 
 template<class TMatrix>
 static void putMatrix(TMatrix& M, char* name)
@@ -28,7 +28,7 @@ static void putMatrix(TMatrix& M, char* name)
         std::cout << "Matrix " << name << ": \n";
         for(size_t i=0; i < M.rows(); i++){
             for(size_t j=0; j < M.cols(); j++){
-                std::cout << boost::format(" %6.3f ") % M(i, j);
+                std::cout << fmt::format(" {:6.3f} ", M(i, j));
             }
             std::cout << std::endl;
         }
@@ -678,10 +678,18 @@ void ForwardDynamicsCBM::initializeAccelSolver()
     }
 }
 
-//for ConstraintForceSolver 
-void ForwardDynamicsCBM::solveUnknownAccels
+/**
+   This is called from ConstraintForceSolver.
+   @return This function returns true if the accelerations can be calculated for the axes of unkown motion.
+   If there is no axis of unkown motion, the function returns false.
+*/
+bool ForwardDynamicsCBM::solveUnknownAccels
 (DyLink* link, const Vector3& fext, const Vector3& tauext, const Vector3& rootfext, const Vector3& roottauext)
 {
+    if(isNoUnknownAccelMode){
+        return false;
+    }
+    
     const Vector3 fextorg = link->f_ext();
     const Vector3 tauextorg = link->tau_ext();
     link->f_ext() = fext;
@@ -707,6 +715,8 @@ void ForwardDynamicsCBM::solveUnknownAccels
     link->tau_ext() = tauextorg;
 
     solveUnknownAccels(rootfext, roottauext);
+
+    return true;
 }
 
 void ForwardDynamicsCBM::solveUnknownAccels(const Vector3& fext, const Vector3& tauext)

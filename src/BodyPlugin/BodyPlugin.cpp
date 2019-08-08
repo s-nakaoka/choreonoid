@@ -22,8 +22,9 @@
 #include "LeggedBodyBar.h"
 #include "LinkSelectionView.h"
 #include "LinkPropertyView.h"
+#include "LinkPositionView.h"
 #include "BodyLinkView.h"
-#include "JointSliderView.h"
+#include "JointDisplacementView.h"
 #include "JointStateView.h"
 #include "BodyStateView.h"
 #include "JointGraphView.h"
@@ -41,10 +42,10 @@
 #include <cnoid/ItemManager>
 #include <cnoid/MessageView>
 #include <cnoid/CnoidBody>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace cnoid;
-using boost::format;
 
 namespace {
   
@@ -60,7 +61,7 @@ public:
     virtual bool initialize()
     {
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) && CNOID_ENABLE_GETTEXT
+#ifdef CNOID_ENABLE_GETTEXT
         setCnoidBodyTextDomainCodeset();
 #endif
 
@@ -98,8 +99,9 @@ public:
 
         LinkSelectionView::initializeClass(this);
         LinkPropertyView::initializeClass(this);
+        LinkPositionView::initializeClass(this);
         BodyLinkView::initializeClass(this);
-        JointSliderView::initializeClass(this);
+        JointDisplacementView::initializeClass(this);
         JointStateView::initializeClass(this);
         BodyStateView::initializeClass(this);
         JointGraphView::initializeClass(this);
@@ -117,7 +119,7 @@ public:
     virtual const char* description() const override
     {
         static std::string text =
-            str(format("Body Plugin Version %1%\n") % CNOID_FULL_VERSION_STRING) +
+            fmt::format("Body Plugin Version {}\n", CNOID_FULL_VERSION_STRING) +
             "\n" +
             "Copyrigh (c) 2018 Shin'ichiro Nakaoka and Choreonoid Development Team, AIST.\n"
             "\n" +

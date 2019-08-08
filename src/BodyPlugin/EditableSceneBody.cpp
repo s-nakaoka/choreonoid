@@ -24,6 +24,7 @@
 #include <cnoid/ExtensionManager>
 #include <cnoid/Archive>
 #include <cnoid/ConnectionSet>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace std;
@@ -151,7 +152,7 @@ public:
 
     ConnectionSet connections;
     Connection connectionToSigCollisionsUpdated;
-    boost::dynamic_bitset<> collisionLinkBitSet;
+    vector<bool> collisionLinkBitSet;
     ScopedConnection connectionToSigLinkSelectionChanged;
 
     enum PointedType { PT_NONE, PT_SCENE_LINK, PT_ZMP };
@@ -171,11 +172,11 @@ public:
     Link* targetLink;
     double orgJointPosition;
         
-    JointPathPtr ikPath;
+    shared_ptr<JointPath> ikPath;
     LinkTraverse fkTraverse;
-    PinDragIKptr pinDragIK;
-    InverseKinematicsPtr ik;
-    PenetrationBlockerPtr penetrationBlocker;
+    shared_ptr<PinDragIK> pinDragIK;
+    shared_ptr<InverseKinematics> ik;
+    shared_ptr<PenetrationBlocker> penetrationBlocker;
     PositionDraggerPtr positionDragger;
 
     bool isEditMode;
@@ -508,7 +509,7 @@ EditableSceneBodyImpl::~EditableSceneBodyImpl()
 }
 
 
-void EditableSceneBody::setLinkVisibilities(const boost::dynamic_bitset<>& visibilities)
+void EditableSceneBody::setLinkVisibilities(const std::vector<bool>& visibilities)
 {
     int i;
     const int m = numSceneLinks();
@@ -535,8 +536,7 @@ void EditableSceneBodyImpl::onLinkVisibilityCheckToggled()
         onLinkSelectionChanged();
     } else {
         connectionToSigLinkSelectionChanged.disconnect();
-        boost::dynamic_bitset<> visibilities;
-        visibilities.resize(self->numSceneLinks(), true);
+        vector<bool> visibilities(self->numSceneLinks(), true);
         self->setLinkVisibilities(visibilities);
     }
 }
@@ -619,7 +619,7 @@ void EditableSceneBodyImpl::toggleBaseLink(EditableSceneLink* sceneLink)
 
 void EditableSceneBodyImpl::togglePin(EditableSceneLink* sceneLink, bool toggleTranslation, bool toggleRotation)
 {
-    PinDragIKptr pin = bodyItem->pinDragIK();
+    auto pin = bodyItem->pinDragIK();
 
     InverseKinematics::AxisSet axes = pin->pinAxes(sceneLink->link());
 
@@ -647,7 +647,7 @@ void EditableSceneBodyImpl::makeLinkAttitudeLevel()
 {
     if(pointedSceneLink){
         Link* targetLink = outlinedLink->link();
-        InverseKinematicsPtr ik = bodyItem->getCurrentIK(targetLink);
+        auto ik = bodyItem->getCurrentIK(targetLink);
         if(ik){
             const Position& T = targetLink->T();
             const double theta = acos(T(2, 2));
@@ -668,7 +668,7 @@ void EditableSceneBodyImpl::makeLinkAttitudeLevel()
 void EditableSceneBodyImpl::updateMarkersAndManipulators()
 {
     Link* baseLink = bodyItem->currentBaseLink();
-    PinDragIKptr pin = bodyItem->pinDragIK();
+    auto pin = bodyItem->pinDragIK();
 
     const int n = self->numSceneLinks();
     for(int i=0; i < n; ++i){
@@ -943,9 +943,9 @@ bool EditableSceneBodyImpl::onPointerMoveEvent(const SceneWidgetEvent& event)
         if(pointedSceneLink){
             const Vector3 p = pointedSceneLink->T().inverse() * event.point();
             event.updateIndicator(
-                (str(boost::format("%1% / %2% : (%3$ .3f, %4$ .3f, %5$ .3f)")
-                     % bodyItem->name() % pointedSceneLink->link()->name()
-                     % p.x() % p.y() % p.z())));
+                fmt::format("{0} / {1} : ({2:.3f}, {3:.3f}, {4:.3f})",
+                            bodyItem->name(), pointedSceneLink->link()->name(),
+                            p.x(), p.y(), p.z()));
         } else {
             event.updateIndicator("");
         }

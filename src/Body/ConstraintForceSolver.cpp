@@ -19,13 +19,13 @@
 #include <cnoid/EigenUtil>
 #include <cnoid/AISTCollisionDetector>
 #include <cnoid/TimeMeasure>
-#include <boost/format.hpp>
-#include <boost/random.hpp>
+#include <fmt/format.h>
+#include <random>
 #include <unordered_map>
 #include <limits>
 #include <fstream>
 #include <iomanip>
-#include <boost/lexical_cast.hpp>
+#include <iostream>
 
 using namespace std;
 using namespace cnoid;
@@ -93,7 +93,6 @@ static const double DEFAULT_CONTACT_CULLING_DEPTH = 0.05;
 // experimental options
 static const bool PROPORTIONAL_DYNAMIC_FRICTION = false;
 static const bool ENABLE_RANDOM_STATIC_FRICTION_BASE = false;
-
 
 // debug options
 static const bool CFS_DEBUG = false;
@@ -173,7 +172,7 @@ public:
            The pointer is null when all the joints are torque mode and
            the forward dynamics is calculated by ABM.
         */
-        ForwardDynamicsCBMPtr forwardDynamicsCBM;
+        shared_ptr<ForwardDynamicsCBM> forwardDynamicsCBM;
     };
 
     std::vector<BodyData> bodiesData;
@@ -292,8 +291,9 @@ public:
     VectorX solution;
 
     // random number generator
-    boost::variate_generator<boost::mt19937, boost::uniform_real<> > randomAngle;
-
+    std::uniform_real_distribution<double> randomAngle;
+    std::mt19937 randomEngine;
+    
     // for special version of gauss sidel iterative solver
     std::vector<int> frictionIndexToContactIndex;
     VectorX contactIndexToMu;
@@ -384,8 +384,7 @@ public:
             os << "Matrix " << name << ": \n";
             for(int i=0; i < M.rows(); i++){
                 for(int j=0; j < M.cols(); j++){
-                    //os << boost::format(" %6.3f ") % M(i, j);
-                    os << boost::format(" %.50g ") % M(i, j);
+                    os << fmt::format(" {:.50g} ", M(i, j));
                 }
                 os << std::endl;
             }
@@ -407,7 +406,7 @@ public:
         if(CFS_DEBUG_VERBOSE) putVector(M, name);
     }
 
-    CollisionLinkPairListPtr getCollisions();
+    shared_ptr<CollisionLinkPairList> getCollisions();
 
 #ifdef ENABLE_SIMULATION_PROFILING
     double collisionTime;
@@ -432,7 +431,7 @@ typedef ConstraintForceSolverImpl CFSImpl;
 
 CFSImpl::ConstraintForceSolverImpl(WorldBase& world) :
     world(world),
-    randomAngle(boost::mt19937(), boost::uniform_real<>(0.0, 2.0 * PI))
+    randomAngle(0.0, 2.0 * PI)
 {
     defaultStaticFriction = 1.0;
     defaultSlipFriction = 1.0;
@@ -611,7 +610,7 @@ void CFSImpl::initialize(void)
     if(CFS_DEBUG || CFS_MCP_DEBUG){
         static int ntest = 0;
         os.close();
-        os.open((string("cfs-log-") + boost::lexical_cast<string>(ntest++) + ".log").c_str());
+        os.open((string("cfs-log-") + std::to_string(ntest++) + ".log").c_str());
         //os << setprecision(50);
     }
 
@@ -675,7 +674,9 @@ void CFSImpl::initialize(void)
     prevGlobalNumFrictionVectors = 0;
     numUnconverged = 0;
 
-    randomAngle.engine().seed();
+    if(ENABLE_RANDOM_STATIC_FRICTION_BASE){
+        randomEngine.seed();
+    }
 }
 
 
@@ -1042,7 +1043,7 @@ void CFSImpl::setFrictionVectors(ConstraintPoint& contact)
     Vector3 t2 = normal.cross(t1).normalized();
 
     if(ENABLE_RANDOM_STATIC_FRICTION_BASE){
-        double theta = randomAngle();
+        double theta = randomAngle(randomEngine);
         contact.frictionVector[0][0] = cos(theta) * t1 + sin(theta) * t2;
         theta += PI_2;
         contact.frictionVector[1][0] = cos(theta) * t1 + sin(theta) * t2;
@@ -1336,8 +1337,9 @@ void CFSImpl::setAccelerationMatrix()
                         Vector3 arm = constraint.point - bodyData.body->rootLink()->p();
                         Vector3 tau = arm.cross(f);
                         Vector3 tauext = constraint.point.cross(f);
-                        bodyData.forwardDynamicsCBM->solveUnknownAccels(linkPair.link[k], f, tauext, f, tau);
-                        calcAccelsMM(bodyData, constraintIndex);
+                        if(bodyData.forwardDynamicsCBM->solveUnknownAccels(linkPair.link[k], f, tauext, f, tau)){
+                            calcAccelsMM(bodyData, constraintIndex);
+                        }
                     } else {
                         Vector3 tau = constraint.point.cross(f);
                         calcABMForceElementsWithTestForce(bodyData, linkPair.link[k], f, tau);
@@ -1361,8 +1363,9 @@ void CFSImpl::setAccelerationMatrix()
                             Vector3 arm = constraint.point - bodyData.body->rootLink()->p();
                             Vector3 tau = arm.cross(f);
                             Vector3 tauext = constraint.point.cross(f);
-                            bodyData.forwardDynamicsCBM->solveUnknownAccels(linkPair.link[k], f, tauext, f, tau);
-                            calcAccelsMM(bodyData, constraintIndex);
+                            if(bodyData.forwardDynamicsCBM->solveUnknownAccels(linkPair.link[k], f, tauext, f, tau)){
+                                calcAccelsMM(bodyData, constraintIndex);
+                            }
                         } else {
                             Vector3 tau = constraint.point.cross(f);
                             calcABMForceElementsWithTestForce(bodyData, linkPair.link[k], f, tau);
@@ -2483,18 +2486,18 @@ void ConstraintForceSolver::clearExternalForces()
 }
 
 
-CollisionLinkPairListPtr ConstraintForceSolver::getCollisions()
+shared_ptr<CollisionLinkPairList> ConstraintForceSolver::getCollisions()
 {
     return impl->getCollisions();
 }
 
 
-CollisionLinkPairListPtr CFSImpl::getCollisions()
+shared_ptr<CollisionLinkPairList> CFSImpl::getCollisions()
 {
-    CollisionLinkPairListPtr collisionPairs = std::make_shared<CollisionLinkPairList>();
+    auto collisionPairs = std::make_shared<CollisionLinkPairList>();
     for(size_t i=0; i < constrainedLinkPairs.size(); ++i){
         LinkPair& source = *constrainedLinkPairs[i];
-        CollisionLinkPairPtr dest = std::make_shared<CollisionLinkPair>();
+        auto dest = std::make_shared<CollisionLinkPair>();
         int numConstraintsInPair = source.constraintPoints.size();
 
         for(int j=0; j < numConstraintsInPair; ++j){

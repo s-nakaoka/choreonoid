@@ -5,10 +5,12 @@
 
 #include "BodyRTCItem.h"
 #include "VirtualRobotRTC.h"
+#include "../RTCItem.h"
 #include "../OpenRTMUtil.h"
+#include <cnoid/Body>
 #include <cnoid/BodyItem>
 #include <cnoid/Link>
-#include <cnoid/BasicSensors>
+#include <cnoid/BasicSensorSimulationHelper>
 #include <cnoid/ControllerIO>
 #include <cnoid/ItemManager>
 #include <cnoid/Archive>
@@ -17,19 +19,119 @@
 #include <cnoid/MessageView>
 #include <cnoid/Sleep>
 #include <cnoid/ProjectManager>
+#ifdef ENABLE_SIMULATION_PROFILING
+#include <cnoid/TimeMeasure>
+#endif
 #include <rtm/CorbaNaming.h>
+#include <fmt/format.h>
 #include "../LoggerUtil.h"
 #include "../gettext.h"
 
 using namespace std;
 using namespace cnoid;
 using namespace RTC;
-using boost::format;
-namespace filesystem = boost::filesystem;
+using fmt::format;
+namespace filesystem = cnoid::stdx::filesystem;
 
 namespace {
+
 const bool TRACE_FUNCTIONS = false;
+
+typedef std::map<std::string, RTC::PortService_var> PortMap;
+
+struct RtcInfo
+{
+    RTC::RTObject_var rtcRef;
+    PortMap portMap;
+    RTC::ExecutionContextService_var execContext;
+    OpenRTM::ExtTrigExecutionContextService_var execContextExt;
+    double timeRate;
+    double timeRateCounter;
+};
+typedef std::shared_ptr<RtcInfo> RtcInfoPtr;
+
 }
+
+namespace cnoid {
+
+class BodyRTCItemImpl
+{
+public:
+    BodyRTCItem* self;
+
+    BodyPtr simulationBody;
+    DeviceList<ForceSensor> forceSensors_;
+    DeviceList<RateGyroSensor> gyroSensors_;
+    DeviceList<AccelerationSensor> accelSensors_;
+    double timeStep_;
+
+    // The world time step is used if the following values are 0
+    double executionCycleProperty;
+    double executionCycle;
+    double executionCycleCounter;
+        
+    const ControllerIO* io;
+    double controlTime_;
+    std::ostream& os;
+
+    std::string bodyName;
+    RTC::CorbaNaming* naming;
+    BridgeConf* bridgeConf;
+    VirtualRobotRTC* virtualRobotRTC;
+    RTC::ExecutionContextService_var virtualRobotEC;
+    OpenRTM::ExtTrigExecutionContextService_var virtualRobotExtEC;
+
+    Selection configMode;
+    bool autoConnect;
+    RTComponent* rtcomp;
+
+    typedef std::map<std::string, RtcInfoPtr> RtcInfoMap;
+    RtcInfoMap rtcInfoMap;
+    typedef std::vector<RtcInfoPtr> RtcInfoVector;
+    RtcInfoVector rtcInfoVector;
+
+    std::string moduleName;
+    std::string moduleFileName;
+    std::string confFileName;
+    std::string instanceName;
+    Selection baseDirectoryType;
+    filesystem::path rtcDirectory;
+    MessageView* mv;
+
+#ifdef ENABLE_SIMULATION_PROFILING
+    double bodyRTCTime;
+    double controllerTime;
+    TimeMeasure timer;
+#endif
+
+    BodyRTCItemImpl(BodyRTCItem* self);
+    BodyRTCItemImpl(BodyRTCItem* self, const BodyRTCItemImpl& org);
+    void createRTC(BodyPtr body);
+    void setdefaultPort(BodyPtr body);
+    void onPositionChanged();
+    bool initialize(ControllerIO* io);
+    bool start();
+    bool control();
+    void setConfigFile(const std::string& name);
+    void setConfigMode(int mode);
+    void setControllerModule(const std::string& name);
+    void setInstanceName(const std::string& name);
+    void setBaseDirectoryType(int type);
+    void doPutProperties(PutPropertyFunction& putProperty);
+    bool store(Archive& archive);
+    bool restore(const Archive& archive);
+    void makePortMap(RtcInfoPtr& rtcInfo);
+    void activateComponents();
+    void deactivateComponents();
+    void detectRtcs();
+    void setupRtcConnections();
+    RtcInfoPtr addRtcVectorWithConnection(RTC::RTObject_var new_rtcRef);
+    int connectPorts(RTC::PortService_var outPort, RTC::PortService_var inPort);
+    void deleteModule(bool waitToBeDeleted);
+};
+
+}
+    
 
 void BodyRTCItem::initialize(ExtensionManager* ext)
 {
@@ -43,11 +145,18 @@ void BodyRTCItem::initialize(ExtensionManager* ext)
 
 
 BodyRTCItem::BodyRTCItem()
-    : os(MessageView::instance()->cout()),
-      configMode(N_CONFIG_MODES, CNOID_GETTEXT_DOMAIN_NAME),
-      baseDirectoryType(N_BASE_DIRECTORY_TYPES, CNOID_GETTEXT_DOMAIN_NAME)
 {
-    setName("BodyRTC");
+    impl = new BodyRTCItemImpl(this);
+}
+
+
+BodyRTCItemImpl::BodyRTCItemImpl(BodyRTCItem* self)
+    : self(self),
+      os(MessageView::instance()->cout()),
+      configMode(BodyRTCItem::N_CONFIG_MODES, CNOID_GETTEXT_DOMAIN_NAME),
+      baseDirectoryType(BodyRTCItem::N_BASE_DIRECTORY_TYPES, CNOID_GETTEXT_DOMAIN_NAME)
+{
+    self->setName("BodyRTC");
     
     io = 0;
     virtualRobotRTC = 0;
@@ -58,14 +167,14 @@ BodyRTCItem::BodyRTCItem()
     instanceName.clear();
     mv = MessageView::instance();
 
-    configMode.setSymbol(CONF_FILE_MODE,  N_("Use Configuration File"));
-    configMode.setSymbol(CONF_ALL_MODE,  N_("Create Default Port"));
-    configMode.select(CONF_ALL_MODE);
+    configMode.setSymbol(BodyRTCItem::CONF_FILE_MODE,  N_("Use Configuration File"));
+    configMode.setSymbol(BodyRTCItem::CONF_ALL_MODE,  N_("Create Default Port"));
+    configMode.select(BodyRTCItem::CONF_ALL_MODE);
     autoConnect = false;
 
-    baseDirectoryType.setSymbol(RTC_DIRECTORY, N_("RTC directory"));
-    baseDirectoryType.setSymbol(PROJECT_DIRECTORY, N_("Project directory"));
-    baseDirectoryType.select(RTC_DIRECTORY);
+    baseDirectoryType.setSymbol(BodyRTCItem::RTC_DIRECTORY, N_("RTC directory"));
+    baseDirectoryType.setSymbol(BodyRTCItem::PROJECT_DIRECTORY, N_("Project directory"));
+    baseDirectoryType.select(BodyRTCItem::RTC_DIRECTORY);
     rtcDirectory = filesystem::path(executableTopDirectory()) / CNOID_PLUGIN_SUBDIR / "rtc";
 
     executionCycleProperty = 0.0;
@@ -73,8 +182,14 @@ BodyRTCItem::BodyRTCItem()
 
 
 BodyRTCItem::BodyRTCItem(const BodyRTCItem& org)
-    : ControllerItem(org),
-      os(MessageView::instance()->cout()),
+    : ControllerItem(org)
+{
+    impl = new BodyRTCItemImpl(this, *org.impl);
+}
+
+      
+BodyRTCItemImpl::BodyRTCItemImpl(BodyRTCItem* self, const BodyRTCItemImpl& org)
+    : os(MessageView::instance()->cout()),
       configMode(org.configMode),
       baseDirectoryType(org.baseDirectoryType)
 {
@@ -94,11 +209,11 @@ BodyRTCItem::BodyRTCItem(const BodyRTCItem& org)
 
 BodyRTCItem::~BodyRTCItem()
 {
-    
+    delete impl;
 }
 
 
-void BodyRTCItem::createRTC(BodyPtr body)
+void BodyRTCItemImpl::createRTC(BodyPtr body)
 {
     DDEBUG("BodyRTCItem::createRTC");
 
@@ -106,9 +221,9 @@ void BodyRTCItem::createRTC(BodyPtr body)
 
     filesystem::path projectDir(ProjectManager::instance()->currentProjectDirectory());
 
-    if(configMode.is(CONF_ALL_MODE)){
+    if(configMode.is(BodyRTCItem::CONF_ALL_MODE)){
         setdefaultPort(body);
-    } else if(configMode.is(CONF_FILE_MODE)){
+    } else if(configMode.is(BodyRTCItem::CONF_FILE_MODE)){
         filesystem::path confPath;
         if(!confFileName.empty()){
             confPath = confFileName;
@@ -118,9 +233,9 @@ void BodyRTCItem::createRTC(BodyPtr body)
 
         if(!confPath.empty()){
             if(!confPath.is_absolute()){
-                if(baseDirectoryType.is(RTC_DIRECTORY)){
+                if(baseDirectoryType.is(BodyRTCItem::RTC_DIRECTORY)){
                     confPath = rtcDirectory / confPath;
-                } else if(baseDirectoryType.is(PROJECT_DIRECTORY)){
+                } else if(baseDirectoryType.is(BodyRTCItem::PROJECT_DIRECTORY)){
                     if(projectDir.empty()){
                         mv->putln(_("Please save the project."));
                         return;
@@ -132,13 +247,13 @@ void BodyRTCItem::createRTC(BodyPtr body)
             std::string confFileName0 = getNativePathString(confPath);
             try {
                 if(bridgeConf->loadConfigFile(confFileName0.c_str())){
-                    mv->putln(fmt(_("Config File \"%1%\" has been loaded.")) % confFileName0);
+                    mv->putln(format(_("Config File \"{}\" has been loaded."), confFileName0));
                 } else {
-                    mv->putln(fmt(_("Cannot find or open \"%1%\".")) % confFileName0);
+                    mv->putln(format(_("Cannot find or open \"{}\"."), confFileName0));
                 }
             }
             catch (...) {
-                mv->putln(MessageView::ERROR, fmt(_("Cannot find or open \"%1%\".")) % confFileName0);
+                mv->putln(format(_("Cannot find or open \"{}\"."), confFileName0), MessageView::ERROR);
             }
         }
     }
@@ -146,7 +261,7 @@ void BodyRTCItem::createRTC(BodyPtr body)
     ModuleInfoList& moduleInfoList = bridgeConf->moduleInfoList;
     ModuleInfoList::iterator it;
     for(it=moduleInfoList.begin(); it != moduleInfoList.end(); ++it){
-        mv->putln(fmt(_("Loading Module....  \"%1%\"")) % it->fileName);
+        mv->putln(format(_("Loading Module....  \"{}\""), it->fileName));
     }
     bridgeConf->setupModules();
 
@@ -165,9 +280,9 @@ void BodyRTCItem::createRTC(BodyPtr body)
 
             filesystem::path modulePath(moduleName);
             if(!modulePath.is_absolute()){
-                if(baseDirectoryType.is(RTC_DIRECTORY)){
+                if(baseDirectoryType.is(BodyRTCItem::RTC_DIRECTORY)){
                     modulePath = rtcDirectory / modulePath;
-                } else if(baseDirectoryType.is(PROJECT_DIRECTORY)){
+                } else if(baseDirectoryType.is(BodyRTCItem::PROJECT_DIRECTORY)){
                     if(projectDir.empty()){
                         mv->putln(_("Please save the project."));
                         return;
@@ -193,13 +308,13 @@ void BodyRTCItem::createRTC(BodyPtr body)
         i++;
     }
 #if defined(OPENRTM_VERSION11)
-    format param("VirtualRobot?instance_name=%1%&exec_cxt.periodic.type=ChoreonoidExecutionContext&exec_cxt.periodic.rate=1000000");
+    string param("VirtualRobot?instance_name={}&exec_cxt.periodic.type=ChoreonoidExecutionContext&exec_cxt.periodic.rate=1000000");
 #elif defined(OPENRTM_VERSION12)
-    format param("VirtualRobot?instance_name=%1%&execution_contexts=ChoreonoidExecutionContext()&exec_cxt.periodic.type=ChoreonoidExecutionContext&exec_cxt.periodic.rate=1000000&exec_cxt.sync_activation=NO&exec_cxt.sync_deactivation=NO");
+    string param("VirtualRobot?instance_name={}&execution_contexts=ChoreonoidExecutionContext()&exec_cxt.periodic.type=ChoreonoidExecutionContext&exec_cxt.periodic.rate=1000000&exec_cxt.sync_activation=NO&exec_cxt.sync_deactivation=NO");
     DDEBUG("New Parameter 01");
 #endif
-    RtcBase* rtc = createManagedRTC(str(param % instanceName).c_str());
-    mv->putln(fmt(_("RTC \"%1%\" has been created.")) % instanceName);
+    RtcBase* rtc = createManagedRTC(format(param, instanceName));
+    mv->putln(format(_("RTC \"{}\" has been created."), instanceName));
     virtualRobotRTC = dynamic_cast<VirtualRobotRTC*>(rtc);
     virtualRobotRTC->createPorts(bridgeConf);
 
@@ -215,7 +330,7 @@ void BodyRTCItem::createRTC(BodyPtr body)
     
 }
 
-void BodyRTCItem::setdefaultPort(BodyPtr body)
+void BodyRTCItemImpl::setdefaultPort(BodyPtr body)
 {
     PortInfoMap& outPortInfoMap = bridgeConf->outPortInfos;
     PortInfo portInfo;
@@ -270,10 +385,16 @@ void BodyRTCItem::setdefaultPort(BodyPtr body)
 
 void BodyRTCItem::onPositionChanged()
 {
+    impl->onPositionChanged();
+}
+
+
+void BodyRTCItemImpl::onPositionChanged()
+{
     // create or recreate an RTC corresponding to the body
     // The target body can be detected like this:
 
-    BodyItem* ownerBodyItem = findOwnerItem<BodyItem>();
+    BodyItem* ownerBodyItem = self->findOwnerItem<BodyItem>();
     if(ownerBodyItem){
         Body* body = ownerBodyItem->body();
         if(bodyName != body->name()){
@@ -295,7 +416,7 @@ void BodyRTCItem::onDisconnectedFromRoot()
 {
     // This is not necessary because onPositionChanged() is also called
     // when the item is disconnected from the root
-    deleteModule(false);
+    impl->deleteModule(false);
 }
 
 
@@ -306,6 +427,12 @@ Item* BodyRTCItem::doDuplicate() const
 
 
 bool BodyRTCItem::initialize(ControllerIO* io)
+{
+    return impl->initialize(io);
+}
+
+
+bool BodyRTCItemImpl::initialize(ControllerIO* io)
 {
     this->io = io;
     simulationBody = io->body();
@@ -331,17 +458,23 @@ bool BodyRTCItem::initialize(ControllerIO* io)
 
 bool BodyRTCItem::start()
 {
+    return impl->start();
+}
+
+
+bool BodyRTCItemImpl::start()
+{
     bool isReady = true;
     
     if(rtcomp && !rtcomp->isValid()){
-        mv->putln(fmt(_("RTC \"%1%\" is not ready.")) % rtcomp->name());
+        mv->putln(format(_("RTC \"{}\" is not ready."), rtcomp->name()));
         isReady = false;
     }
 
     if(virtualRobotRTC) {
         virtualRobotRTC->initialize(simulationBody);
         if(!virtualRobotRTC->checkOutPortStepTime(timeStep_)){
-            mv->putln(fmt(_("Output interval must be longer than the control interval.")));
+            mv->putln(_("Output interval must be longer than the control interval."));
             isReady = false;
         }
     }
@@ -363,20 +496,26 @@ bool BodyRTCItem::start()
 
 double BodyRTCItem::timeStep() const
 {
-    return timeStep_;
+    return impl->timeStep_;
 }
 
 
 void BodyRTCItem::input()
 {
-    controlTime_ = io->currentTime();
+    impl->controlTime_ = impl->io->currentTime();
 
     // write the state of simulationBody to out-ports
-    virtualRobotRTC->inputDataFromSimulator(this);
+    impl->virtualRobotRTC->inputDataFromSimulator(this);
 }
 
 
 bool BodyRTCItem::control()
+{
+    return impl->control();
+}
+
+
+bool BodyRTCItemImpl::control()
 {
     // tick the execution context of the connected RTCs
     virtualRobotRTC->writeDataToOutPorts(controlTime_, timeStep_);
@@ -437,38 +576,74 @@ bool BodyRTCItem::control()
 void BodyRTCItem::output()
 {
     // read in-ports and write the values to simulationBody
-    virtualRobotRTC->outputDataToSimulator(simulationBody);
+    impl->virtualRobotRTC->outputDataToSimulator(impl->simulationBody);
 }
 
     
 void BodyRTCItem::stop()
 {
     // deactivate the RTC
-    deactivateComponents();
+    impl->deactivateComponents();
+}
+
+
+const Body* BodyRTCItem::body() const
+{
+    return impl->simulationBody;
+};
+
+
+const DeviceList<ForceSensor>& BodyRTCItem::forceSensors() const
+{
+    return impl->forceSensors_;
+}
+
+
+const DeviceList<RateGyroSensor>& BodyRTCItem::rateGyroSensors() const
+{
+    return impl->gyroSensors_;
+}
+
+
+const DeviceList<AccelerationSensor>& BodyRTCItem::accelerationSensors() const
+{
+    return impl->accelSensors_;
+}
+
+
+double BodyRTCItem::controlTime() const
+{
+    return impl->controlTime_;
 }
 
 
 void BodyRTCItem::setControllerModule(const std::string& name)
 {
+    impl->setControllerModule(name);
+}
+
+
+void BodyRTCItemImpl::setControllerModule(const std::string& name)
+{
     if(name != moduleName){
 
         filesystem::path modulePath(name);
         if(modulePath.is_absolute()){
-            baseDirectoryType.select(NO_BASE_DIRECTORY);
+            baseDirectoryType.select(BodyRTCItem::NO_BASE_DIRECTORY);
             if(modulePath.parent_path() == rtcDirectory){
-                baseDirectoryType.select(RTC_DIRECTORY);
+                baseDirectoryType.select(BodyRTCItem::RTC_DIRECTORY);
                 modulePath = modulePath.filename();
             } else {
                 filesystem::path projectDir(ProjectManager::instance()->currentProjectDirectory());
                 if(!projectDir.empty() && (modulePath.parent_path() == projectDir)){
-                    baseDirectoryType.select(PROJECT_DIRECTORY);
+                    baseDirectoryType.select(BodyRTCItem::BodyRTCItem::PROJECT_DIRECTORY);
                     modulePath = modulePath.filename();
                 }
             }
         }
         moduleName = modulePath.string();
 
-        BodyItem* ownerBodyItem = findOwnerItem<BodyItem>();
+        BodyItem* ownerBodyItem = self->findOwnerItem<BodyItem>();
         if(ownerBodyItem){
             BodyPtr body = ownerBodyItem->body();
             deleteModule(true);
@@ -480,17 +655,23 @@ void BodyRTCItem::setControllerModule(const std::string& name)
 
 void BodyRTCItem::setAutoConnectionMode(bool on)
 {
-    autoConnect = on;
+    impl->autoConnect = on;
 }
 
 
 void BodyRTCItem::setConfigFile(const std::string& name)
 {
+    impl->setConfigFile(name);
+}
+
+
+void BodyRTCItemImpl::setConfigFile(const std::string& name)
+{
     if(name != confFileName){
         confFileName = name;
-        if(configMode.is(CONF_ALL_MODE))
+        if(configMode.is(BodyRTCItem::CONF_ALL_MODE))
             return;
-        BodyItem* ownerBodyItem = findOwnerItem<BodyItem>();
+        BodyItem* ownerBodyItem = self->findOwnerItem<BodyItem>();
         if(ownerBodyItem){
             BodyPtr body = ownerBodyItem->body();
             deleteModule(true);
@@ -502,9 +683,15 @@ void BodyRTCItem::setConfigFile(const std::string& name)
 
 void BodyRTCItem::setConfigMode(int mode)
 {
+    impl->setConfigMode(mode);
+}
+
+
+void BodyRTCItemImpl::setConfigMode(int mode)
+{
     if(mode != configMode.which()){
         configMode.select(mode);
-        BodyItem* ownerBodyItem = findOwnerItem<BodyItem>();
+        BodyItem* ownerBodyItem = self->findOwnerItem<BodyItem>();
         if(ownerBodyItem){
             BodyPtr body = ownerBodyItem->body();
             deleteModule(true);
@@ -516,15 +703,15 @@ void BodyRTCItem::setConfigMode(int mode)
 
 void BodyRTCItem::setPeriodicRate(double freq)
 {
-    executionCycleProperty = 1.0 / freq;
+    impl->executionCycleProperty = 1.0 / freq;
 }
 
 
-void BodyRTCItem::setInstanceName(const std::string& name)
+void BodyRTCItemImpl::setInstanceName(const std::string& name)
 {
     if(instanceName!=name){
         instanceName = name;
-        BodyItem* ownerBodyItem = findOwnerItem<BodyItem>();
+        BodyItem* ownerBodyItem = self->findOwnerItem<BodyItem>();
         if(ownerBodyItem){
             BodyPtr body = ownerBodyItem->body();
             deleteModule(true);
@@ -536,9 +723,15 @@ void BodyRTCItem::setInstanceName(const std::string& name)
 
 void BodyRTCItem::setBaseDirectoryType(int type)
 {
+    impl->setBaseDirectoryType(type);
+}
+
+
+void BodyRTCItemImpl::setBaseDirectoryType(int type)
+{
     if(type != baseDirectoryType.which()){
         baseDirectoryType.select(type);
-        BodyItem* ownerBodyItem = findOwnerItem<BodyItem>();
+        BodyItem* ownerBodyItem = self->findOwnerItem<BodyItem>();
         if(ownerBodyItem){
             BodyPtr body = ownerBodyItem->body();
             deleteModule(true);
@@ -547,9 +740,16 @@ void BodyRTCItem::setBaseDirectoryType(int type)
     }
 }
 
+
 void BodyRTCItem::doPutProperties(PutPropertyFunction& putProperty)
 {
     ControllerItem::doPutProperties(putProperty);
+    impl->doPutProperties(putProperty);
+}
+
+
+void BodyRTCItemImpl::doPutProperties(PutPropertyFunction& putProperty)
+{
     putProperty(_("Auto Connect"), autoConnect, changeProperty(autoConnect));
     putProperty(_("RTC Instance name"), instanceName,
                 [&](const string& name){ setInstanceName(name); return true; });
@@ -558,16 +758,16 @@ void BodyRTCItem::doPutProperties(PutPropertyFunction& putProperty)
 
     FilePathProperty moduleProperty(
         moduleName,
-        { str(format(_("RT-Component module (*%1%)")) % DLL_SUFFIX) });
+        { format(_("RT-Component module (*{})"), DLL_SUFFIX) });
 
     FilePathProperty confFileProperty(
         confFileName,
         { _("RTC cconfiguration file (*.conf)") });
 
-    if(baseDirectoryType.is(RTC_DIRECTORY)){
+    if(baseDirectoryType.is(BodyRTCItem::RTC_DIRECTORY)){
         moduleProperty.setBaseDirectory(rtcDirectory.string());
         confFileProperty.setBaseDirectory(moduleProperty.baseDirectory());
-    } else if(baseDirectoryType.is(PROJECT_DIRECTORY)){
+    } else if(baseDirectoryType.is(BodyRTCItem::PROJECT_DIRECTORY)){
         moduleProperty.setBaseDirectory(ProjectManager::instance()->currentProjectDirectory());
         confFileProperty.setBaseDirectory(moduleProperty.baseDirectory());
     }
@@ -590,11 +790,17 @@ bool BodyRTCItem::store(Archive& archive)
     if(!ControllerItem::store(archive)){
         return false;
     }
+    return impl->store(archive);
+}
+
+
+bool BodyRTCItemImpl::store(Archive& archive)
+{
     archive.writeRelocatablePath("moduleName", moduleName);
     archive.writeRelocatablePath("confFileName", confFileName);
     archive.write("configurationMode", configMode.selectedSymbol(), DOUBLE_QUOTED);
-    archive.write("AutoConnect", autoConnect);
-    archive.write("InstanceName", instanceName, DOUBLE_QUOTED);
+    archive.write("autoConnect", autoConnect);
+    archive.write("instanceName", instanceName, DOUBLE_QUOTED);
     archive.write("bodyPeriodicRate", executionCycleProperty);
     archive.write("baseDirectory", baseDirectoryType.selectedSymbol(), DOUBLE_QUOTED);
 
@@ -609,6 +815,12 @@ bool BodyRTCItem::restore(const Archive& archive)
     if(!ControllerItem::restore(archive)){
         return false;
     }
+    return impl->restore(archive);
+}
+
+
+bool BodyRTCItemImpl::restore(const Archive& archive)
+{
     string value;
     if(archive.read("moduleName", value)){
         filesystem::path path(archive.expandPathVariables(value));
@@ -624,8 +836,13 @@ bool BodyRTCItem::restore(const Archive& archive)
     if(archive.read("baseDirectory", value) || archive.read("RelativePathBase", value)){
         baseDirectoryType.select(value);
     }
-    archive.read("AutoConnect", autoConnect);
-    archive.read("InstanceName", instanceName);
+
+    if (!archive.read("autoConnect", autoConnect)){
+        archive.read("AutoConnect", autoConnect);
+    }
+    if(!archive.read("instanceName", instanceName)) {
+        archive.read("InstanceName", instanceName);
+    }
     archive.read("bodyPeriodicRate", executionCycleProperty);
 
     return true;
@@ -633,7 +850,7 @@ bool BodyRTCItem::restore(const Archive& archive)
 
 
 // Detects the RTC specified in the config file and the RTC already connected to the robot.
-void BodyRTCItem::detectRtcs()
+void BodyRTCItemImpl::detectRtcs()
 {
     RTC::Manager& rtcManager = RTC::Manager::instance();
     
@@ -657,11 +874,11 @@ void BodyRTCItem::detectRtcs()
 
             }
             if(CORBA::is_nil(objRef)) {
-                mv->putln(fmt(_("%1% is not found.")) % rtcName);
+                mv->putln(format(_("{} is not found."), rtcName));
             } else {
                 rtcRef = RTC::RTObject::_narrow(objRef);
                 if(CORBA::is_nil(rtcRef)){
-                    mv->putln(fmt(_("%1% is not an RTC object.")) % rtcName);
+                    mv->putln(format(_("{} is not an RTC object."), rtcName));
                 }
             }
         }
@@ -705,11 +922,11 @@ void BodyRTCItem::detectRtcs()
 
                     }
                     if(CORBA::is_nil(objRef)){
-                        mv->putln(fmt(_("%1% is not found.")) % rtcName);
+                        mv->putln(format(_("{} is not found."), rtcName));
                     } else {
                         rtcRef = RTC::RTObject::_narrow(objRef);
                         if(CORBA::is_nil(rtcRef)){
-                            mv->putln(fmt(_("%1% is not an RTC object.")) % rtcName);
+                            mv->putln(format(_("{} is not an RTC object."), rtcName));
                         }
                     }
                 }
@@ -727,7 +944,8 @@ void BodyRTCItem::detectRtcs()
     }
 }
 
-void BodyRTCItem::makePortMap(RtcInfoPtr& rtcInfo)
+
+void BodyRTCItemImpl::makePortMap(RtcInfoPtr& rtcInfo)
 {
     RTC::PortServiceList_var ports = rtcInfo->rtcRef->get_ports();
     for(CORBA::ULong i=0; i < ports->length(); ++i){
@@ -740,7 +958,7 @@ void BodyRTCItem::makePortMap(RtcInfoPtr& rtcInfo)
 }
 
 /// Create a port map of new_rtcRef and register it in rtcInfoVector.
-BodyRTCItem::RtcInfoPtr BodyRTCItem::addRtcVectorWithConnection(RTC::RTObject_var new_rtcRef)
+RtcInfoPtr BodyRTCItemImpl::addRtcVectorWithConnection(RTC::RTObject_var new_rtcRef)
 {
     RtcInfoVector::iterator it = rtcInfoVector.begin();
     for( ; it != rtcInfoVector.end(); ++it){
@@ -765,7 +983,7 @@ BodyRTCItem::RtcInfoPtr BodyRTCItem::addRtcVectorWithConnection(RTC::RTObject_va
             rtcInfo->timeRate = 0.0;
             rtcInfo->timeRateCounter = 0.0;
         }
-        mv->putln(fmt(_("periodic-rate (%1%) = %2% ")) % rtcName % rtcInfo->timeRate);
+        mv->putln(format(_("periodic-rate ({0}) = {1} "), rtcName, rtcInfo->timeRate));
     }
     rtcInfoVector.push_back(rtcInfo);
 
@@ -785,7 +1003,7 @@ BodyRTCItem::RtcInfoPtr BodyRTCItem::addRtcVectorWithConnection(RTC::RTObject_va
     return rtcInfo;
 }
 
-void BodyRTCItem::activateComponents()
+void BodyRTCItemImpl::activateComponents()
 {
     for(RtcInfoVector::iterator p = rtcInfoVector.begin(); p != rtcInfoVector.end(); ++p){
         RtcInfoPtr& rtcInfo = *p;
@@ -815,7 +1033,7 @@ void BodyRTCItem::activateComponents()
 }
 
 
-void BodyRTCItem::deactivateComponents()
+void BodyRTCItemImpl::deactivateComponents()
 {
     std::vector<RTC::ExecutionContextService_var> vecExecContext;
 
@@ -851,7 +1069,7 @@ void BodyRTCItem::deactivateComponents()
 }
 
 
-void BodyRTCItem::setupRtcConnections()
+void BodyRTCItemImpl::setupRtcConnections()
 {
     for(size_t i=0; i < bridgeConf->portConnections.size(); ++i){
 
@@ -892,7 +1110,7 @@ void BodyRTCItem::setupRtcConnections()
             if(!instance0isRobot){
                 PortMap::iterator q = rtcInfo0->portMap.find(connection.PortName[0]);
                 if(q == rtcInfo0->portMap.end()){
-                    mv->putln(fmt(_("%1% does not have a port %2%.")) % instanceName0 % connection.PortName[0]);
+                    mv->putln(format(_("{0} does not have a port {1}."), instanceName0, connection.PortName[0]));
                     continue;
                 }
                 portRef0 = q->second;
@@ -901,7 +1119,7 @@ void BodyRTCItem::setupRtcConnections()
             RTC::PortService_var portRef1;
             PortMap::iterator q = rtcInfo1->portMap.find(connection.PortName[1]);
             if(q == rtcInfo1->portMap.end()){
-                mv->putln(fmt(_("%1% does not have a port %2%.")) % instanceName1 % connection.PortName[1]);
+                mv->putln(format(_("{0} does not have a port {1}."), instanceName1, connection.PortName[1]));
                 continue;
             }
             portRef1 = q->second;
@@ -923,7 +1141,7 @@ void BodyRTCItem::setupRtcConnections()
                     robotPortHandler = virtualRobotRTC->getInPortHandler(connection.PortName[0]);
                 }
                 if(!robotPortHandler){
-                    mv->putln(fmt(_("The robot does not have a port named %1%.")) % connection.PortName[0]);
+                    mv->putln(format(_("The robot does not have a port named {}."), connection.PortName[0]));
                     continue;
                 }
                 portRef0 = robotPortHandler->portRef;
@@ -934,12 +1152,14 @@ void BodyRTCItem::setupRtcConnections()
 
             int connected = false;
             if(port1isIn){
-                mv->putln(fmt(_("connect %1%:%2% --> %3%:%4%")) 
-                          % instanceName0 % connection.PortName[0] % instanceName1 % connection.PortName[1]);
+                mv->putln(
+                    format(_("connect {0}:{1} --> {2}:{3}"),
+                           instanceName0, connection.PortName[0], instanceName1, connection.PortName[1]));
                 connected = connectPorts(portRef0, portRef1);
             }else{
-                mv->putln(fmt(_("connect %1%:%2% <-- %3%:%4%")) 
-                          % instanceName0 % connection.PortName[0] % instanceName1 % connection.PortName[1]);
+                mv->putln(
+                    format(_("connect {0}:{1} <-- {2}:{3}"),
+                           instanceName0, connection.PortName[0], instanceName1, connection.PortName[1]));
                 connected = connectPorts(portRef1, portRef0);
             }
 
@@ -953,7 +1173,7 @@ void BodyRTCItem::setupRtcConnections()
         }
     }
 
-    if(configMode.is(CONF_ALL_MODE) && autoConnect){
+    if(configMode.is(BodyRTCItem::CONF_ALL_MODE) && autoConnect){
         std::vector<RTC::RTObject_var> rtcRefs;
         if(!moduleName.empty()){
             if(rtcomp && rtcomp->rtc()){
@@ -1004,8 +1224,10 @@ void BodyRTCItem::setupRtcConnections()
                             RTC::PortService_var  robotPortRef = robotPortHandler->portRef;
                             if(!CORBA::is_nil(robotPortRef)){
                                 int connected = connectPorts(robotPortRef, controllerPortRef);
-                                mv->putln(fmt(_("connect %1%:%2% --> %3%:%4%")) 
-                                          % virtualRobotRTC->getInstanceName() % robotPortName % (*it)->get_component_profile()->instance_name % portName);
+                                mv->putln(
+                                    format(_("connect {0}:{1} --> {2}:{3}"),
+                                           virtualRobotRTC->getInstanceName(), robotPortName,
+                                           string((*it)->get_component_profile()->instance_name), portName));
                                 if(!connected){
                                     mv->putln(_("Connection was successful."));
                                 } else if(connected == -1){
@@ -1045,8 +1267,10 @@ void BodyRTCItem::setupRtcConnections()
                             RTC::PortService_var  robotPortRef = robotPortHandler->portRef;
                             if(!CORBA::is_nil(robotPortRef)){
                                 int connected = connectPorts(controllerPortRef, robotPortRef);
-                                mv->putln(fmt(_("connect %1%:%2% <-- %3%:%4%"))
-                                          % virtualRobotRTC->getInstanceName() % robotPortName % (*it)->get_component_profile()->instance_name % portName);
+                                mv->putln(
+                                    format(_("connect {0}:{1} <-- {2}:{3}"),
+                                           virtualRobotRTC->getInstanceName(), robotPortName,
+                                           string((*it)->get_component_profile()->instance_name), portName));
                                 if(!connected){
                                     mv->putln(_("Connection was successful."));
                                 } else if(connected == -1){
@@ -1063,7 +1287,7 @@ void BodyRTCItem::setupRtcConnections()
     }
 }
 
-int BodyRTCItem::connectPorts(RTC::PortService_var outPort, RTC::PortService_var inPort)
+int BodyRTCItemImpl::connectPorts(RTC::PortService_var outPort, RTC::PortService_var inPort)
 {
     RTC::ConnectorProfileList_var connectorProfiles = inPort->get_connector_profiles();
     for(CORBA::ULong i=0; i < connectorProfiles->length(); ++i){
@@ -1103,7 +1327,7 @@ int BodyRTCItem::connectPorts(RTC::PortService_var outPort, RTC::PortService_var
 }
 
 
-void BodyRTCItem::deleteModule(bool waitToBeDeleted)
+void BodyRTCItemImpl::deleteModule(bool waitToBeDeleted)
 {
     RTC::Manager& rtcManager = RTC::Manager::instance();
     
@@ -1120,7 +1344,7 @@ void BodyRTCItem::deleteModule(bool waitToBeDeleted)
                 if(it->rtcServant){
                     deleteList.push_back(it->rtcServant->getInstanceName());
                     it->rtcServant->exit();
-                    mv->putln(fmt(_("delete %1%")) % it->rtcServant->getInstanceName());
+                    mv->putln(format(_("delete {}"), it->rtcServant->getInstanceName()));
                 }
             }
         }
@@ -1136,7 +1360,7 @@ void BodyRTCItem::deleteModule(bool waitToBeDeleted)
 
     if(virtualRobotRTC){
         deleteList.push_back(virtualRobotRTC->getInstanceName());
-        mv->putln(fmt(_("delete %1%")) % virtualRobotRTC->getInstanceName());
+        mv->putln(format(_("delete {}"), virtualRobotRTC->getInstanceName()));
         cnoid::deleteRTC(virtualRobotRTC);
         virtualRobotRTC = 0;
     }
@@ -1157,7 +1381,7 @@ void BodyRTCItem::deleteModule(bool waitToBeDeleted)
             msleep(20);
         }
         for(std::vector<string>::iterator it=remainder.begin(); it!=remainder.end(); it++){
-            mv->putln(fmt(_("%1% cannot be deleted.")) % *it);
+            mv->putln(format(_("{} cannot be deleted."), *it));
         }
     }
 
@@ -1166,17 +1390,18 @@ void BodyRTCItem::deleteModule(bool waitToBeDeleted)
     }
 }
 
+
 #ifdef ENABLE_SIMULATION_PROFILING
 void BodyRTCItem::getProfilingNames(vector<string>& profilingNames)
 {
-    profilingNames.push_back("    BodyRTC calculation time");
-    profilingNames.push_back("    Controller calculation time");
+    impl->profilingNames.push_back("    BodyRTC calculation time");
+    impl->profilingNames.push_back("    Controller calculation time");
 }
 
 
 void BodyRTCItem::getProfilingTimes(vector<double>& profilingToimes)
 {
-    profilingToimes.push_back(bodyRTCTime);
-    profilingToimes.push_back(controllerTime);
+    impl->profilingToimes.push_back(impl->bodyRTCTime);
+    impl->profilingToimes.push_back(impl->controllerTime);
 }
 #endif

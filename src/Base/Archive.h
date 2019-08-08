@@ -6,7 +6,7 @@
 #define CNOID_BASE_ARCHIVE_H
 
 #include <cnoid/ValueTree>
-#include <boost/filesystem.hpp>
+#include <cnoid/stdx/filesystem>
 #include <string>
 #include <functional>
 #include "exportdecl.h"
@@ -65,12 +65,14 @@ public:
         
     bool readRelocatablePath(const std::string& key, std::string& out_value) const;
 
+    bool loadItemFile(Item* item, const std::string& fileNameKey, const std::string& fileFormatKey = std::string()) const;
+
     std::string getRelocatablePath(const std::string& path) const;
     void writeRelocatablePath(const std::string& key, const std::string& path);
 
     Item* currentParentItem() const;
 
-    boost::filesystem::path getProjectDir() const { return projectDirPath; }
+    stdx::filesystem::path getProjectDir() const { return projectDirPath; }
 
 private:
 
@@ -89,7 +91,7 @@ private:
     friend class ViewManager;
     friend class ProjectManagerImpl;
 
-    boost::filesystem::path projectDirPath;
+    stdx::filesystem::path projectDirPath;
 };
 
 typedef ref_ptr<Archive> ArchivePtr;

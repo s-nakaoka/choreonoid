@@ -14,7 +14,6 @@
 #include <QButtonGroup>
 #include "gettext.h"
 
-using namespace std::placeholders;
 using namespace cnoid;
 
 namespace {
@@ -168,34 +167,20 @@ RTSConfigurationViewImpl::RTSConfigurationViewImpl(RTSConfigurationView* self)
     lstConfigSet_->setColumnWidth(0, 50);
     lstConfigSet_->setRowCount(0);
     lstConfigSet_->setHorizontalHeaderLabels(QStringList() << "Active" << "Config");
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    lstConfigSet_->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-#else
     lstConfigSet_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-#endif
-
     lstConfigSet_->setItemDelegate(new ConfigSetDelegate(this));
 
     chkSetDetail_ = new CheckBox(_("Detail"));
-    chkSetDetail_->sigToggled().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::setDetailClicked), this));
+    chkSetDetail_->sigToggled().connect([&](bool on){ setDetailClicked(); });
 
     PushButton* btnSetCopy = new PushButton(_("Copy"));
-    btnSetCopy->sigClicked().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::setCopyClicked), this));
+    btnSetCopy->sigClicked().connect([&](){ setCopyClicked(); });
 
     PushButton* btnSetAdd = new PushButton(_("Add"));
-    btnSetAdd->sigClicked().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::setAddClicked), this));
+    btnSetAdd->sigClicked().connect([&](){ setAddClicked(); });
 
     PushButton* btnSetDelete = new PushButton(_("Delete"));
-    btnSetDelete->sigClicked().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::setDeleteClicked), this));
+    btnSetDelete->sigClicked().connect([&](){ setDeleteClicked(); });
 
     QFrame* frmSetButtons = new QFrame;
     QHBoxLayout* setBtnLayout = new QHBoxLayout(frmSetButtons);
@@ -230,32 +215,20 @@ RTSConfigurationViewImpl::RTSConfigurationViewImpl(RTSConfigurationView* self)
     lstDetail_->verticalHeader()->setVisible(false);
     lstDetail_->setRowCount(0);
     lstDetail_->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    lstDetail_->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
-    lstDetail_->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-#else
     lstDetail_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     lstDetail_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-#endif
     lstDetail_->setItemDelegate(new DetailDelegate(this));
 
     chkDetail_ = new CheckBox(_("Detail"));
-    chkDetail_->sigToggled().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::detailClicked), this));
+    chkDetail_->sigToggled().connect([&](bool on){ detailClicked(); });
 
     PushButton* btnAdd = new PushButton(_("Add"));
     btnAdd->setEnabled(false);
-    btnAdd->sigClicked().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::addClicked), this));
+    btnAdd->sigClicked().connect([&](){ addClicked(); });
 
     PushButton* btnDelete = new PushButton(_("Delete"));
     btnDelete->setEnabled(false);
-    btnAdd->sigClicked().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::deleteClicked), this));
+    btnAdd->sigClicked().connect([&](){ deleteClicked(); });
 
     QFrame* frmButtons = new QFrame;
     QHBoxLayout* btnLayout = new QHBoxLayout(frmButtons);
@@ -277,14 +250,10 @@ RTSConfigurationViewImpl::RTSConfigurationViewImpl(RTSConfigurationView* self)
     splitter->addWidget(frmDetail);
 
     PushButton* btnApply = new PushButton(_("Apply"));
-    btnApply->sigClicked().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::applyClicked), this));
+    btnApply->sigClicked().connect([&](){ applyClicked(); });
 
     PushButton* btnCancel = new PushButton(_("Cancel"));
-    btnCancel->sigClicked().connect(
-        std::bind(
-            static_cast<void(RTSConfigurationViewImpl::*)(void)>(&RTSConfigurationViewImpl::cancelClicked), this));
+    btnCancel->sigClicked().connect([&](){ cancelClicked(); });
 
     QFrame* frmMainButtons = new QFrame;
     QVBoxLayout* mainBtnLayout = new QVBoxLayout(frmMainButtons);
@@ -303,7 +272,8 @@ RTSConfigurationViewImpl::RTSConfigurationViewImpl(RTSConfigurationView* self)
     if (nsView) {
         if (!selectionChangedConnection.connected()) {
             selectionChangedConnection = nsView->sigSelectionChanged().connect(
-                std::bind(&RTSConfigurationViewImpl::onItemSelectionChanged, this, _1));
+                [&](const std::list<NamingContextHelper::ObjectInfo>& items){
+                    onItemSelectionChanged(items); });
         }
     }
 
@@ -447,7 +417,7 @@ void RTSConfigurationViewImpl::showConfigurationView()
         if (param->getMode() == MODE_DELETE || param->getMode() == MODE_IGNORE) {
             continue;
         }
-        if (chkDetail_->isChecked() == false) {
+        if (!chkDetail_->isChecked()) {
             if (param->getName().startsWith(QString::fromStdString("__"))) {
                 continue;
             }

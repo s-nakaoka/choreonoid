@@ -15,8 +15,8 @@
 #include "RTMImageView.h"
 
 #ifdef ENABLE_NEW_RT_SYSTEM_ITEM_IMPLEMENTATION
-#include "RTSDiagramExtView.h"
-#include "RTSystemExtItem.h"
+#include "experimental/RTSDiagramViewEx.h"
+#include "experimental/RTSystemItemEx.h"
 #else
 #include "RTSDiagramView.h"
 #include "RTSystemItem.h"
@@ -24,6 +24,7 @@
 
 #include "RTSCommonUtil.h"
 #include "BodyStateSubscriberRTCItem.h"
+#include "deprecated/VirtualRobotRTC.h"
 #include "deprecated/BodyRTCItem.h"
 #include "deprecated/ChoreonoidExecutionContext.h"
 #include "deprecated/ChoreonoidPeriodicExecutionContext.h"
@@ -36,26 +37,23 @@
 #include <cnoid/CorbaPlugin>
 #include <cnoid/SimulationBar>
 #include <cnoid/Sleep>
+#include <cnoid/FileUtil>
 #include <QTcpSocket>
 #include <cnoid/AppConfig>
+#include <fmt/format.h>
 #include <rtm/ComponentActionListener.h>
+#include <set>
 
 #include "LoggerUtil.h"
 
 #include "gettext.h"
 
 using namespace std;
-using namespace std::placeholders;
 using namespace cnoid;
-using boost::format;
+using fmt::format;
+namespace filesystem = boost::filesystem;
 
 namespace {
-
-// Old conf filename. This should be deprecated, but continue to use for a while
-const char* DEFAULT_CONF_FILENAME = "./rtc.conf.choreonoid";
-
-// New conf filename. It is desirable to use this.
-//const char* DEFAUT_CONF_FILENAME = "./choreonoid.rtc.conf"
 
 class ManagerEx : public RTC::Manager
 {
@@ -114,11 +112,9 @@ public:
             ::coil::Creator<::RTC::ExecutionContextBase, ExecutionContextType>,
             ::coil::Destructor<::RTC::ExecutionContextBase, ExecutionContextType>) == 0) {
 #endif
-            mv->putln(format(_("%1% has been registered.")) % name);
+            mv->putln(format(_("{} has been registered."), name));
         } else {
-            mv->putln(
-                MessageView::WARNING,
-                format(_("Failed to register %1%.")) % name);
+            mv->putln(format(_("Failed to register {}."), name), MessageView::WARNING);
         }
     }
 
@@ -137,11 +133,23 @@ public:
             }
             //
             configFile = appVars->get("defaultSetting", DEFAULT_CONF_FILENAME);
+        } else {
+            appVars->write("defaultSetting", DEFAULT_CONF_FILENAME, DOUBLE_QUOTED);
+            appVars->write("defaultVendor", "AIST", DOUBLE_QUOTED);
+            appVars->write("defaultVersion", "1.0.0", DOUBLE_QUOTED);
+
+#if defined(OPENRTM_VERSION12)
+            appVars->write("heartBeatPeriod", 500);
+#endif
+            appVars->write("outputLog", false);
+            appVars->write("logLevel", "INFO");
         }
+        DDEBUG_V("configFile : %s", configFile.c_str());
+
+        bool isConfFileSpecified = filesystem::exists(configFile);
 
         const char* argv[] = {
             "choreonoid",
-            "-f", configFile.c_str(),
             "-o", "manager.shutdown_on_nortcs: NO",
             "-o", "manager.shutdown_auto: NO",
             "-o", "naming.formats: %n.rtc",
@@ -154,17 +162,21 @@ public:
 #if defined(OPENRTM_VERSION12)
             "-i",
 #endif
+            "-f", configFile.c_str(),
         };
 
 #ifdef Q_OS_WIN32
 #if defined(OPENRTM_VERSION11)
-        int numArgs = 15;
+        int numArgs = 13;
 #elif defined(OPENRTM_VERSION12)
-        int numArgs = 16;
+        int numArgs = 14;
 #endif
 #else
-        int numArgs = 13;
+        int numArgs = 11;
 #endif
+        if(isConfFileSpecified){
+            numArgs += 2;
+        }
 
         mv = MessageView::mainInstance();
 
@@ -229,9 +241,9 @@ public:
             [&](const Archive& archive) { restore(archive); });
 
         NameServerInfo info = RTCCommonUtil::getManagerAddress();
-        if (info.hostAddress.empty() == false) {
+        if (!info.hostAddress.empty()) {
             NameServerManager::instance()->getNCHelper()->setLocation(info.hostAddress, info.portNo);
-            DDEBUG_V("Init ncHelper host:%s, port:%d", info.hostAddress.c_str(), info.hostAddress);
+            DDEBUG_V("Init ncHelper host:%s, port:%d", info.hostAddress.c_str(), info.portNo);
         }
 
         RTSNameServerView::initializeClass(this);
@@ -240,8 +252,13 @@ public:
         RTMImageView::initializeClass(this);
 
 #ifdef ENABLE_NEW_RT_SYSTEM_ITEM_IMPLEMENTATION
-        RTSystemExtItem::initializeClass(this);
-        RTSDiagramExtView::initializeClass(this);
+#ifdef ENABLE_BACKGROUND_STATE_DETECTION
+        RTSystemExt2Item::initializeClass(this);
+        RTSDiagramExt2View::initializeClass(this);
+#else
+        RTSystemItemEx::initializeClass(this);
+        RTSDiagramViewEx::initializeClass(this);
+#endif
 #else
         RTSystemItem::initializeClass(this);
         RTSDiagramView::initializeClass(this);
@@ -309,7 +326,9 @@ public:
             if (n == 1) {
                 mv->notify(_("An RT component which is not managed by Choreonoid is being deleted."));
             } else {
-                mv->notify(format(_("%1% RT components which are not managed by Choreonoid are being deleted.")) % n);
+                mv->notify(
+                    format(_("{} RT components which are not managed by Choreonoid are being deleted."),
+                           n));
             }
             mv->flush();
             cnoid::deleteUnmanagedRTCs();
@@ -554,8 +573,9 @@ bool cnoid::deleteRTC(RTC::RtcBase* rtc)
 
         } catch (CORBA::SystemException& ex) {
             MessageView::instance()->putln(
-                MessageView::WARNING, format(_("CORBA %1% (%2%), %3% in cnoid::deleteRTC()."))
-                % ex._name() % ex._rep_id() % ex.NP_minorString());
+                format(_("CORBA {0} ({1}), {2} in cnoid::deleteRTC()."),
+                       ex._name(), ex._rep_id(), ex.NP_minorString()),
+                MessageView::WARNING);
         }
     }
 

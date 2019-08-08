@@ -15,22 +15,21 @@
 #include <cnoid/GaussianFilter>
 #include <cnoid/RangeLimiter>
 #include <cnoid/FileUtil>
-#include <boost/format.hpp>
+#include <fmt/format.h>
 #include <fstream>
 #include <vector>
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
-namespace filesystem = boost::filesystem;
+using fmt::format;
 
 static bool saveRootLinkAttAsRpyFormat(BodyMotion& motion, const std::string& filename, std::ostream& os)
 {
-    format f("%1$.4f %2$g %3$g %4$g\n");
-    const MultiSE3SeqPtr& linkPosSeq = motion.linkPosSeq();
+    auto linkPosSeq = motion.linkPosSeq();
     const int nFrames = linkPosSeq->numFrames();
         
     if(nFrames > 0 && linkPosSeq->numParts() > 0){
@@ -50,7 +49,7 @@ static bool saveRootLinkAttAsRpyFormat(BodyMotion& motion, const std::string& fi
                     rpy[j] = 0.0;
                 }
             }
-            ofs << (f % (i / r) % rpy[0] % rpy[1] % rpy[2]);
+            ofs << format("{0:.4f} {1:g} {2:g} {3:g}\n", (i / r), rpy[0], rpy[1], rpy[2]);
         }
             
         return true;
@@ -66,8 +65,7 @@ static bool saveRootLinkAccAsGsensFile(BodyMotion& motion, Body* body, const std
         return false;
     }
 
-    format f("%1$.4f %2$g %3$g %4$g\n");
-    const MultiSE3SeqPtr& linkPosSeq = motion.linkPosSeq();
+    auto linkPosSeq = motion.linkPosSeq();
 
     AccelerationSensor* gsens = 0;
     DeviceList<AccelerationSensor> accelSensors(body->devices());
@@ -100,7 +98,7 @@ static bool saveRootLinkAccAsGsensFile(BodyMotion& motion, Body* body, const std
                     a[j] = 0.0;
                 }
             }
-            ofs << (f % (i / r) % a[0] % a[1] % a[2]);
+            ofs << format("{0:.4f} {1:g} {2:g} {3:g}\n", (i / r), a[0], a[1], a[2]);
         }
             
         return true;
@@ -150,13 +148,14 @@ bool cnoid::loadHrpsysSeqFileSet(BodyMotion& motion, const std::string& filename
 {
     motion.setNumFrames(0);
 
-    filesystem::path orgpath(filename);
+    stdx::filesystem::path orgpath(filename);
     
     bool loaded = false;
 
-    MultiValueSeqPtr jointPosSeq;
-    filesystem::path posFile = filesystem::change_extension(orgpath, ".pos");
-    if(filesystem::exists(posFile) && !filesystem::is_directory(posFile)){
+    shared_ptr<MultiValueSeq> jointPosSeq;
+    stdx::filesystem::path posFile(orgpath);
+    posFile.replace_extension(".pos");
+    if(stdx::filesystem::exists(posFile) && !stdx::filesystem::is_directory(posFile)){
         string posFileString = getNativePathString(posFile);
         jointPosSeq = motion.jointPosSeq();
         if(!jointPosSeq->loadPlainFormat(posFileString)){
@@ -169,9 +168,10 @@ bool cnoid::loadHrpsysSeqFileSet(BodyMotion& motion, const std::string& filename
         }
     }
 
-    MultiSE3SeqPtr rootLinkAttSeq;
-    filesystem::path hipFile = filesystem::change_extension(orgpath, ".hip");
-    if(filesystem::exists(hipFile) && !filesystem::is_directory(hipFile)){
+    shared_ptr<MultiSE3Seq> rootLinkAttSeq;
+    stdx::filesystem::path hipFile(orgpath);
+    hipFile.replace_extension(".hip");
+    if(stdx::filesystem::exists(hipFile) && !stdx::filesystem::is_directory(hipFile)){
         string hipFileString = getNativePathString(hipFile);
         rootLinkAttSeq = motion.linkPosSeq();
         if(!rootLinkAttSeq->loadPlainRpyFormat(hipFileString)){
@@ -184,9 +184,10 @@ bool cnoid::loadHrpsysSeqFileSet(BodyMotion& motion, const std::string& filename
         }
     }
 
-    MultiSE3SeqPtr linkPosSeq;
-    filesystem::path waistFile = filesystem::change_extension(orgpath, ".waist");
-    if(filesystem::exists(waistFile) && !filesystem::is_directory(waistFile)){
+    shared_ptr<MultiSE3Seq> linkPosSeq;
+    stdx::filesystem::path waistFile(orgpath);
+    waistFile.replace_extension(".waist");
+    if(stdx::filesystem::exists(waistFile) && !stdx::filesystem::is_directory(waistFile)){
         string waistFileString = getNativePathString(waistFile);
         linkPosSeq = motion.linkPosSeq();
         if(!linkPosSeq->loadPlainMatrixFormat(waistFileString)){
@@ -199,10 +200,11 @@ bool cnoid::loadHrpsysSeqFileSet(BodyMotion& motion, const std::string& filename
         }
     }
 
-    ZMPSeqPtr zmpseq;
+    shared_ptr<ZMPSeq> zmpseq;
     if(jointPosSeq || linkPosSeq){
-        filesystem::path zmpFile = filesystem::change_extension(orgpath, ".zmp");
-        if(filesystem::exists(zmpFile) && !filesystem::is_directory(zmpFile)){
+        stdx::filesystem::path zmpFile(orgpath);
+        zmpFile.replace_extension(".zmp");
+        if(stdx::filesystem::exists(zmpFile) && !stdx::filesystem::is_directory(zmpFile)){
             string zmpFileString = getNativePathString(zmpFile);
             zmpseq = getOrCreateZMPSeq(motion);
             if(!zmpseq->loadPlainFormat(zmpFileString)){
@@ -256,22 +258,25 @@ bool cnoid::loadHrpsysSeqFileSet(BodyMotion& motion, const std::string& filename
 
 bool cnoid::saveHrpsysSeqFileSet(BodyMotion& motion, Body* body, const std::string& filename, std::ostream& os)
 {
-    filesystem::path orgpath(filename);
-    filesystem::path bpath(orgpath.branch_path() / filesystem::path(basename(orgpath)));
+    stdx::filesystem::path orgpath(filename);
 
     if(motion.jointPosSeq()->saveAsPlainFormat(
-           getNativePathString(filesystem::change_extension(orgpath, ".pos"))) &&
+           getNativePathString(
+               stdx::filesystem::path(orgpath).replace_extension(".pos"))) &&
            
        motion.linkPosSeq()->saveTopPartAsPlainMatrixFormat(
-           getNativePathString(filesystem::change_extension(orgpath, ".waist"))) &&
+           getNativePathString(
+               stdx::filesystem::path(orgpath).replace_extension(".waist"))) &&
            
        saveRootLinkAttAsRpyFormat(
-           motion, getNativePathString(filesystem::change_extension(orgpath, ".hip")), os)) {
+           motion, getNativePathString(
+               stdx::filesystem::path(orgpath).replace_extension(".hip")), os)) {
 
         saveRootLinkAccAsGsensFile(
-            motion, body, getNativePathString(filesystem::change_extension(orgpath, ".gsens")), os);
+            motion, body, getNativePathString(
+                stdx::filesystem::path(orgpath).replace_extension(".gsens")), os);
 
-        ZMPSeqPtr zmpseq = getZMPSeq(motion);
+        auto zmpseq = getZMPSeq(motion);
         if(zmpseq){
             // make the coordinate relative to the waist
             Vector3Seq relZMP(zmpseq->numFrames());
@@ -282,7 +287,7 @@ bool cnoid::saveHrpsysSeqFileSet(BodyMotion& motion, Body* body, const std::stri
                 relZMP[i].noalias() = p.rotation().inverse() * (zmpseq->at(i) - p.translation());
             }
             return relZMP.saveAsPlainFormat(
-                getNativePathString(filesystem::change_extension(orgpath, ".zmp")));
+                getNativePathString(stdx::filesystem::path(orgpath).replace_extension(".zmp")));
         }
         return true;
     }
@@ -423,8 +428,8 @@ static bool applyVelocityLimitFilterMain
             const double deltaUVLimit = joint->dq_upper() / frameRate;
             const double deltaLVLimit = joint->dq_lower() / frameRate;
             
-            os << str(format(" seq %1%: lower limit = %2%, upper limit = %3%")
-                      % i % joint->dq_lower() % joint->dq_upper()) << endl;
+            os << format(" seq {0}: lower limit = {1}, upper limit = {2}",
+                    i, joint->dq_lower(), joint->dq_upper()) << endl;
 
             if(usePollardMethod){
                 applyPollardVelocityLimitFilterSub(
@@ -465,8 +470,8 @@ void cnoid::applyGaussianFilter
     
     for(int i=0; i < seq.numParts(); ++i){
         if(i==0){
-            os << str(format("applying the gaussian filter (sigma = %1%, range = %2%) to seq") %
-                      sigma % range) << endl;
+            os << format(_("applying the gaussian filter (sigma = {0}, range = {1}) to seq"),
+                    sigma, range) << endl;
         }
         os << " " << i;
 
@@ -494,8 +499,8 @@ void cnoid::applyRangeLimitFilter
             const double upper = joint->q_upper() - margin;
             const double lower = joint->q_lower() + margin;
             if(upper > lower){
-                os << str(format(" seq %1%: lower limit = %2%, upper limit = %3%")
-                          % i % joint->q_lower() % joint->q_upper()) << endl;
+                os << format(" seq {0}: lower limit = {1}, upper limit = {2}",
+                        i, joint->q_lower(), joint->q_upper()) << endl;
 
                 MultiValueSeq::Part part = seq.part(i);
                 limiter.apply(part, upper, lower, limitGrad, edgeGradRatio);

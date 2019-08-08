@@ -2,15 +2,20 @@
   @file
   @author Shin'ichiro Nakaoka
 */
-
-#include <boost/asio/serial_port.hpp>
 #include <string>
 #include <vector>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 
-#ifndef WIN32
+#include <boost/asio/serial_port.hpp>
+#if (BOOST_VERSION < 106600)
+namespace boost { namespace asio {
+typedef io_service io_context;
+} }
+#endif
+
+#ifndef _WIN32
 #include <signal.h>
 #include <semaphore.h>
 #endif
@@ -43,7 +48,7 @@ public:
 
 private:
     std::string portDevice_;
-    boost::asio::io_service io;
+    boost::asio::io_context io;
     boost::asio::serial_port port;
     
     std::vector<unsigned char> poseCommand;
@@ -78,7 +83,7 @@ private:
 
     bool isTimerAvailable;
     bool isTimerActive;
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE timerHandle;
     HANDLE timerQueue; 
     LARGE_INTEGER pc0, pc1, pcfreq;
@@ -104,7 +109,7 @@ private:
     void stopTimer();
     void finalizeTimer();
     
-#if WIN32
+#if _WIN32
     static VOID CALLBACK timerCallback(PVOID lpParameter, BOOL TimerOrWaitFired);
 #else
     static void timerHandler(int sig, siginfo_t* si, void* uc);

@@ -8,7 +8,7 @@
 
 #include "SceneGraph.h"
 #include "Image.h"
-#include <boost/variant.hpp>
+#include <cnoid/stdx/variant>
 #include <memory>
 #include <initializer_list>
 #include "exportdecl.h"
@@ -144,7 +144,7 @@ private:
 typedef ref_ptr<SgTexture> SgTexturePtr;
 
 
-template<class T, class Alloc = std::allocator<T> > class SgVectorArray : public SgObject
+template<class T, class Alloc = std::allocator<T>> class SgVectorArray : public SgObject
 {
     typedef std::vector<T> Container;
         
@@ -189,6 +189,7 @@ public:
     void resize(size_type s, const T& v) { values.resize(s, v); }
     bool empty() const { return values.empty(); }
     void reserve(size_type s) { values.reserve(s); }
+    size_type capacity() const { return values.capacity(); }
     T& operator[](size_type i) { return values[i]; }
     const T& operator[](size_type i) const { return values[i]; }
     T& at(size_type i) { return values[i]; }
@@ -219,7 +220,7 @@ typedef ref_ptr<SgNormalArray> SgNormalArrayPtr;
 typedef SgVectorArray<Vector3f> SgColorArray;
 typedef ref_ptr<SgColorArray> SgColorArrayPtr;
 
-typedef SgVectorArray<Vector2f, Eigen::aligned_allocator<Vector2f> > SgTexCoordArray;
+typedef SgVectorArray<Vector2f, Eigen::aligned_allocator<Vector2f>> SgTexCoordArray;
 typedef ref_ptr<SgTexCoordArray> SgTexCoordArrayPtr;
 
 typedef std::vector<int> SgIndexArray;
@@ -235,14 +236,17 @@ protected:
 public:
     virtual int numChildObjects() const;
     virtual SgObject* childObject(int index);
-    virtual const BoundingBox& boundingBox() const;
+
+    const BoundingBox& boundingBox() const { return bbox; }
     virtual void updateBoundingBox();
+    void setBoundingBox(const BoundingBox& bb){ bbox = bb; };
+    void setBoundingBox(const BoundingBoxf& bb){ bbox = bb; };
 
     bool hasVertices() const { return (vertices_ && !vertices_->empty()); }
     SgVertexArray* vertices() { return vertices_; }
     const SgVertexArray* vertices() const { return vertices_; }
     SgVertexArray* setVertices(SgVertexArray* vertices);
-    SgVertexArray* getOrCreateVertices();
+    SgVertexArray* getOrCreateVertices(size_t size = 0);
         
     bool hasNormals() const { return (normals_ && !normals_->empty()); }
     SgNormalArray* normals() { return normals_; }
@@ -280,7 +284,7 @@ public:
     bool isSolid() const { return isSolid_; }
     void setSolid(bool on) { isSolid_ = on; }
 
-  protected:
+protected:
     BoundingBox bbox;
     
 private:
@@ -392,10 +396,10 @@ public:
             double height;
         };
 
-    typedef boost::variant<Mesh, Box, Sphere, Cylinder, Cone, Capsule> Primitive;
+    typedef stdx::variant<Mesh, Box, Sphere, Cylinder, Cone, Capsule> Primitive;
 
-    const int primitiveType() const { return primitive_.which(); }
-    template<class TPrimitive> const TPrimitive& primitive() const { return boost::get<TPrimitive>(primitive_); }
+    const int primitiveType() const { return stdx::get_variant_index(primitive_); }
+    template<class TPrimitive> const TPrimitive& primitive() const { return stdx::get<TPrimitive>(primitive_); }
     template<class TPrimitive> void setPrimitive(const TPrimitive& prim) { primitive_ = prim; }
 
     void transform(const Affine3f& T);
@@ -489,6 +493,7 @@ public:
 
     virtual int numChildObjects() const;
     virtual SgObject* childObject(int index);
+
     virtual const BoundingBox& boundingBox() const;
     void updateBoundingBox();
 
@@ -498,7 +503,7 @@ public:
     SgVertexArray* vertices() { return vertices_; }
     const SgVertexArray* vertices() const { return vertices_; }
     SgVertexArray* setVertices(SgVertexArray* vertices);
-    SgVertexArray* getOrCreateVertices();
+    SgVertexArray* getOrCreateVertices(size_t size = 0);
         
     SgMaterial* material() { return material_; }
     const SgMaterial* material() const { return material_; }

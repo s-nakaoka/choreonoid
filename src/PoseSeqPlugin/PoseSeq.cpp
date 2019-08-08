@@ -9,12 +9,8 @@
 #include <cnoid/YAMLReader>
 #include <cnoid/YAMLWriter>
 #include <fstream>
-#include <boost/format.hpp>
-
-#include <iostream>
 
 using namespace std;
-using namespace boost;
 using namespace cnoid;
 
 PoseRef::PoseRef(PoseSeq* owner, PoseUnitPtr poseUnit, double time)

@@ -9,19 +9,18 @@
 
 #include "PoseSeqInterpolator.h"
 #include "PronunSymbol.h"
-#include <list>
-#include <vector>
-#include <iostream>
-#include <algorithm>
-#include <boost/dynamic_bitset.hpp>
 #include <cnoid/Link>
 #include <cnoid/JointPath>
 #include <cnoid/ValueTree>
 #include <cnoid/EigenUtil>
 #include <cnoid/Array2D>
+#include <list>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <unordered_map>
 
 using namespace std;
-using namespace std::placeholders;
 using namespace cnoid;
 
 namespace {
@@ -187,7 +186,7 @@ struct JointInfo
     double prev_q;
 
     // interpolated state
-    boost::optional<double> q;
+    stdx::optional<double> q;
 };
 
 struct ZmpSample
@@ -230,7 +229,24 @@ struct ZmpSample
 };
 
 }
-    
+
+namespace std {
+
+template<class T> struct hash<std::pair<T, T>>
+{
+    void hash_combine(std::size_t& seed, const T& v) const {
+        std::hash<T> hasher;
+        seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+    }
+    std::size_t operator()(const std::pair<T, T>& v) const {
+        std::size_t seed = 0;
+        hash_combine(seed, v.first);
+        hash_combine(seed, v.second);
+        return seed;
+    }
+};
+
+}
 
 namespace cnoid {
 
@@ -256,6 +272,10 @@ public:
     vector<int> footLinkIndices;
     vector<Vector3> soleCenters;
     vector<LinkInfo*> footLinkInfos;
+
+    typedef pair<Link*, Link*> LinkPair;
+    typedef unordered_map<LinkPair, shared_ptr<JointPath>> JointPathMap;
+    JointPathMap ikJointPathMap;
 
     bool isAutoZmpAdjustmentMode;
     double minZmpTransitionTime;
@@ -306,7 +326,7 @@ public:
     double currentTime;
     double timeScaleRatio;
     LinkInfoMap::iterator currentBaseLinkInfoIter;
-    boost::dynamic_bitset<> validIkLinkFlag;
+    vector<bool> validIkLinkFlag;
     Vector3 waistTranslation;
 
     Signal<void()> sigUpdated;
@@ -795,21 +815,21 @@ void PoseSeqInterpolator::setBody(Body* body)
 
 void PSIImpl::setBody(Body* body0)
 {
+    jointInfos.clear();
+    ikLinkInfos.clear();
+    footLinkIndices.clear();
+    soleCenters.clear();
+    ikJointPathMap.clear();
+    validIkLinkFlag.clear();
+    clearLipSyncShapes();
+        
     if(!body0){
-        body.reset();
+        body = nullptr;
     } else {
         body = body0->clone();
-
         int n = body->numJoints();
-        jointInfos.clear();
         jointInfos.resize(n);
-        ikLinkInfos.clear();
-        footLinkIndices.clear();
-        soleCenters.clear();
-        validIkLinkFlag.resize(body->numLinks());
-
-        clearLipSyncShapes();
-
+        validIkLinkFlag.resize(body->numLinks(), false);
         invalidateCurrentInterpolation();
     }
     needUpdate = true;
@@ -818,7 +838,7 @@ void PSIImpl::setBody(Body* body0)
 
 Body* PoseSeqInterpolator::body() const
 {
-    return impl->body.get();
+    return impl->body;
 }
 
 
@@ -960,9 +980,9 @@ void PSIImpl::setPoseSeq(PoseSeqPtr seq)
 
     // for auto update mode (not implemented yet)
     poseSeqConnections = seq->connectSignalSet(
-        std::bind(&PSIImpl::onPoseInserted, this, _1),
-        std::bind(&PSIImpl::onPoseRemoving, this, _1, _2),
-        std::bind(&PSIImpl::onPoseModified, this, _1));
+        [&](PoseSeq::iterator it, bool /* isMoving */){ onPoseInserted(it); },
+        [&](PoseSeq::iterator it, bool isMoving){ onPoseRemoving(it, isMoving); },
+        [&](PoseSeq::iterator it){ onPoseModified(it); });
     
     invalidateCurrentInterpolation();
     needUpdate = true;
@@ -1114,7 +1134,9 @@ bool PSIImpl::interpolate(double time, int waistLinkIndex, const Vector3& waistT
     }
 
     currentTime = time;
-    validIkLinkFlag.reset();
+    const auto validIkLinkFlagSize = validIkLinkFlag.size();
+    validIkLinkFlag.clear();
+    validIkLinkFlag.resize(validIkLinkFlagSize, false);
     
     currentBaseLinkInfoIter = ikLinkInfos.end();
     double baseLinkTime = -std::numeric_limits<double>::max();
@@ -1221,7 +1243,7 @@ bool PSIImpl::interpolate(double time, int waistLinkIndex, const Vector3& waistT
     }
 
     for(size_t i=0; i < jointInfos.size(); ++i){
-        jointInfos[i].q = boost::none;
+        jointInfos[i].q = stdx::nullopt;
     }
 
     calcIkJointPositions();
@@ -1291,7 +1313,7 @@ mix:
 
         int jointId = lipSyncJoint.jointId;
         JointInfo& jointInfo = jointInfos[jointId];
-        boost::optional<double> qorg = self->jointPosition(jointId);
+        auto qorg = self->jointPosition(jointId);
 
         if(!qorg){
             jointInfo.q = q;
@@ -1344,7 +1366,16 @@ void PSIImpl::calcIkJointPositionsSub(Link* link, Link* baseLink, LinkInfo* base
     if(link != baseLink && validIkLinkFlag[link->index()]){
         LinkInfo* endLinkInfo = getIkLinkInfo(link->index());
         if(baseLinkInfo && endLinkInfo){
-            JointPathPtr jointPath = getCustomJointPath(body, baseLink, link);
+
+            shared_ptr<JointPath> jointPath;
+            LinkPair linkPair(baseLink, link);
+            auto iter = ikJointPathMap.find(linkPair);
+            if(iter != ikJointPathMap.end()){
+                jointPath = iter->second;
+            } else {
+                jointPath = getCustomJointPath(body, baseLink, link);
+                ikJointPathMap[linkPair] = jointPath;
+            }
 
             bool doIK = true; // tmp
             
@@ -1444,7 +1475,7 @@ bool PoseSeqInterpolator::getBaseLinkPosition(Position& out_T) const
 }
 
 
-boost::optional<double> PoseSeqInterpolator::jointPosition(int jointId) const
+stdx::optional<double> PoseSeqInterpolator::jointPosition(int jointId) const
 {
     JointInfo& info = impl->jointInfos[jointId];
     if(!info.q){
@@ -1457,7 +1488,7 @@ boost::optional<double> PoseSeqInterpolator::jointPosition(int jointId) const
 }
 
 
-void PoseSeqInterpolator::getJointPositions(std::vector< boost::optional<double> >& out_q) const
+void PoseSeqInterpolator::getJointPositions(std::vector<stdx::optional<double>>& out_q) const
 {
     const int n = impl->jointInfos.size();
     out_q.resize(n);
@@ -1467,13 +1498,13 @@ void PoseSeqInterpolator::getJointPositions(std::vector< boost::optional<double>
 }
 
 
-boost::optional<Vector3> PoseSeqInterpolator::ZMP() const
+stdx::optional<Vector3> PoseSeqInterpolator::ZMP() const
 {
     Vector3 p;
     if(::interpolate<3, ZmpSample>(impl->zmpSamples, impl->zmpIter, impl->currentTime, p.data())){
         return p;
     }
-    return boost::none;
+    return stdx::nullopt;
 }
 
 

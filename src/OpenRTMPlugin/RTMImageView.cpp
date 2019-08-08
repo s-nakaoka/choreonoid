@@ -14,7 +14,7 @@
 #ifdef USE_BUILTIN_CAMERA_IMAGE_IDL
 # include "deprecated/corba/CameraImage.hh"
 #else
-# ifdef WIN32
+# ifdef _WIN32
 #  include <rtm/idl/CameraCommonInterface.hh>
 # else
 #  include <rtm/ext/CameraCommonInterface.hh>
@@ -22,13 +22,13 @@
 #endif
 
 #include <QBoxLayout>
-#include <boost/format.hpp>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
 using namespace RTC;
-using boost::format;
+using fmt::format;
 
 namespace {
 
@@ -56,7 +56,7 @@ public:
     ImageWidget* imageWidget;
     ScopedConnection connection;
     ImageViewRTC* rtc;
-    OpenRTM::ExtTrigExecutionContextService_var execContext;
+    RTC::ExecutionContext_var execContext;
 
     RTMImageViewImpl(RTMImageView* self);
     ~RTMImageViewImpl();
@@ -112,7 +112,7 @@ RTMImageViewImpl::RTMImageViewImpl(RTMImageView* self)
     self->setFocusPolicy(Qt::StrongFocus);
 
     rtc = 0;
-    execContext = OpenRTM::ExtTrigExecutionContextService::_nil();
+    execContext = RTC::ExecutionContext::_nil();
     connection.reset(sigAboutToFinalizeRTM().connect([&]() { deleteRTC(); }));
 }
 
@@ -142,10 +142,10 @@ void RTMImageViewImpl::createRTC(const std::string& name)
 {
     deleteRTC();
 
-    auto args = str(
-        format("ImageView?instance_name=%1%&"
-            "exec_cxt.periodic.type=PeriodicExecutionContext&exec_cxt.periodic.rate=30")
-        % self->name());
+    auto args =
+        format("ImageView?instance_name={}&"
+               "exec_cxt.periodic.type=PeriodicExecutionContext&exec_cxt.periodic.rate=30",
+               self->name());
 
     rtc = dynamic_cast<ImageViewRTC*>(cnoid::createManagedRTC(args));
 
@@ -154,7 +154,7 @@ void RTMImageViewImpl::createRTC(const std::string& name)
         RTC::ExecutionContextList_var eclist = rtc->get_owned_contexts();
         for (CORBA::ULong i = 0; i < eclist->length(); ++i) {
             if (!CORBA::is_nil(eclist[i])) {
-                execContext = OpenRTM::ExtTrigExecutionContextService::_narrow(eclist[i]);
+                execContext = RTC::ExecutionContext::_narrow(eclist[i]);
                 break;
             }
         }
@@ -168,7 +168,7 @@ void RTMImageViewImpl::deleteRTC()
         cnoid::deleteRTC(rtc);
         rtc = 0;
     }
-    execContext = OpenRTM::ExtTrigExecutionContextService::_nil();
+    execContext = RTC::ExecutionContext::_nil();
 }
 
 

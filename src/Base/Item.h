@@ -26,21 +26,6 @@ class ExtensionManager;
 
 class CNOID_EXPORT Item : public Referenced
 {
-    template<class ItemType>
-    class ItemCallback
-    {
-        std::function<bool(ItemType* item)> function;
-        
-    public:
-        ItemCallback(std::function<bool(ItemType* item)> f) : function(f) { }
-        bool operator()(Item* item) {
-            if(ItemType* casted = dynamic_cast<ItemType*>(item)){
-                return function(casted);
-            }
-            return false;
-        }
-    };
-
 protected:
     Item();
     Item(const Item& item);
@@ -77,6 +62,7 @@ public:
     bool isTemporal() const;
     void setTemporal(bool on = true);
 
+    static Item* rootItem();
     RootItem* findRootItem() const;
     bool isConnectedToRoot() const;
 
@@ -85,7 +71,7 @@ public:
     */
     Item* findItem(const std::string& path) const;
     template<class ItemType>
-        ItemType* findItem(const std::string& path) const {
+    ItemType* findItem(const std::string& path) const {
         return dynamic_cast<ItemType*>(findItem(path));
     }
 
@@ -138,7 +124,13 @@ public:
 
     template<class ItemType>
     bool traverse(std::function<bool(ItemType* item)> function){
-        return Item::traverse(ItemCallback<ItemType>(function));
+        return Item::traverse(
+            [&function](Item* item){
+                if(auto* casted = dynamic_cast<ItemType*>(item)){
+                    return function(casted);
+                }
+                return false;
+            });
     }
 
     Item* duplicate() const;
@@ -153,17 +145,18 @@ public:
 
     const std::string& filePath() const;
     const std::string& fileFormat() const;
+    std::time_t fileModificationTime() const;
+    bool isConsistentWithFile() const;
+
+    void updateFileInformation(const std::string& filename, const std::string& format);
+    void setConsistentWithFile(bool isConsistent);
+    void suggestFileUpdate();
+    void clearFileInformation();
 
 #ifdef CNOID_BACKWARD_COMPATIBILITY
     const std::string& lastAccessedFilePath() const;
     const std::string& lastAccessedFileFormatId() const;
 #endif
-
-    std::time_t fileModificationTime() const;
-    bool isConsistentWithFile() const;
-    void setConsistentWithFile(bool isConsistent);
-    void suggestFileUpdate();
-    void clearFileInformation();
 
     void putProperties(PutPropertyFunction& putProperty);
 
@@ -213,10 +206,6 @@ public:
     virtual bool store(Archive& archive);
     virtual bool restore(const Archive& archive);
 
-    static SignalProxy<void(const char* type_info_name)> sigClassUnregistered() {
-        return sigClassUnregistered_;
-    }
-
 protected:
     /**
        This function is called when the item has been connected to the tree including the root item.
@@ -254,8 +243,6 @@ private:
     Signal<void()> sigPositionChanged_;
     Signal<void()> sigSubTreeChanged_;
 
-    static Signal<void(const char* type_info_name)> sigClassUnregistered_;
-
     // for file overwriting management, mainly accessed by ItemManagerImpl
     bool isConsistentWithFile_;
     std::string filePath_;
@@ -276,9 +263,7 @@ private:
     bool traverse(Item* item, const std::function<bool(Item*)>& function);
     Item* duplicateAllSub(Item* duplicated) const;
         
-    void updateFileInformation(const std::string& filename, const std::string& format);
-        
-    friend class ItemManagerImpl;
+    //friend class ItemManagerImpl;
 };
 
 #ifndef CNOID_BASE_MVOUT_DECLARED

@@ -9,15 +9,15 @@
 #include <cnoid/MessageView>
 #include <cnoid/ExecutablePath>
 #include <cnoid/Archive>
-#include <boost/filesystem.hpp>
+#include <cnoid/stdx/filesystem>
 #include <fstream>
 #include <regex>
+#include <fmt/format.h>
 #include "gettext.h"
 
-using namespace cnoid;
 using namespace std;
-namespace filesystem = boost::filesystem;
-using boost::format;
+using namespace cnoid;
+using fmt::format;
 
 namespace cnoid {
 
@@ -138,11 +138,11 @@ void MessageLogItemImpl::openFile()
     if(fileMode.selectedIndex()==MessageLogItem::APPEND){
         ofs.open(filename, ios::app);
     }else{
-        filesystem::path path(filename);
-        if(filesystem::exists(path)){
+        stdx::filesystem::path path(filename);
+        if(stdx::filesystem::exists(path)){
             bool ok = showConfirmDialog(
-                    _("Confirm"),
-                    str(format(_(" \"%1%\" already exists.\n Do you want to replace it? " )) % filename));
+                _("Confirm"),
+                format(_(" \"{}\" already exists.\n Do you want to replace it? " ), filename));
             if(!ok){
                 mvConnection.unblock();
                 return;
@@ -152,10 +152,10 @@ void MessageLogItemImpl::openFile()
     }
 
     if(!ofs){
-        mv->putln(MessageView::ERROR,
-                format(_("Couldn't open file \"%1%\" for writing.\n")) % filename);
+        mv->putln(format(_("Couldn't open file \"{}\" for writing.\n"), filename),
+                  MessageView::ERROR);
     }else{
-        mv->putln(format(_("Opened file \"%1%\" for writing.\n")) % filename);
+        mv->putln(format(_("Opened file \"{}\" for writing.\n"), filename));
     }
 
     mvConnection.unblock();
@@ -200,8 +200,8 @@ void MessageLogItemImpl::setFileName(const string& filename_)
         return;
 
     filename = filename_;
-    filesystem::path path(filename);
-    string ext = filesystem::extension(path);
+    stdx::filesystem::path path(filename);
+    string ext = path.extension().string();
     if(ext != ".log"){
         filename += ".log";
     }

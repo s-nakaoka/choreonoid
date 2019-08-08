@@ -3,11 +3,12 @@
 */
 
 #include "MulticopterPluginHeader.h"
+#include <fmt/format.h>
 
 using namespace std;
 using namespace cnoid;
 using namespace Multicopter;
-using boost::format;
+using fmt::format;
 
 LinkManager* LinkManager::_inst = 0;
 
@@ -341,12 +342,12 @@ LinkManager::saveBody(const cnoid::Body* body, const string& fileName)
         for(int i=0 ; i<triArySize ; ++i){
             Triangle3d tri = triAry[i];
             for(int j=0 ; j<3 ; ++j){
-                out << (boost::format("v %lf %lf %lf") % tri[j].x() % tri[j].y() % tri[j].z()).str() << endl;
+                out << format("v {0:f} {1:f} {2:f}", tri[j].x(), tri[j].y(), tri[j].z()) << endl;
             }
         }
 
         for(int i=0 ; i<triArySize ; ++i){
-            out << (boost::format("f %d %d %d") % (vtxIdx+1) % (vtxIdx+2) % (vtxIdx+3)).str() << endl;
+            out << format("f {0:d} {1:d} {2:d}", (vtxIdx+1), (vtxIdx+2), (vtxIdx+3)) << endl;
             vtxIdx +=3;
         }
     }
@@ -374,7 +375,7 @@ LinkManager::onBodyItemCreate(const cnoid::BodyItem* bodyItem)
 
 
     cnoid::Connection con;
-    con = const_cast<BodyItem*>(bodyItem)->sigKinematicStateChanged().connect(boost::bind(&LinkManager::onBodyKinemaStateChanged, this, body));
+    con = const_cast<BodyItem*>(bodyItem)->sigKinematicStateChanged().connect(std::bind(&LinkManager::onBodyKinemaStateChanged, this, body));
     _bodyKinemaStateChangedConMap[body] = con;
 
     for(auto& ev : _bodyCreateEvMap){

@@ -8,7 +8,7 @@
 #include <cnoid/SpinBox>
 #include <cnoid/MessageView>
 #include <cnoid/Archive>
-#include <boost/format.hpp>
+#include <fmt/format.h>
 #include "gettext.h"
 
 using namespace cnoid;
@@ -94,14 +94,15 @@ void LeggedBodyBarImpl::moveCM(BodyItem::PositionType position)
     for(size_t i=0; i < targetBodyItems.size(); ++i){
         BodyItem* bodyItem = targetBodyItems[i];
         Vector3 c = bodyItem->centerOfMass();
-        boost::optional<Vector3> p = bodyItem->getParticularPosition(position);
+        auto p = bodyItem->getParticularPosition(position);
         if(p){
             c[0] = (*p)[0];
             c[1] = (*p)[1];
         }
         if(!bodyItem->doLegIkToMoveCm(c, true)){
-            static boost::format f(_("The center of mass of %1% cannt be moved to the target position\n"));
-            MessageView::instance()->notify(str(f % bodyItem->name()));
+            MessageView::instance()->notify(
+                fmt::format(_("The center of mass of {} cannt be moved to the target position\n"),
+                            bodyItem->name()));
         }
     }
 }
@@ -111,7 +112,7 @@ void LeggedBodyBarImpl::setZmp(BodyItem::PositionType position)
 {
     const ItemList<BodyItem>& targetBodyItems = bodyBar->targetBodyItems();
     for(size_t i=0; i < targetBodyItems.size(); ++i){
-        boost::optional<Vector3> p = targetBodyItems[i]->getParticularPosition(position);
+        auto p = targetBodyItems[i]->getParticularPosition(position);
         if(p){
             targetBodyItems[i]->editZmp(*p);
         }

@@ -40,7 +40,7 @@ class SR1WalkGraspController : public cnoid::SimpleController
     int rarm_wrist_r;
     ForceSensor* rhsensor;
     Interpolator<VectorXd> interpolator;
-    MultiValueSeqPtr qseq;
+    std::shared_ptr<MultiValueSeq> qseq;
     VectorXd qref, qold, qref_old;
     int currentFrame;
     double timeStep;
@@ -56,7 +56,7 @@ public:
 
         if(!qseq){
             string filename = getNativePathString(
-                boost::filesystem::path(shareDirectory())
+                cnoid::stdx::filesystem::path(shareDirectory())
                 / "motion" / "SR1" / "SR1WalkPattern3.seq");
 
             BodyMotion motion;

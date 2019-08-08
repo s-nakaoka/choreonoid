@@ -14,8 +14,7 @@
 #include <QGridLayout>
 #include <QPainter>
 #include <QFocusEvent>
-#include <boost/format.hpp>
-#include <boost/dynamic_bitset.hpp>
+#include <fmt/format.h>
 #include <cmath>
 #include <deque>
 #include <limits>
@@ -84,7 +83,7 @@ public:
     EditHistoryList editHistories;
     int currentHistory;
 
-    boost::dynamic_bitset<> controlPointMask;
+    vector<bool> controlPointMask;
     bool isControlPointUpdateNeeded;
 
     GraphDataHandler::DataRequestCallback dataRequestCallback;
@@ -1148,8 +1147,8 @@ bool GraphWidgetImpl::onScreenMouseMoveEvent(QMouseEvent* event)
     //hRuler.property_position() = x;
     //vRuler.property_position() = y;
 
-    static boost::format f(_("Graph: Position = (%1$.5f, %2$.5f)"));
-    statusLabel.setText(str(f % x % y).c_str());
+    statusLabel.setText(
+        fmt::format(_("Graph: Position = ({0:.5f}, {1:.5f})"), x, y).c_str());
 
     dragPrevScreenX = currentScreenX;
     dragPrevScreenY = currentScreenY;
@@ -1798,7 +1797,7 @@ void GraphWidgetImpl::drawTrajectory
                 if(frame < 0){
                     frame = 0;
                 }
-                boost::dynamic_bitset<>& mask = data->controlPointMask;
+                const auto& mask = data->controlPointMask;
                 while(frame < frame_end){
                     if(mask[frame]){
                         double px = screenOffsetX + (frame - frame_begin) * xratio;

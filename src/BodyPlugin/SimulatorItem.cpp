@@ -31,10 +31,13 @@
 #include <cnoid/SceneGraph>
 #include <QThread>
 #include <QMutex>
+#include <QElapsedTimer>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <set>
+#include <deque>
+#include <fmt/format.h>
 
 #ifdef ENABLE_SIMULATION_PROFILING
 #include <cnoid/ViewManager>
@@ -42,17 +45,11 @@
 #include <cnoid/SceneWidget>
 #endif
 
-#if QT_VERSION >= 0x040700
-#include <QElapsedTimer>
-#else
-#include <QTime>
-typedef QTime QElapsedTimer;
-#endif
 #include "gettext.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
+using fmt::format;
 
 namespace {
 
@@ -131,12 +128,12 @@ public:
 
     ItemPtr parentOfResultItems;
     string resultItemPrefix;
-    BodyMotionPtr motion;
-    MultiValueSeqPtr jointPosResults;
-    MultiSE3SeqPtr linkPosResults;
+    shared_ptr<BodyMotion> motion;
+    shared_ptr<MultiValueSeq> jointPosResults;
+    shared_ptr<MultiSE3Seq> linkPosResults;
     MultiSE3SeqItemPtr linkPosResultItem;
     vector<DeviceStatePtr> prevFlushedDeviceStateInDirectMode;
-    MultiDeviceStateSeqPtr deviceStateResults;
+    shared_ptr<MultiDeviceStateSeq> deviceStateResults;
 
     SimulationBodyImpl(SimulationBody* self, Body* body);
     void findControlSrcItems(Item* item, vector<Item*>& io_items, bool doPickCheckedItems = false);
@@ -148,7 +145,7 @@ public:
     void initializeResultData();
     void initializeResultBuffers();
     void initializeResultItems();
-    void setInitialStateOfBodyMotion(const BodyMotionPtr& bodyMotion);
+    void setInitialStateOfBodyMotion(shared_ptr<BodyMotion> bodyMotion);
     void setActive(bool on);
     void bufferResults();
     void flushResults();
@@ -212,8 +209,8 @@ public:
 
     CollisionDetectorPtr collisionDetector;
 
-    CollisionSeqPtr collisionSeq;
-    deque<CollisionLinkPairListPtr> collisionPairsBuf;
+    shared_ptr<CollisionSeq> collisionSeq;
+    deque<shared_ptr<CollisionLinkPairList>> collisionPairsBuf;
 
     Selection recordingMode;
     Selection timeRangeMode;
@@ -255,7 +252,7 @@ public:
     double nextLogTime;
     double logTimeStep;
     
-    boost::optional<int> extForceFunctionId;
+    stdx::optional<int> extForceFunctionId;
     std::mutex extForceMutex;
     struct ExtForceInfo {
         Link* link;
@@ -265,7 +262,7 @@ public:
     };
     ExtForceInfo extForceInfo;
 
-    boost::optional<int> virtualElasticStringFunctionId;
+    stdx::optional<int> virtualElasticStringFunctionId;
     std::mutex virtualElasticStringMutex;
     struct VirtualElasticString {
         Link* link;
@@ -781,11 +778,11 @@ void SimulationBodyImpl::initializeResultItems()
 }
 
 
-void SimulationBodyImpl::setInitialStateOfBodyMotion(const BodyMotionPtr& bodyMotion)
+void SimulationBodyImpl::setInitialStateOfBodyMotion(shared_ptr<BodyMotion> bodyMotion)
 {
     bool updated = false;
     
-    MultiSE3SeqPtr lseq = bodyMotion->linkPosSeq();
+    auto lseq = bodyMotion->linkPosSeq();
     if(lseq->numParts() > 0 && lseq->numFrames() > 0){
         SE3& p = lseq->at(0, 0);
         Link* rootLink = body_->rootLink();
@@ -793,7 +790,7 @@ void SimulationBodyImpl::setInitialStateOfBodyMotion(const BodyMotionPtr& bodyMo
         rootLink->R() = p.rotation().toRotationMatrix();
         updated = true;
     }
-    MultiValueSeqPtr jseq = bodyMotion->jointPosSeq();
+    auto jseq = bodyMotion->jointPosSeq();
     if(jseq->numFrames() > 0){
         MultiValueSeq::Frame jframe0 = jseq->frame(0);
         int n = std::min(jframe0.size(), body_->numJoints());
@@ -1474,8 +1471,9 @@ bool SimulatorItemImpl::startSimulation(bool doReset)
     stopSimulation(true);
 
     if(!worldItem){
-        mv->putln(MessageView::ERROR,
-                  format(_("%1% must be in a WorldItem to do simulation.")) % self->name());
+        mv->putln(format(_("{} must be in a WorldItem to do simulation."),
+                         self->name()),
+                  MessageView::ERROR);
         return false;
     }
 
@@ -1559,8 +1557,8 @@ bool SimulatorItemImpl::startSimulation(bool doReset)
         frame0[0]  = std::make_shared<CollisionLinkPairList>();
     }
 
-    extForceFunctionId = boost::none;
-    virtualElasticStringFunctionId = boost::none;
+    extForceFunctionId = stdx::nullopt;
+    virtualElasticStringFunctionId = stdx::nullopt;
 
     bool result = self->initializeSimulation(simBodiesWithBody);
 
@@ -1591,15 +1589,16 @@ bool SimulatorItemImpl::startSimulation(bool doReset)
             SubSimulatorItem* item = *p;
             bool initialized = false;
             if(item->isEnabled()){
-                mv->putln(format(_("SubSimulatorItem \"%1%\" has been detected.")) % item->name());
+                mv->putln(format(_("SubSimulatorItem \"{}\" has been detected."), item->name()));
                 if(item->initializeSimulation(self)){
                     initialized = true;
                 } else {
-                    mv->putln(MessageView::WARNING,
-                              format(_("The initialization of \"%1%\" failed.")) % item->name());
+                    mv->putln(format(_("The initialization of \"{}\" failed."),
+                                     item->name()),
+                              MessageView::WARNING);
                 }
             } else {
-                mv->putln(format(_("SubSimulatorItem \"%1%\" is disabled.")) % item->name());
+                mv->putln(format(_("SubSimulatorItem \"{}\" is disabled."), item->name()));
             }
             if(initialized){
                 ++p;
@@ -1620,15 +1619,16 @@ bool SimulatorItemImpl::startSimulation(bool doReset)
                 if(body){
                     ready = controller->start();
                     if(!ready){
-                        mv->putln(MessageView::WARNING,
-                                  format(_("%1% for %2% failed to start."))
-                                  % controller->name() % simBodyImpl->bodyItem->name());
+                        mv->putln(format(_("{0} for {1} failed to start."),
+                                         controller->name(), simBodyImpl->bodyItem->name()),
+                                  MessageView::WARNING);
                     }
                 } else {
                     ready = controller->start();
                     if(!ready){
-                        mv->putln(MessageView::WARNING,
-                                  format(_("%1% failed to start.")) % controller->name());
+                        mv->putln(format(_("{} failed to start."),
+                                         controller->name()),
+                                  MessageView::WARNING);
                     }
                 }
                 if(ready){
@@ -1664,12 +1664,12 @@ bool SimulatorItemImpl::startSimulation(bool doReset)
         }
         worldLogFileItem = worldLogFileItems.toSingle(true);
         if(worldLogFileItem){
-            if(worldLogFileItem->logFileName().empty()){
+            if(worldLogFileItem->logFile().empty()){
                 worldLogFileItem = nullptr;
             } else {
-                mv->putln(format(_("WorldLogFileItem \"%1%\" has been detected. "
-                                   "A simulation result is recoreded to \"%2%\"."))
-                          % worldLogFileItem->name() % worldLogFileItem->logFileName());
+                mv->putln(format(_("WorldLogFileItem \"{0}\" has been detected. "
+                                   "A simulation result is recoreded to \"{1}\"."),
+                                 worldLogFileItem->name(), worldLogFileItem->logFile()));
 
                 worldLogFileItem->clearOutput();
                 worldLogFileItem->beginHeaderOutput();
@@ -1725,7 +1725,7 @@ bool SimulatorItemImpl::startSimulation(bool doReset)
         start();
         flushTimer.start(1000.0 / timeBar->playbackFrameRate());
 
-        mv->notify(format(_("Simulation by %1% has started.")) % self->name());
+        mv->notify(format(_("Simulation by {} has started."), self->name()));
 
         sigSimulationStarted();
     }
@@ -2021,7 +2021,7 @@ bool SimulatorItemImpl::stepSimulationMain()
 
     self->stepSimulation(activeSimBodies);
 
-    CollisionLinkPairListPtr collisionPairs;
+    shared_ptr<CollisionLinkPairList> collisionPairs;
     if(isRecordingEnabled && recordCollisionData){
         collisionPairs = self->getCollisions();
     }
@@ -2278,9 +2278,9 @@ void SimulatorItemImpl::onSimulationLoopStopped()
         timeBar->stopFillLevelUpdate(fillLevelId);
     }
 
-    mv->notify(format(_("Simulation by %1% has finished at %2% [s].")) % self->name() % finishTime);
-    mv->putln(format(_("Computation time is %1% [s], computation time / simulation time = %2%."))
-              % actualSimulationTime % (actualSimulationTime / finishTime));
+    mv->notify(format(_("Simulation by {0} has finished at {1} [s]."), self->name(), finishTime));
+    mv->putln(format(_("Computation time is {0} [s], computation time / simulation time = {1}."),
+                     actualSimulationTime, (actualSimulationTime / finishTime)));
 
     clearSimulation();
 
@@ -2424,7 +2424,7 @@ void SimulatorItem::clearExternalForces()
 {
     if(impl->extForceFunctionId){
         removePreDynamicsFunction(*impl->extForceFunctionId);
-        impl->extForceFunctionId = boost::none;
+        impl->extForceFunctionId = stdx::nullopt;
     }
 }    
 
@@ -2481,7 +2481,7 @@ void SimulatorItem::clearVirtualElasticStrings()
 {
     if(impl->virtualElasticStringFunctionId){
         removePreDynamicsFunction(*impl->virtualElasticStringFunctionId);
-        impl->virtualElasticStringFunctionId = boost::none;
+        impl->virtualElasticStringFunctionId = stdx::nullopt;
     }
 }
 

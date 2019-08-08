@@ -11,18 +11,45 @@
 #include <cnoid/MessageView>
 #include <cnoid/ProjectManager>
 #include <cnoid/CorbaUtil>
+#include <cnoid/Process>
 #include <rtm/RTObject.h>
+#include <fmt/format.h>
 #include "gettext.h"
 
 #include "LoggerUtil.h"
 
 using namespace std;
 using namespace cnoid;
-using boost::format;
-namespace filesystem = boost::filesystem;
+using fmt::format;
+namespace filesystem = cnoid::stdx::filesystem;
 
 namespace {
 const bool TRACE_FUNCTIONS = false;
+}
+
+namespace cnoid {
+
+class RTComponentImpl
+{
+public:
+    RTC::RTObject_var rtcRef;
+    RTC::RtcBase* rtc_;
+    filesystem::path modulePath;
+    Process rtcProcess;
+    std::string componentName;
+    MessageView* mv;
+
+    RTComponentImpl(const filesystem::path& modulePath, PropertyMap& prop);
+    void init(const filesystem::path& modulePath, PropertyMap& properties);
+    bool createRTC(PropertyMap& properties);
+    bool isValid() const;
+    void setupModules(string& fileName, string& initFuncName, string& componentName, PropertyMap& properties);
+    void createProcess(string& command, PropertyMap& properties);
+    void deleteRTC();
+    void activate();
+    void onReadyReadServerProcessOutput();
+};
+
 }
 
 
@@ -121,9 +148,9 @@ void RTCItem::updateRTCInstance(bool forceUpdate)
     }
 }
 
-void RTCItem::onPositionChanged()
+void RTCItem::onConnectedToRoot()
 {
-    DDEBUG("RTCItem::onPositionChanged");
+    DDEBUG("RTCItem::onConnectedToRoot");
     updateRTCInstance(false);
 }
 
@@ -197,7 +224,7 @@ void RTCItem::doPutProperties(PutPropertyFunction& putProperty)
 
     FilePathProperty moduleProperty(
         moduleName,
-        { str(format(_("RT-Component module (*%1%)")) % DLL_SUFFIX) });
+        { format(_("RT-Component module (*{})"), DLL_SUFFIX) });
 
     if (baseDirectoryType.is(RTC_DIRECTORY)) {
         moduleProperty.setBaseDirectory(rtcDirectory.string());
@@ -287,31 +314,39 @@ bool RTCItem::convertAbsolutePath()
 RTComponent::RTComponent(const filesystem::path& modulePath, PropertyMap& prop)
 {
     DDEBUG("RTComponent::RTComponent");
+    impl = new RTComponentImpl(modulePath, prop);
+}
+
+
+RTComponentImpl::RTComponentImpl(const filesystem::path& modulePath, PropertyMap& prop)
+{
     rtc_ = nullptr;
     rtcRef = RTC::RTObject::_nil();
-    if (modulePath.empty()) return;
-    init(modulePath, prop);
+    if(!modulePath.empty()){
+        init(modulePath, prop);
+    }
 }
 
 
 RTComponent::~RTComponent()
 {
     deleteRTC();
+    delete impl;
 }
 
 
-void RTComponent::init(const filesystem::path& modulePath_, PropertyMap& prop)
+void RTComponentImpl::init(const filesystem::path& modulePath_, PropertyMap& prop)
 {
-    DDEBUG("RTComponent::init");
+    DDEBUG("RTComponentImpl::init");
     mv = MessageView::instance();
     modulePath = modulePath_;
     createRTC(prop);
 }
 
 
-bool  RTComponent::createRTC(PropertyMap& prop)
+bool RTComponentImpl::createRTC(PropertyMap& prop)
 {
-    DDEBUG("RTComponent::createRTC");
+    DDEBUG("RTComponentImpl::createRTC");
 
     string moduleNameLeaf = modulePath.leaf().string();
     size_t i = moduleNameLeaf.rfind('.');
@@ -343,7 +378,7 @@ bool  RTComponent::createRTC(PropertyMap& prop)
                 string initFunc(componentName + "Init");
                 setupModules(actualFilename, initFunc, componentName, prop);
             } else {
-                mv->putln(fmt(_("A file of RTC \"%1%\" does not exist.")) % componentName);
+                mv->putln(format(_("A file of RTC \"{}\" does not exist."), componentName));
             }
         }
     }
@@ -351,18 +386,18 @@ bool  RTComponent::createRTC(PropertyMap& prop)
     bool created = isValid();
 
     if (created) {
-        mv->putln(fmt(_("RTC \"%1%\" has been created from \"%2%\".")) % componentName % actualFilename);
+        mv->putln(format(_("RTC \"{0}\" has been created from \"{1}\"."), componentName, actualFilename));
     } else {
-        mv->putln(fmt(_("RTC \"%1%\" cannot be created.")) % componentName);
+        mv->putln(format(_("RTC \"{}\" cannot be created."), componentName));
     }
 
     return created;
 }
 
 
-void RTComponent::setupModules(string& fileName, string& initFuncName, string& componentName, PropertyMap& prop)
+void RTComponentImpl::setupModules(string& fileName, string& initFuncName, string& componentName, PropertyMap& prop)
 {
-    DDEBUG("RTComponent::setupModules");
+    DDEBUG("RTComponentImpl::setupModules");
 
     RTC::Manager& rtcManager = RTC::Manager::instance();
 
@@ -378,28 +413,47 @@ void RTComponent::setupModules(string& fileName, string& initFuncName, string& c
     rtc_ = createManagedRTC((componentName + option).c_str());
 
     if (!rtc_) {
-        mv->putln(fmt(_("RTC \"%1%\" cannot be created by the RTC manager.\n"
-            " RTC module file: \"%2%\"\n"
-            " Init function: %3%\n"
-            " option: %4%"))
-          % componentName % fileName % initFuncName % option);
+        mv->putln(
+            format(_("RTC \"{0}\" cannot be created by the RTC manager.\n"
+                     " RTC module file: \"{1}\"\n"
+                     " Init function: {2}\n"
+                     " option: {3}"),
+                   componentName, fileName, initFuncName, option));
     }
 }
 
 
-void RTComponent::onReadyReadServerProcessOutput()
+void RTComponentImpl::onReadyReadServerProcessOutput()
 {
     mv->put(QString(rtcProcess.readAll()));
 }
 
 
+RTC::RtcBase* RTComponent::rtc()
+{
+    return impl->rtc_;
+};
+
+
 bool RTComponent::isValid() const
+{
+    return impl->isValid();
+}
+
+
+bool RTComponentImpl::isValid() const
 {
     return (rtc_ || rtcProcess.state() != QProcess::NotRunning);
 }
 
 
-void RTComponent::createProcess(string& command, PropertyMap& prop)
+const std::string& RTComponent::name() const
+{
+    return impl->componentName;
+}
+
+
+void RTComponentImpl::createProcess(string& command, PropertyMap& prop)
 {
     DDEBUG("RTComponent::createProcess");
 
@@ -422,11 +476,11 @@ void RTComponent::createProcess(string& command, PropertyMap& prop)
     rtcProcess.start(command.c_str(), argv);
 #endif
     if (!rtcProcess.waitForStarted()) {
-        mv->putln(fmt(_("RT Component process \"%1%\" cannot be executed.")) % command);
+        mv->putln(format(_("RT Component process \"{}\" cannot be executed."), command));
     } else {
-        mv->putln(fmt(_("RT Component process \"%1%\" has been executed.")) % command);
+        mv->putln(format(_("RT Component process \"{}\" has been executed."), command));
         rtcProcess.sigReadyReadStandardOutput().connect(
-          std::bind(&RTComponent::onReadyReadServerProcessOutput, this));
+            [&](){ onReadyReadServerProcessOutput(); });
     }
 }
 
@@ -436,17 +490,22 @@ void RTComponent::deleteRTC()
     if (TRACE_FUNCTIONS) {
         cout << "BodyRTComponent::deleteRTC()" << endl;
     }
+    impl->deleteRTC();
+}
 
+
+void RTComponentImpl::deleteRTC()
+{
     if (rtc_) {
         string rtcName(rtc_->getInstanceName());
-        mv->putln(fmt(_("delete %1%")) % rtcName);
+        mv->putln(format(_("delete {}"), rtcName));
         if (!cnoid::deleteRTC(rtc_)) {
-            mv->putln(fmt(_("%1% cannot be deleted.")) % rtcName);
+            mv->putln(format(_("{} cannot be deleted."), rtcName));
         }
         rtc_ = nullptr;
 
     } else if (rtcProcess.state() != QProcess::NotRunning) {
-        mv->putln(fmt(_("delete %1%")) % componentName);
+        mv->putln(format(_("delete {}"), componentName));
         rtcProcess.kill();
         rtcProcess.waitForFinished(100);
     }
@@ -458,20 +517,18 @@ void RTComponent::deleteRTC()
 
 void RTComponent::activate()
 {
+    impl->activate();
+}
+
+
+void RTComponentImpl::activate()
+{
     if (rtc_) {
         RTC::ExecutionContextList_var eclist = rtc_->get_owned_contexts();
         for (CORBA::ULong i = 0; i < eclist->length(); ++i) {
             if (!CORBA::is_nil(eclist[i])) {
-                try {
-                    // for 1.2.0
-                    OpenRTM::ExtTrigExecutionContextService_var ec = OpenRTM::ExtTrigExecutionContextService::_narrow(eclist[i]);
-                    if (!CORBA::is_nil(ec)) {
-                        ec->activate_component(rtc_->getObjRef());
-                        break;
-                    }
-                } catch (CORBA::SystemException& ex) {
-                    break;
-                }
+                eclist[i]->activate_component(rtc_->getObjRef());
+                break;
             }
         }
     }

@@ -10,8 +10,7 @@
 #include <cnoid/Body>
 #include <cnoid/CollisionLinkPair>
 #include <cnoid/SceneProvider>
-#include <boost/dynamic_bitset.hpp>
-#include <boost/optional.hpp>
+#include <cnoid/stdx/optional>
 #include "exportdecl.h"
 
 namespace cnoid {
@@ -21,11 +20,8 @@ class BodyItem;
 typedef ref_ptr<BodyItem> BodyItemPtr;
 class BodyItemImpl;
 class InverseKinematics;
-typedef std::shared_ptr<InverseKinematics> InverseKinematicsPtr;
 class PinDragIK;
-typedef std::shared_ptr<PinDragIK> PinDragIKptr;
 class PenetrationBlocker;
-typedef std::shared_ptr<PenetrationBlocker> PenetrationBlockerPtr;
 class EditableSceneBody;
 
 class CNOID_EXPORT BodyItem : public Item, public SceneProvider
@@ -41,7 +37,7 @@ public:
 
     void setBody(Body* body);
             
-    virtual void setName(const std::string& name);
+    virtual void setName(const std::string& name) override;
 
     Body* body() const;
 
@@ -73,14 +69,15 @@ public:
 
     // for undo, redo operations
     void beginKinematicStateEdit();
+    void cancelKinematicStateEdit();
     void acceptKinematicStateEdit();
     bool undoKinematicState();
     bool redoKinematicState();
 
-    PinDragIKptr pinDragIK();
-    InverseKinematicsPtr getCurrentIK(Link* targetLink);
-    InverseKinematicsPtr getDefaultIK(Link* targetLink);
-    PenetrationBlockerPtr createPenetrationBlocker(Link* link, bool excludeSelfCollisions = false);
+    std::shared_ptr<PinDragIK> pinDragIK();
+    std::shared_ptr<InverseKinematics> getCurrentIK(Link* targetLink);
+    std::shared_ptr<InverseKinematics> getDefaultIK(Link* targetLink);
+    std::shared_ptr<PenetrationBlocker> createPenetrationBlocker(Link* link, bool excludeSelfCollisions = false);
 
     SignalProxy<void()> sigModelUpdated();
     void notifyModelUpdate();
@@ -94,11 +91,15 @@ public:
 
     void notifyKinematicStateChange(
         bool requestFK = false, bool requestVelFK = false, bool requestAccFK = false);
-            
     void notifyKinematicStateChange(
         Connection& connectionToBlock,
         bool requestFK = false, bool requestVelFK = false, bool requestAccFK = false);
-
+    void notifyKinematicStateChangeLater(
+        bool requestFK = false, bool requestVelFK = false, bool requestAccFK = false);
+    void notifyKinematicStateChangeLater(
+        Connection& connectionToBlock,
+        bool requestFK = false, bool requestVelFK = false, bool requestAccFK = false);
+    
     SignalProxy<void()> sigKinematicStateEdited();
 
     void enableCollisionDetection(bool on);
@@ -111,8 +112,8 @@ public:
 
     std::vector<CollisionLinkPairPtr>& collisions() { return collisions_; }
     const std::vector<CollisionLinkPairPtr>& collisions() const { return collisions_; }
-    boost::dynamic_bitset<>& collisionLinkBitSet() { return collisionLinkBitSet_; }
-    const boost::dynamic_bitset<>& collisionLinkBitSet() const { return collisionLinkBitSet_; }
+    std::vector<bool>& collisionLinkBitSet() { return collisionLinkBitSet_; }
+    const std::vector<bool>& collisionLinkBitSet() const { return collisionLinkBitSet_; }
     std::vector<CollisionLinkPairPtr>& collisionsOfLink(int linkIndex) { return collisionsOfLink_[linkIndex]; }
     const std::vector<CollisionLinkPairPtr>& collisionsOfLink(int linkIndex) const { return collisionsOfLink_[linkIndex]; }
     SignalProxy<void()> sigCollisionsUpdated() { return sigCollisionsUpdated_; }
@@ -129,28 +130,29 @@ public:
 
     enum PositionType { CM_PROJECTION, HOME_COP, RIGHT_HOME_COP, LEFT_HOME_COP, ZERO_MOMENT_POINT };
             
-    boost::optional<Vector3> getParticularPosition(PositionType posType);
+    stdx::optional<Vector3> getParticularPosition(PositionType posType);
 
     bool setStance(double width);
             
-    virtual SgNode* getScene();
+    virtual SgNode* getScene() override;
     EditableSceneBody* sceneBody();
     EditableSceneBody* existingSceneBody();
 
 protected:
-    virtual Item* doDuplicate() const;
-    virtual void doAssign(Item* item);
-    virtual void doPutProperties(PutPropertyFunction& putProperty);
-    virtual bool store(Archive& archive);
-    virtual bool restore(const Archive& archive);
+    virtual Item* doDuplicate() const override;
+    virtual void doAssign(Item* item) override;
+    virtual void onPositionChanged() override;
+    virtual void doPutProperties(PutPropertyFunction& putProperty) override;
+    virtual bool store(Archive& archive) override;
+    virtual bool restore(const Archive& archive) override;
             
 private:
     friend class BodyItemImpl;
     friend class PyBodyPlugin;
     BodyItemImpl* impl;
     std::vector<CollisionLinkPairPtr> collisions_;
-    boost::dynamic_bitset<> collisionLinkBitSet_;
-    std::vector< std::vector<CollisionLinkPairPtr> > collisionsOfLink_;
+    std::vector<bool> collisionLinkBitSet_;
+    std::vector<std::vector<CollisionLinkPairPtr>> collisionsOfLink_;
     Signal<void()> sigCollisionsUpdated_;
 };
 

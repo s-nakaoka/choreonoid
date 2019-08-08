@@ -13,6 +13,7 @@
 #include <cnoid/SceneLights>
 #include <cnoid/SceneCameras>
 #include <cnoid/SceneEffects>
+#include <cnoid/stdx/variant>
 #include <QBoxLayout>
 #include <QTableWidget>
 #include <QHeaderView>
@@ -21,15 +22,10 @@
 #include <QItemEditorFactory>
 #include <QStandardItemEditorCreator>
 #include <QKeyEvent>
-#include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/variant.hpp>
 #include "gettext.h"
 
 using namespace std;
-using namespace std::placeholders;
 using namespace cnoid;
-using boost::format;
 
 namespace {
 
@@ -55,10 +51,10 @@ struct Double {
     };
 };
 
-typedef boost::variant<bool, Int, Double, string> ValueVariant;
+typedef stdx::variant<bool, Int, Double, string> ValueVariant;
 
-typedef boost::variant<std::function<bool(bool)>, std::function<bool(int)>, std::function<bool(double)>,
-                std::function<bool(const string&)> > FunctionVariant;
+typedef stdx::variant<std::function<bool(bool)>, std::function<bool(int)>, std::function<bool(double)>,
+                      std::function<bool(const string&)> > FunctionVariant;
 
 enum TypeId { TYPE_BOOL, TYPE_INT, TYPE_DOUBLE, TYPE_STRING };
 
@@ -102,14 +98,14 @@ public:
         if(item){
             if(QSpinBox* spinBox = dynamic_cast<QSpinBox*>(editor)){
                 ValueVariant& value = item->value;
-                if(value.which() == TYPE_INT){
-                    Int& v = get<Int>(value);
+                if(stdx::get_variant_index(value) == TYPE_INT){
+                    Int& v = stdx::get<Int>(value);
                     spinBox->setRange(v.min, v.max);
                 }
             } else if(QDoubleSpinBox* doubleSpinBox = dynamic_cast<QDoubleSpinBox*>(editor)){
                 ValueVariant& value = item->value;
-                if(value.which() == TYPE_DOUBLE){
-                    Double& v = get<Double>(value);
+                if(stdx::get_variant_index(value) == TYPE_DOUBLE){
+                    Double& v = stdx::get<Double>(value);
                     if(v.decimals >= 0){
                         doubleSpinBox->setDecimals(v.decimals);
                         doubleSpinBox->setSingleStep(pow(10.0, -v.decimals));
@@ -131,9 +127,9 @@ public:
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
             
         PropertyItem* item = tableWidget->itemFromIndex(index);
-        if(item && item->value.which() == TYPE_DOUBLE){
+        if(item && (stdx::get_variant_index(item->value) == TYPE_DOUBLE)){
             int& d = const_cast<int&>(decimals);
-            d = get<Double>(item->value).decimals;
+            d = stdx::get<Double>(item->value).decimals;
         }
         QStyledItemDelegate::paint(painter, option, index);
     }
@@ -216,11 +212,11 @@ PropertyItem::PropertyItem(SceneGraphPropertyViewImpl* viewImpl, ValueVariant va
 QVariant PropertyItem::data(int role) const
 {
     if(role == Qt::DisplayRole || role == Qt::EditRole){
-        switch(value.which()){
-        case TYPE_BOOL:      return get<bool>(value);
-        case TYPE_INT:       return get<Int>(value).value;
-        case TYPE_DOUBLE:    return get<Double>(value).value;
-        case TYPE_STRING:    return get<string>(value).c_str();
+        switch(stdx::get_variant_index(value)){
+        case TYPE_BOOL:      return stdx::get<bool>(value);
+        case TYPE_INT:       return stdx::get<Int>(value).value;
+        case TYPE_DOUBLE:    return stdx::get<Double>(value).value;
+        case TYPE_STRING:    return stdx::get<string>(value).c_str();
         }
     }
     return QTableWidgetItem::data(role);
@@ -231,30 +227,25 @@ void PropertyItem::setData(int role, const QVariant& qvalue)
 {
     bool accepted = false;
     if(role == Qt::EditRole){
-        try {
-            switch(qvalue.type()){
+        switch(qvalue.type()){
                 
-            case QVariant::Bool:
-                accepted = get< std::function<bool(bool)> >(func)(qvalue.toBool());
-                break;
+        case QVariant::Bool:
+            accepted = stdx::get<std::function<bool(bool)>>(func)(qvalue.toBool());
+            break;
                 
-            case QVariant::String:
-                accepted = get< std::function<bool(const string&)> >(func)(qvalue.toString().toStdString());
-                break;
+        case QVariant::String:
+            accepted = stdx::get<std::function<bool(const string&)>>(func)(qvalue.toString().toStdString());
+            break;
                 
-            case QVariant::Int:
-                accepted = get< std::function<bool(int)> >(func)(qvalue.toInt());
-                break;
+        case QVariant::Int:
+            accepted = stdx::get<std::function<bool(int)>>(func)(qvalue.toInt());
+            break;
                 
-            case QVariant::Double:
-                accepted = get< std::function<bool(double)> >(func)(qvalue.toDouble());
-                break;
-            default:
-                break;
-            }
-            
-        } catch(const boost::bad_lexical_cast& ex) {
-            
+        case QVariant::Double:
+            accepted = stdx::get<std::function<bool(double)>>(func)(qvalue.toDouble());
+            break;
+        default:
+            break;
         }
     }
 }
@@ -294,11 +285,7 @@ SceneGraphPropertyViewImpl::SceneGraphPropertyViewImpl(SceneGraphPropertyView* s
     tableWidget->horizontalHeader()->setStretchLastSection(true);
 
     tableWidget->verticalHeader()->hide();
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    tableWidget->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-#else
     tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-#endif
 
     QStyledItemDelegate* delegate = new CustomizedItemDelegate(tableWidget);
     QItemEditorFactory* factory = new QItemEditorFactory;
@@ -315,8 +302,8 @@ SceneGraphPropertyViewImpl::SceneGraphPropertyViewImpl(SceneGraphPropertyView* s
     layout->addWidget(tableWidget);
     self->setLayout(layout);
     
-    self->sigActivated().connect(std::bind(&SceneGraphPropertyViewImpl::onActivated, this, true));
-    self->sigDeactivated().connect(std::bind(&SceneGraphPropertyViewImpl::onActivated, this ,false));
+    self->sigActivated().connect([&](){ onActivated(true); });
+    self->sigDeactivated().connect([&](){ onActivated(false); });
 
     currentObject = 0;
 
@@ -378,12 +365,9 @@ void SceneGraphPropertyViewImpl::setProperty(SgTransform* trans)
 
 void SceneGraphPropertyViewImpl::setProperty(SgPosTransform* posTrans)
 {
-    Affine3::TranslationPart t = posTrans->translation();
-    addProperty(_("translation"), new PropertyItem(this, str(Vector3(t.x(), t.y(), t.z()))));
+    addProperty(_("translation"), new PropertyItem(this, str(Vector3(posTrans->translation()))));
     AngleAxis angleAxis(posTrans->rotation());
-    Vector3 axis(angleAxis.axis());
-    string s = str(format("%1%  %2% %3% %4%") % axis[0] % axis[1] % axis[2] % angleAxis.angle() );
-    addProperty(_("rotation"), new PropertyItem(this, s));
+    addProperty(_("rotation"), new PropertyItem(this, str(angleAxis)));
 }
 
 
@@ -396,29 +380,20 @@ void SceneGraphPropertyViewImpl::setProperty(SgScaleTransform* scaleTrans)
 void SceneGraphPropertyViewImpl::setProperty(SgMaterial* material)
 {
     addProperty(_("ambientIntensity"), new PropertyItem(this, Double(material->ambientIntensity(), 1, 0.0, 1.0)));
-    Vector3f diffuseColor = material->diffuseColor();
-    addProperty(_("diffuseColor"), new PropertyItem(this,str(Vector3(diffuseColor.x(), diffuseColor.y(), diffuseColor.z()))));
-    Vector3f emissiveColor = material->emissiveColor();
-    addProperty(_("emissiveColor"), new PropertyItem(this,str(Vector3(emissiveColor.x(), emissiveColor.y(), emissiveColor.z()))));
+    addProperty(_("diffuseColor"), new PropertyItem(this,str(material->diffuseColor())));
+    addProperty(_("emissiveColor"), new PropertyItem(this,str(material->emissiveColor())));
     addProperty(_("shininess"), new PropertyItem(this, Double(material->shininess(), 1, 0.0, 1.0)));
-    Vector3f specularColor = material->specularColor();
-    addProperty(_("specularColor"), new PropertyItem(this,str(Vector3(specularColor.x(), specularColor.y(), specularColor.z()))));
+    addProperty(_("specularColor"), new PropertyItem(this,str(material->specularColor())));
     addProperty(_("transparency"), new PropertyItem(this, Double(material->transparency(), 1, 0.0, 1.0)));
 }
 
 
 void SceneGraphPropertyViewImpl::setProperty(SgTextureTransform* textureTrans)
 {
-    Vector2 center = textureTrans->center();
-    string s = str(format("%1%  %2%") % center[0] % center[1]);
-    addProperty(_("center"), new PropertyItem(this, s));
+    addProperty(_("center"), new PropertyItem(this, str(textureTrans->center())));
     addProperty(_("rotation"), new PropertyItem(this, Double(textureTrans->rotation(), 3)));
-    Vector2 scale = textureTrans->scale();
-    s = str(format("%1%  %2%") % scale[0] % scale[1]);
-    addProperty(_("scale"), new PropertyItem(this, s));
-    Vector2 translation = textureTrans->translation();
-    s = str(format("%1%  %2%") % translation[0] % translation[1]);
-    addProperty(_("translation"), new PropertyItem(this, s));
+    addProperty(_("scale"), new PropertyItem(this, str(textureTrans->scale())));
+    addProperty(_("translation"), new PropertyItem(this, str(textureTrans->translation())));
 }
 
 
@@ -460,7 +435,7 @@ void SceneGraphPropertyViewImpl::setProperty(SgMesh* mesh)
         case SgMesh::BOX : {
             addProperty(_("primitive type"), new PropertyItem(this, string("Box")));
             const Vector3& size = mesh->primitive<SgMesh::Box>().size;
-            addProperty(_("size"), new PropertyItem(this,str(Vector3(size.x(), size.y(), size.z()))));
+            addProperty(_("size"), new PropertyItem(this,str(size)));
             break; }
         case SgMesh::SPHERE : {
             double radius = mesh->primitive<SgMesh::Sphere>().radius;
@@ -539,8 +514,7 @@ void SceneGraphPropertyViewImpl::setProperty(SgPreprocessed* preprocessed)
 void SceneGraphPropertyViewImpl::setProperty(SgLight* light)
 {
     addProperty(_("on/off"), new PropertyItem(this, light->on()? string("ON") : string("OFF") ));
-    Vector3f color = light->color();
-    addProperty(_("color"), new PropertyItem(this,str(Vector3(color.x(), color.y(), color.z()))));
+    addProperty(_("color"), new PropertyItem(this,str(light->color())));
     addProperty(_("intensity"), new PropertyItem(this,Double(light->intensity(), 2, 0.0, 1.0)));
     addProperty(_("ambientIntensity"), new PropertyItem(this,Double(light->ambientIntensity(), 2, 0.0, 1.0)));
 }
@@ -750,7 +724,7 @@ void SceneGraphPropertyViewImpl::onActivated(bool on)
         if(sceneGraphView){
             onItemSelectionChanged(sceneGraphView->selectedObject());
             selectionChangedConnection = sceneGraphView->sigSelectionChanged().connect(
-                std::bind(&SceneGraphPropertyViewImpl::onItemSelectionChanged, this, _1));
+                [&](const SgObject* object){ onItemSelectionChanged(object); });
         }
     } else {
         connectionOfsceneUpdated.disconnect();
@@ -770,7 +744,7 @@ void SceneGraphPropertyViewImpl::onItemSelectionChanged(const SgObject* object)
         if(currentObject)
             connectionOfsceneUpdated =
                 currentObject->sigUpdated().connect(
-                    std::bind(&SceneGraphPropertyViewImpl::onSceneGraphUpdated, this, _1));
+                    [&](const SgUpdate& update){ onSceneGraphUpdated(update); });
         updateProperties();
     }
 }

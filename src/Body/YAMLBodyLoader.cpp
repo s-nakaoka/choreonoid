@@ -5,6 +5,7 @@
 
 #include "YAMLBodyLoader.h"
 #include "BodyLoader.h"
+#include "BodyHandlerManager.h"
 #include "Body.h"
 #include "ForceSensor.h"
 #include "RateGyroSensor.h"
@@ -20,8 +21,7 @@
 #include <cnoid/Exception>
 #include <cnoid/YAMLReader>
 #include <cnoid/NullOut>
-#include <Eigen/StdVector>
-#include <boost/optional.hpp>
+#include <fmt/format.h>
 #include <unordered_map>
 #include <mutex>
 #include <cstdlib>
@@ -30,8 +30,8 @@
 
 using namespace std;
 using namespace cnoid;
-namespace filesystem = boost::filesystem;
-using boost::format;
+namespace filesystem = cnoid::stdx::filesystem;
+using fmt::format;
 
 namespace {
 
@@ -91,7 +91,7 @@ public:
         if(found){
             return combined.string();
         } else {
-            os << (format(_("\"%1%\" is not found in the ROS package directories.")) % path) << endl;
+            os << format(_("\"{}\" is not found in the ROS package directories."), path) << endl;
             return string();
         }
     }
@@ -277,6 +277,8 @@ public:
     bool isVerbose;
     bool isShapeLoadingEnabled;
 
+    BodyHandlerManager bodyHandlerManager;
+
     YAMLBodyLoaderImpl(YAMLBodyLoader* self);
     ~YAMLBodyLoaderImpl();
     void updateCustomNodeFunctions();
@@ -326,7 +328,9 @@ public:
     void addSubBodyLinks(BodyPtr subBody, Mapping* node);
     void readExtraJoints(Mapping* topNode);
     void readExtraJoint(Mapping* node);
-
+    void readBodyHandlers(ValueNode* node);
+    void setDegreeModeAttributeToValueTreeNodes(ValueNode* node);
+    
     bool isDegreeMode() const {
         return sceneReader.isDegreeMode();
     }
@@ -502,9 +506,9 @@ YAMLBodyLoaderImpl::YAMLBodyLoaderImpl(YAMLBodyLoader* self)
 
     numCustomNodeFunctions = 0;
 
-    body = 0;
+    body = nullptr;
     isSubLoader = false;
-    os_ = &nullout();
+    os_ = &cout;
     isVerbose = false;
     isShapeLoadingEnabled = true;
     defaultDivisionNumber = -1;
@@ -528,6 +532,7 @@ void YAMLBodyLoader::setMessageSink(std::ostream& os)
 {
     impl->os_ = &os;
     impl->sceneReader.setMessageSink(os);
+    impl->bodyHandlerManager.setMessageSink(os);
 }
 
 
@@ -643,12 +648,11 @@ bool YAMLBodyLoaderImpl::load(Body* body, const std::string& filename)
     try {
         MappingPtr data = reader.loadDocument(filename)->toMapping();
         if(data){
-            result = readTopNode(body, data);
-            if(result){
-                if(body->modelName().empty()){
-                    body->setModelName(getBasename(filename));
-                }
+            if(body->modelName().empty()){
+                // This is the default model name
+                body->setModelName(getBasename(filename));
             }
+            result = readTopNode(body, data);
         }
     } catch(const ValueNode::Exception& ex){
         os() << ex.message();
@@ -689,7 +693,17 @@ bool YAMLBodyLoaderImpl::readTopNode(Body* body, Mapping* topNode)
             for(auto& subBody : subBodies){
                 topNode->insert(subBody->info());
             }
+
+            auto bodyHandlers = topNode->extract("bodyHandlers");
+
+            if(isDegreeMode()){
+                setDegreeModeAttributeToValueTreeNodes(topNode);
+            }
             body->resetInfo(topNode);
+
+            if(bodyHandlers){
+                readBodyHandlers(bodyHandlers);
+            }
         }
         
     } catch(const ValueNode::Exception& ex){
@@ -840,7 +854,7 @@ bool YAMLBodyLoaderImpl::readBody(Mapping* topNode)
         auto p = linkMap.find(rootLinkName);
         if(p == linkMap.end()){
             rootLinkNode->throwException(
-                str(format(_("Link \"%1%\" specified in \"rootLink\" is not defined")) % rootLinkName));
+                format(_("Link \"{}\" specified in \"rootLink\" is not defined"), rootLinkName));
         }
         rootLink = p->second;
 
@@ -856,19 +870,19 @@ bool YAMLBodyLoaderImpl::readBody(Mapping* topNode)
         if(parent.empty()){
             if(info->link != rootLink){
                 info->node->throwException(
-                    str(format(_("The parent of %1% is not specified")) % link->name()));
+                    format(_("The parent of {} is not specified"), link->name()));
             }
         } else {
             auto p = linkMap.find(parent);
             if(p == linkMap.end()){
                 info->node->throwException(
-                    str(format(_("Parent link \"%1%\" of %2% is not defined")) % parent % link->name()));
+                    format(_("Parent link \"{0}\" of {1} is not defined"), parent, link->name()));
             } else {
                 Link* parentLink = p->second;
                 if(link->isOwnerOf(parentLink)){
                     info->node->throwException(
-                        str(format(_("Adding \"%1%\" to link \"%2%\" will result in a cyclic reference"))
-                            % link->name() % parent));
+                        format(_("Adding \"{0}\" to link \"{1}\" will result in a cyclic reference"),
+                                link->name(), parent));
                 }
                 parentLink->appendChild(link);
             }
@@ -886,7 +900,7 @@ bool YAMLBodyLoaderImpl::readBody(Mapping* topNode)
         if(numValidJointIds < validJointIdSet.size()){
             for(size_t i=0; i < validJointIdSet.size(); ++i){
                 if(!validJointIdSet[i]){
-                    os() << str(format("Warning: Joint ID %1% is not specified.") % i) << endl;
+                    os() << format(_("Warning: Joint ID {} is not specified."), i) << endl;
                 }
             }
         }
@@ -894,7 +908,7 @@ bool YAMLBodyLoaderImpl::readBody(Mapping* topNode)
 
     readExtraJoints(topNode);
 
-    body->installCustomizer();
+    body->installCustomizer(); // deprecated
 
     return true;
 }
@@ -906,8 +920,8 @@ void YAMLBodyLoaderImpl::readNodeInLinks(Mapping* node, const string& nodeType)
     if(extract(node, "type", type)){
         if(!nodeType.empty() && type != nodeType){
             node->throwException(
-                str(format(_("The node type \"%1%\" is different from the type \"%2%\" specified in the parent node"))
-                    % type % nodeType));
+                format(_("The node type \"{0}\" is different from the type \"{1}\" specified in the parent node"),
+                        type, nodeType));
         }
     } else if(!nodeType.empty()){
         type = nodeType;
@@ -923,7 +937,7 @@ void YAMLBodyLoaderImpl::readNodeInLinks(Mapping* node, const string& nodeType)
 
     } else {
         node->throwException(
-            str(format(_("A %1% node cannot be specified in links")) % type));
+            format(_("A {} node cannot be specified in links"), type));
     }
 }
 
@@ -943,7 +957,7 @@ void YAMLBodyLoaderImpl::setLinkName(Link* link, const string& name, ValueNode* 
     link->setName(name);
     
     if(!linkMap.insert(make_pair(link->name(), link)).second){
-        node->throwException(str(format(_("Duplicated link name \"%1%\"")) % link->name()));
+        node->throwException(format(_("Duplicated link name \"{}\""), link->name()));
     }
 }
 
@@ -1023,8 +1037,12 @@ LinkPtr YAMLBodyLoaderImpl::readLinkContents(Mapping* node, LinkPtr link)
                     node->insert(importList[i].toMapping());
                 }
             }
+
         }
-        
+
+        if(isDegreeMode()){
+            setDegreeModeAttributeToValueTreeNodes(node);
+        }
         link->resetInfo(node);
     }
 
@@ -1045,8 +1063,8 @@ void YAMLBodyLoaderImpl::setJointId(Link* link, int id)
             ++numValidJointIds;
             validJointIdSet[id] = true;
         } else {
-            os() << str(format("Warning: Joint ID %1% of %2% is duplicated.")
-                        % id % link->name()) << endl;
+            os() << format(_("Warning: Joint ID {0} of {1} is duplicated."),
+                    id, link->name()) << endl;
         }
     }
 }
@@ -1329,8 +1347,8 @@ bool YAMLBodyLoaderImpl::readElementContents(ValueNode& elements)
                     string type2 = typeNode->toString();
                     if(type2 != type){
                         element.throwException(
-                            str(format(_("The node type \"%1%\" is different from the type \"%2%\" specified in the parent node"))
-                                % type2 % type));
+                            format(_("The node type \"{0}\" is different from the type \"{1}\" specified in the parent node"),
+                                    type2, type));
                     }
                 }
                 if(readNode(element, type)){
@@ -1805,7 +1823,7 @@ void YAMLBodyLoaderImpl::readContinuousTrackNode(Mapping* node)
 
 void YAMLBodyLoaderImpl::addTrackLink(int index, LinkPtr link, Mapping* node, string& io_parent, double initialAngle)
 {
-    setLinkName(link, str(format("%1%%2%") % link->name() % index), node);
+    setLinkName(link, format("{0}{1}", link->name(), index), node);
 
     link->setInitialJointAngle(initialAngle);
 
@@ -1852,7 +1870,7 @@ void YAMLBodyLoaderImpl::readSubBodyNode(Mapping* node)
             if(subLoader->load(subBody, filename)){
                 subBodyMap[filename] = subBody;
             } else {
-                os() << (format(_("SubBody specified by uri \"%1%\" cannot be loaded.")) % uri) << endl;
+                os() << format(_("SubBody specified by uri \"{}\" cannot be loaded."), uri) << endl;
                 subBody.reset();
             }
         } catch(const ValueNode::Exception& ex){
@@ -1935,7 +1953,7 @@ void YAMLBodyLoaderImpl::readExtraJoint(Mapping* node)
     for(int i=0; i < 2; ++i){
         if(!joint.link[i]){
             node->throwException(
-                str(format(_("The link specified in \"link%1%Name\" is not found")) % (i + 1)));
+                format(_("The link specified in \"link{}Name\" is not found"), (i + 1)));
         }
     }
 
@@ -1948,7 +1966,7 @@ void YAMLBodyLoaderImpl::readExtraJoint(Mapping* node)
     } else if(jointType == "ball"){
         joint.type = ExtraJoint::EJ_BALL;
     } else {
-        node->throwException(str(format(_("Joint type \"%1%\" is not available")) % jointType));
+        node->throwException(format(_("Joint type \"{}\" is not available"), jointType));
     }
 
     readEx(*node, "link1LocalPos", joint.point[0]);
@@ -1956,3 +1974,46 @@ void YAMLBodyLoaderImpl::readExtraJoint(Mapping* node)
 
     body->addExtraJoint(joint);
 }
+
+
+void YAMLBodyLoaderImpl::readBodyHandlers(ValueNode* node)
+{
+    if(node){
+        if(node->isString()){
+            bodyHandlerManager.loadBodyHandler(body, node->toString());
+        } else if(node->isListing()){
+            for(auto& handlerNode : *node->toListing()){
+                bodyHandlerManager.loadBodyHandler(body, handlerNode->toString());
+            }
+        }
+    }
+}
+
+
+void YAMLBodyLoaderImpl::setDegreeModeAttributeToValueTreeNodes(ValueNode* node)
+{
+    if(node->isScalar()){
+        node->setDegreeMode();
+    } else if(node->isMapping()){
+        for(auto& kv : *node->toMapping()){
+            auto child = kv.second;
+            if(child->isScalar()){
+                child->setDegreeMode();
+            } else {
+                setDegreeModeAttributeToValueTreeNodes(child);
+            }
+        }
+    } else if(node->isListing()){
+        for(auto& child : *node->toListing()){
+            if(child->isScalar()){
+                child->setDegreeMode();
+            } else {
+                setDegreeModeAttributeToValueTreeNodes(child);
+            }
+        }
+    }
+}
+
+
+             
+
