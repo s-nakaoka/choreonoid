@@ -23,7 +23,7 @@
   <exec_depend>yaml</exec_depend>
   <depend>zlib</depend>
   <depend>libjpeg</depend>
-  <build_depend>libpng12-dev</build_depend>
+  <build_depend>libpng-dev</build_depend>
   <build_depend>assimp-dev</build_depend>
   <exec_depend>assimp</exec_depend>
 
