@@ -418,6 +418,7 @@ items:
         collisionDetection: true
         selfCollisionDetection: false
         isEditable: false
+
 views: 
   - 
     id: 1
