@@ -1,0 +1,1317 @@
+<robot name="DoubleArmV7-Upper">
+  <link name="MFRAME">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="BLOCK">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="BOOM">
+    <inertial>
+      <mass value="88.2695650987" />
+      <origin xyz="-0.831227871921433 0.142962825496583 0.0" rpy="0 -0 0" />
+      <inertia ixx="1.48138597730672" ixy="0.1902362002908" ixz="1.05546586084014e-15" iyy="31.4435403431583" iyz="-2.05305944696362e-17" izz="32.5752155940256" />
+    </inertial>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.375245789179 -3.14159265359" />
+      <geometry>
+        <cylinder radius="0.05" length="0.116" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.4186879055919116 -1.9907224074340133e-16 0.16492555202593392" rpy="1.13579022766e-16 -0.375245789179 3.14159265359" />
+      <geometry>
+        <box size="0.9 0.116 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.40419402094470985 -2.1228539612808136e-16 0.1948991622161264" rpy="3.02966782347e-17 -0.449422282389 3.14159265359" />
+      <geometry>
+        <box size="0.895 0.116 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.1879713766505169 -4.354270489073068e-16 0.18116085136942053" rpy="8.75683157457e-17 -0.296705972839 3.14159265359" />
+      <geometry>
+        <box size="0.899 0.116 0.09" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.1953232786166952 -4.750760030961959e-16 0.22230935726550022" rpy="1.15686232084e-16 -0.381354441561 3.14159265359" />
+      <geometry>
+        <box size="0.92 0.116 0.09" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.7600000000000025 -0.05325000000000048 2.3733810657253497e-16" rpy="1.57079632679 -0.296705972839 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.04" length="0.0095" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.6834956195229596 -0.05325000000000048 0.023389736377819183" rpy="8.75683157457e-17 -0.296705972839 3.14159265359" />
+      <geometry>
+        <box size="0.16 0.0095 0.08" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.68568840730838 -0.053250000000000484 0.030562022047541958" rpy="1.16593465255e-16 -0.383972435439 3.14159265359" />
+      <geometry>
+        <box size="0.16 0.0095 0.08" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.7600000000000025 0.05324999999999962 1.9373756672733388e-16" rpy="1.57079632679 -0.296705972839 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.04" length="0.0095" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.6834956195229596 0.05324999999999962 0.023389736377819142" rpy="8.75683157457e-17 -0.296705972839 3.14159265359" />
+      <geometry>
+        <box size="0.16 0.0095 0.08" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.68568840730838 0.05324999999999961 0.030562022047541916" rpy="1.16593465255e-16 -0.383972435439 3.14159265359" />
+      <geometry>
+        <box size="0.16 0.0095 0.08" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="ARM">
+    <inertial>
+      <mass value="53.7797060658" />
+      <origin xyz="-0.133362844584537 0.0813367709948192 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.35420506763418" ixy="-0.59676584437886" ixz="1.78134245842626e-16" iyy="5.16579159038522" iyz="6.97110293472855e-17" izz="5.39850890239257" />
+    </inertial>
+    <collision>
+      <origin xyz="-0.24300000000000033 -1.5533242026099217e-17 0.08450000000000005" rpy="1.57079632679 -0.336848545635 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.0296" length="0.083" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.11936207534259712 -7.359996381010075e-18 0.04120261455456779" rpy="2.17510348387e-17 -0.336848545635 3.14159265359" />
+      <geometry>
+        <box size="0.262 0.083 0.0592" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.09103700321555463 -6.195145466645663e-17 0.09485604211514259" rpy="2.17510348387e-17 -0.336848545635 3.14159265359" />
+      <geometry>
+        <box size="0.14 0.083 0.07" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.09112686398426773 -1.2057425648815144e-16 0.16088422976470257" rpy="1.46430338297e-16 -0.466002910282 3.14159265359" />
+      <geometry>
+        <box size="0.34 0.083 0.0592" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.05700000000000005 -2.233934448755695e-16 0.23580000000000023" rpy="1.57079632679 -1.02101761242 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.0296" length="0.083" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03581365767610803 -1.1292183821525238e-16 0.11726250003085589" rpy="1.14524417827e-16 -1.02101761242 3.14159265359" />
+      <geometry>
+        <box size="0.18 0.083 0.2192" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.47950000000000065 -1.174436280382313e-16 5.898059818321144e-17" rpy="0.0 -0.0 3.14159265359" />
+      <geometry>
+        <box size="0.971 0.083 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.12400000000000017 -6.589837740685943e-17 0.04000000000000006" rpy="0.0 -0.0 3.14159265359" />
+      <geometry>
+        <box size="0.4 0.083 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.9650000000000013 -2.363568322354394e-16 1.1817841611771973e-16" rpy="1.57079632679 -0.0872664625993 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.03" length="0.083" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.4813474740764582 -1.5547861078879205e-16 0.04231411310398813" rpy="-1.40826537065e-17 -0.0872664625997 -3.14159265359" />
+      <geometry>
+        <box size="0.971 0.083 0.06" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="TOHKU_PITCH">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="TOHKU_ROLL">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="TOHKU_TIP_01">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="TOHKU_TIP_02">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="UFRAME">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="MNP_SWING">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="MANIBOOM">
+    <inertial>
+      <mass value="36.291074" />
+      <origin xyz="-0.7599574 0.016703571 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.11028539" ixy="0.04398908" ixz="0.0" iyy="7.0046174" iyz="0.0" izz="6.9737013" />
+    </inertial>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.035" length="0.18" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.09360186960740366 0.41357191636521845 -3.813787642366294e-16" rpy="1.57079632679 -9.74498259865e-14 2.93128047872" />
+      <geometry>
+        <box size="0.07 0.115 0.849" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.13449564031850803 1.0875085889329599 -9.917384094630197e-16" rpy="1.57079632679 1.72251102271e-13 -2.98887634404" />
+      <geometry>
+        <box size="0.08 0.115 0.55" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.017373789739834413 0.22015174637071627 -1.997831702439419e-16" rpy="1.57079632679 -1.69711467102e-13 2.97578637465" />
+      <geometry>
+        <box size="0.03 0.115 0.4" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.07702917045091942 0.5975639454389267 -5.452515119623752e-16" rpy="1.57079632679 -1.69681976803e-12 3.08923277603" />
+      <geometry>
+        <box size="0.08 0.115 0.5" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0860000000000008 1.0775000000000017 -9.779052824825384e-16" rpy="1.57079632679 1.34266957257e-15 3.14159265359" />
+      <geometry>
+        <box size="0.08 0.115 0.575" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.13600000000000073 0.7900000000000013 -7.242432995517537e-16" rpy="1.57079632679 1.34266957257e-15 3.14159265359" />
+      <geometry>
+        <box size="0.05 0.115 0.2" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.01300000000000049 0.8170000000000014 -0.05125000000000081" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.05" length="0.0125" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.011999999999999594 0.7480000000000013 -0.051250000000000746" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.045" length="0.0125" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03600000000000049 0.7250000000000013 -0.051250000000000726" rpy="1.57079632679 1.08801856413e-14 -2.53072741539" />
+      <geometry>
+        <box size="0.08 0.0125 0.15" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.04600000000000061 0.9000000000000016 -0.051250000000000885" rpy="1.57079632679 -1.54140589181e-13 2.96705972839" />
+      <geometry>
+        <box size="0.04 0.0125 0.15" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0269999999999996 0.7900000000000014 -0.05125000000000078" rpy="1.57079632679 -9.51877465738e-14 2.91469985083" />
+      <geometry>
+        <box size="0.02 0.0125 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.01300000000000049 0.8170000000000012 0.05124999999999934" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.05" length="0.0125" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.011999999999999594 0.7480000000000011 0.0512499999999994" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.045" length="0.0125" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03600000000000049 0.7250000000000011 0.05124999999999942" rpy="1.57079632679 1.08801856413e-14 -2.53072741539" />
+      <geometry>
+        <box size="0.08 0.0125 0.15" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.04600000000000061 0.9000000000000014 0.05124999999999926" rpy="1.57079632679 -1.54140589181e-13 2.96705972839" />
+      <geometry>
+        <box size="0.04 0.0125 0.15" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0269999999999996 0.7900000000000011 0.051249999999999366" rpy="1.57079632679 -9.51877465738e-14 2.91469985083" />
+      <geometry>
+        <box size="0.02 0.0125 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.08000000000000103 1.4800000000000024 -0.060000000000001434" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.035" length="0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.09275648678445134 1.4111721564705255 -0.06000000000000137" rpy="1.57079632679 1.36016198304e-13 -2.95833308213" />
+      <geometry>
+        <box size="0.07 0.014 0.14" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.07755703523082591 1.4100426421086656 -0.06000000000000137" rpy="1.57079632679 -3.49884704542e-12 3.10668606855" />
+      <geometry>
+        <box size="0.07 0.014 0.14" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.09050000000000097 1.340000000000002 -0.06000000000000131" rpy="1.57079632679 6.59507171097e-13 -3.06305283725" />
+      <geometry>
+        <box size="0.0995 0.014 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.08000000000000103 1.4800000000000024 -0.05000000000000142" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.03" length="0.004" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.08000000000000103 1.4800000000000022 0.05999999999999875" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.035" length="0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.09275648678445134 1.4111721564705253 0.05999999999999881" rpy="1.57079632679 1.36016198304e-13 -2.95833308213" />
+      <geometry>
+        <box size="0.07 0.014 0.14" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.07755703523082591 1.4100426421086654 0.05999999999999881" rpy="1.57079632679 -3.49884704542e-12 3.10668606855" />
+      <geometry>
+        <box size="0.07 0.014 0.14" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.09050000000000097 1.340000000000002 0.059999999999998874" rpy="1.57079632679 6.59507171097e-13 -3.06305283725" />
+      <geometry>
+        <box size="0.0995 0.014 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.08000000000000103 1.4800000000000022 0.04999999999999874" rpy="3.14159265359 1.22464679915e-16 3.14159265359" />
+      <geometry>
+        <cylinder radius="0.03" length="0.004" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="MANIARM">
+    <inertial>
+      <mass value="28.673428" />
+      <origin xyz="-0.18264981 0.17411666 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.19152986" ixy="0.11443044" ixz="0.0" iyy="0.79632756" iyz="0.0" izz="0.81910511" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="7.8859849469e-16 9.95799250103e-17 -1.57079632679" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-MANIARM-visual-0.dae" scale="1.0000000000000013 1.000000000000002 1.0000000000000016" />
+      </geometry>
+    </visual>
+  </link>
+  <link name="MANIELBOW">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="YAWJOINT">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="HANDBASE">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="PUSHROD">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <link name="HANDSLNK_I">
+    <inertial>
+      <mass value="0.408083" />
+      <origin xyz="0.0530198 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.000186599" ixy="0.0" ixz="0.0" iyy="0.000536909" iyz="0.0" izz="0.000414755" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDSLNK_I-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.898587196589429e-18 -4.839211798541819e-17 0.040000000000000084" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.08 0.028 0.028" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.028" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-9.797174393178858e-18 -9.678423597083638e-17 0.08000000000000017" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.028" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="HANDSLNK_O">
+    <inertial>
+      <mass value="0.408083" />
+      <origin xyz="0.053019776 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.000267073" ixy="6.95893e-10" ixz="0.0" iyy="0.000617382" iyz="0.0" izz="0.000414755" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDSLNK_O-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.898587196589429e-18 -4.839211798541819e-17 0.040000000000000084" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.08 0.028 0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-9.797174393178858e-18 -9.678423597083638e-17 0.08000000000000017" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.042" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="MANIFNG_U">
+    <inertial>
+      <mass value="1.32092" />
+      <origin xyz="0.0778883 0.0150494 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.00159768" ixy="0.000329267" ixz="3.30872e-24" iyy="0.00595697" iyz="1.03398e-25" izz="0.00524922" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-MANIFNG_U-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-9.290924956704857e-18 0.002049999999999898 0.08740000000000019" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.1352 0.0321 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="4.073536366171241e-18 0.020139999999999936 0.08005000000000015" rpy="1.57079632679 0.228638132011 -1.57079632679" />
+      <geometry>
+        <box size="0.03 0.146923 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="4.630852206935045e-18 0.01060699999999999 0.02186400000000004" rpy="-1.57079632679 -1.45054314133 1.57079632679" />
+      <geometry>
+        <box size="0.01 0.048364 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-3.980721077865497e-18 -0.004000000000000018 0.010000000000000024" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.02 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="2.946848187471265e-17 0.043262000000000064 0.0027749999999999715" rpy="-1.57079632679 -0.229510796637 1.57079632679" />
+      <geometry>
+        <box size="0.02 0.014069 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.42939772363593e-17 0.02091800000000003 0.0009709999999999854" rpy="-1.57079632679 -1.44949594378 1.57079632679" />
+      <geometry>
+        <box size="0.035 0.041304 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="2.886208475643461e-17 0.04100000000000007 -0.005000000000000043" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.0941460265419807e-17 -2.0687630438766277e-16 0.17100000000000035" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.271781710482006e-17 -0.004000000000000204 0.16300000000000034" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.016 0.02 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.5665562379379394e-17 0.006113999999999813 0.16231800000000032" rpy="-1.57079632679 -0.230208928338 1.57079632679" />
+      <geometry>
+        <box size="0.01972 0.02 0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="HANDTIP_U">
+    <inertial>
+      <mass value="1.62187" />
+      <origin xyz="0.0581795 -0.0268036 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.00272616" ixy="0.000478886" ixz="-4.96308e-24" iyy="0.00389972" iyz="1.03398e-24" izz="0.00225372" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDTIP_U-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7052374461209995e-17 -0.04400000000000013 0.055000000000000146" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.03 0.012 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-3.950166805950471e-17 -0.04400000000000016 0.07500000000000019" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.07 0.012 0.026" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.013039999999999986 -0.0440000000000002 0.10745800000000025" rpy="6.21189106329e-16 -0.921010246277 -1.34623219215e-15" />
+      <geometry>
+        <box size="0.004 0.012 0.00314" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.013040000000000072 -0.0440000000000002 0.10745800000000025" rpy="3.14159265359 -0.921010246277 3.14159265359" />
+      <geometry>
+        <box size="0.004 0.012 0.00314" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.010547000000000065 -0.04400000000000017 0.08663100000000021" rpy="3.14159265359 -0.244346095279 3.14159265359" />
+      <geometry>
+        <box size="0.02 0.012 0.039267" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.010546999999999983 -0.04400000000000017 0.08663100000000021" rpy="2.59196958862e-16 -0.244346095279 -5.41343503838e-16" />
+      <geometry>
+        <box size="0.02 0.012 0.039267" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.9771290989129414e-17 -0.030500000000000135 0.07150000000000016" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.077 0.015 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.8631721582818766e-17 -0.01765000000000009 0.05283600000000012" rpy="-1.57079632679 -0.339641072438 1.57079632679" />
+      <geometry>
+        <box size="0.028 0.111362 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.1586849842862082e-17 -0.027011000000000073 0.02429900000000007" rpy="1.57079632679 -0.621511746635 -1.57079632679" />
+      <geometry>
+        <box size="0.028 0.018572 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.2205878565916645e-17 -0.01736100000000003 0.001991000000000018" rpy="-1.57079632679 -1.16587994033 1.57079632679" />
+      <geometry>
+        <box size="0.02 0.033509 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.250752728910708e-17 -0.030000000000000065 0.015000000000000053" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.017" length="0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.015" length="0.024" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="HANDLNK_I">
+    <inertial>
+      <mass value="0.732866" />
+      <origin xyz="0.0921655 -0.00204929 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.000257575" ixy="5.00832e-06" ixz="0.0" iyy="0.00268959" iyz="0.0" izz="0.00253442" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDLNK_I-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-1.0470730132709904e-17 -1.0343815219383138e-16 0.08550000000000017" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.131 0.028 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.0941460265419807e-17 -2.0687630438766277e-16 0.17100000000000035" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.2246467991473572e-18 -1.2098029496354548e-17 0.010000000000000021" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.028 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.971681346627245e-17 -1.947782748913082e-16 0.16100000000000034" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.028 0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="MANIFNG_L">
+    <inertial>
+      <mass value="1.32092" />
+      <origin xyz="0.0778883 0.0150494 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.00159768" ixy="0.000329267" ixz="0.0" iyy="0.00595697" iyz="0.0" izz="0.00524922" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-MANIFNG_L-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-9.290924956704857e-18 0.002049999999999898 0.08740000000000019" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.1352 0.0321 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="4.073536366171241e-18 0.020139999999999936 0.08005000000000015" rpy="1.57079632679 0.228638132011 -1.57079632679" />
+      <geometry>
+        <box size="0.03 0.146923 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="4.630852206935045e-18 0.01060699999999999 0.02186400000000004" rpy="-1.57079632679 -1.45054314133 1.57079632679" />
+      <geometry>
+        <box size="0.01 0.048364 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-3.980721077865497e-18 -0.004000000000000018 0.010000000000000024" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.02 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="2.946848187471265e-17 0.043262000000000064 0.0027749999999999715" rpy="-1.57079632679 -0.229510796637 1.57079632679" />
+      <geometry>
+        <box size="0.02 0.014069 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="1.42939772363593e-17 0.02091800000000003 0.0009709999999999854" rpy="-1.57079632679 -1.44949594378 1.57079632679" />
+      <geometry>
+        <box size="0.035 0.041304 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="2.886208475643461e-17 0.04100000000000007 -0.005000000000000043" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.0941460265419807e-17 -2.0687630438766277e-16 0.17100000000000035" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.271781710482006e-17 -0.004000000000000204 0.16300000000000034" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.016 0.02 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.5665562379379394e-17 0.006113999999999813 0.16231800000000032" rpy="-1.57079632679 -0.230208928338 1.57079632679" />
+      <geometry>
+        <box size="0.01972 0.02 0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="HANDTIP_L">
+    <inertial>
+      <mass value="1.62187" />
+      <origin xyz="0.0581795 -0.0268036 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.00272616" ixy="0.000478886" ixz="0.0" iyy="0.00389972" iyz="0.0" izz="0.00225372" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDTIP_L-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7052374461209995e-17 -0.04400000000000013 0.055000000000000146" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.03 0.012 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-3.950166805950471e-17 -0.04400000000000016 0.07500000000000019" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.07 0.012 0.026" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.013039999999999986 -0.0440000000000002 0.10745800000000025" rpy="6.21189106329e-16 -0.921010246277 -1.34623219215e-15" />
+      <geometry>
+        <box size="0.004 0.012 0.00314" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.013040000000000072 -0.0440000000000002 0.10745800000000025" rpy="3.14159265359 -0.921010246277 3.14159265359" />
+      <geometry>
+        <box size="0.004 0.012 0.00314" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.010547000000000065 -0.04400000000000017 0.08663100000000021" rpy="3.14159265359 -0.244346095279 3.14159265359" />
+      <geometry>
+        <box size="0.02 0.012 0.039267" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.010546999999999983 -0.04400000000000017 0.08663100000000021" rpy="2.59196958862e-16 -0.244346095279 -5.41343503838e-16" />
+      <geometry>
+        <box size="0.02 0.012 0.039267" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.9771290989129414e-17 -0.030500000000000135 0.07150000000000016" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.077 0.015 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.8631721582818766e-17 -0.01765000000000009 0.05283600000000012" rpy="-1.57079632679 -0.339641072438 1.57079632679" />
+      <geometry>
+        <box size="0.028 0.111362 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.1586849842862082e-17 -0.027011000000000073 0.02429900000000007" rpy="1.57079632679 -0.621511746635 -1.57079632679" />
+      <geometry>
+        <box size="0.028 0.018572 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.2205878565916645e-17 -0.01736100000000003 0.001991000000000018" rpy="-1.57079632679 -1.16587994033 1.57079632679" />
+      <geometry>
+        <box size="0.02 0.033509 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.250752728910708e-17 -0.030000000000000065 0.015000000000000053" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.017" length="0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.015" length="0.024" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="HANDLNK_O">
+    <inertial>
+      <mass value="0.871915" />
+      <origin xyz="0.0928285 -0.00312308 1.58819e-22" rpy="0 -0 0" />
+      <inertia ixx="0.000559832" ixy="-1.99551e-05" ixz="-1.65436e-24" iyy="0.00316998" iyz="3.61892e-25" izz="0.00272764" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDLNK_O-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-1.0470730132709904e-17 -1.0343815219383138e-16 0.08550000000000017" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.131 0.028 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-2.0941460265419807e-17 -2.0687630438766277e-16 0.17100000000000035" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.014" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.2246467991473572e-18 -1.2098029496354548e-17 0.010000000000000021" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.028 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-1.971681346627245e-17 -1.947782748913082e-16 0.16100000000000034" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.028 0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="WHEEL_L0">
+    <inertial>
+      <mass value="13.25" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.2015" ixy="0.0" ixz="0.0" iyy="0.265" iyz="0.0" izz="0.2015" />
+    </inertial>
+  </link>
+  <link name="WHEEL_L1">
+    <inertial>
+      <mass value="13.25" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.2015" ixy="0.0" ixz="0.0" iyy="0.265" iyz="0.0" izz="0.2015" />
+    </inertial>
+  </link>
+  <link name="WHEEL_L2">
+    <inertial>
+      <mass value="13.25" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.2015" ixy="0.0" ixz="0.0" iyy="0.265" iyz="0.0" izz="0.2015" />
+    </inertial>
+  </link>
+  <link name="WHEEL_L3">
+    <inertial>
+      <mass value="13.25" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.2015" ixy="0.0" ixz="0.0" iyy="0.265" iyz="0.0" izz="0.2015" />
+    </inertial>
+  </link>
+  <link name="WHEEL_R0">
+    <inertial>
+      <mass value="13.25" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.2015" ixy="0.0" ixz="0.0" iyy="0.265" iyz="0.0" izz="0.2015" />
+    </inertial>
+  </link>
+  <link name="WHEEL_R1">
+    <inertial>
+      <mass value="13.25" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.2015" ixy="0.0" ixz="0.0" iyy="0.265" iyz="0.0" izz="0.2015" />
+    </inertial>
+  </link>
+  <link name="WHEEL_R2">
+    <inertial>
+      <mass value="13.25" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.2015" ixy="0.0" ixz="0.0" iyy="0.265" iyz="0.0" izz="0.2015" />
+    </inertial>
+  </link>
+  <link name="WHEEL_R3">
+    <inertial>
+      <mass value="13.25" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.2015" ixy="0.0" ixz="0.0" iyy="0.265" iyz="0.0" izz="0.2015" />
+    </inertial>
+  </link>
+  <link name="WIRE_GUARD_L">
+    <inertial>
+      <mass value="0.1" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="1.94 0.32 0.6" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="WIRE_GUARD_R">
+    <inertial>
+      <mass value="0.1" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 -0 0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="1.94 0.32 0.6" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="TFRAME">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  <joint name="MFRAME" type="revolute">
+    <origin xyz="0.0 0.0 0.52" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="TFRAME" />
+    <child link="MFRAME" />
+    <limit lower="-11.9991386075" upper="11.9991386075" effort="12000.0" velocity="180.0" />
+  </joint>
+  <joint name="BLOCK" type="revolute">
+    <origin xyz="0.845 -0.11 0.19199999999999995" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="MFRAME" />
+    <child link="BLOCK" />
+    <limit lower="-0.837758040957" upper="1.21300383014" effort="12000.0" velocity="1146.0" />
+  </joint>
+  <joint name="BOOM" type="revolute">
+    <origin xyz="0.06999999999999984 -3.608224830031759e-16 0.20000000000000007" rpy="1.57079632679 8.65956056235e-17 3.14159265359" />
+    <axis xyz="0 0 1" />
+    <parent link="BLOCK" />
+    <child link="BOOM" />
+    <limit lower="-1.31074226825" upper="0.928515162061" effort="15000.0" velocity="1146.0" />
+  </joint>
+  <joint name="ARM" type="revolute">
+    <origin xyz="-1.7599999999999996 1.3322676295501878e-15 1.1102230246251565e-16" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="BOOM" />
+    <child link="ARM" />
+    <limit lower="0.535816080362" upper="2.65464579228" effort="12000.0" velocity="1146.0" />
+  </joint>
+  <joint name="TOHKU_PITCH" type="revolute">
+    <origin xyz="-0.9649999999999999 -1.1102230246251565e-16 2.914335439641036e-16" rpy="1.57079632679 1.16573417586e-15 1.57079632679" />
+    <axis xyz="0 1 0" />
+    <parent link="ARM" />
+    <child link="TOHKU_PITCH" />
+    <limit lower="-0.588175957922" upper="1.57079632679" effort="10000.0" velocity="5730.0" />
+  </joint>
+  <joint name="TOHKU_ROLL" type="revolute">
+    <origin xyz="4.440892098500626e-16 1.5543122344752192e-15 -0.22699999999999942" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="TOHKU_PITCH" />
+    <child link="TOHKU_ROLL" />
+    <limit lower="-3.14159265359" upper="3.14159265359" effort="10000.0" velocity="573.0" />
+  </joint>
+  <joint name="TOHKU_TIP_01" type="revolute">
+    <origin xyz="-1.1102230246251565e-16 1.942890293094024e-16 -0.3089999999999997" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TOHKU_ROLL" />
+    <child link="TOHKU_TIP_01" />
+    <limit lower="-0.349065850399" upper="0.0" effort="10000.0" velocity="573.0" />
+  </joint>
+  <joint name="TOHKU_TIP_02" type="revolute">
+    <origin xyz="-1.1102230246251565e-16 1.942890293094024e-16 -0.3089999999999997" rpy="0.0 -0.0 3.14159265359" />
+    <axis xyz="0 1 0" />
+    <parent link="TOHKU_ROLL" />
+    <child link="TOHKU_TIP_02" />
+    <limit lower="-0.349065850399" upper="0.0" effort="10000.0" velocity="573.0" />
+  </joint>
+  <joint name="UFRAME" type="revolute">
+    <origin xyz="0.0 0.0 0.8200000000000001" rpy="0.0 -0.0 3.14159265359" />
+    <axis xyz="0 0 1" />
+    <parent link="TFRAME" />
+    <child link="UFRAME" />
+    <limit lower="-11.9991386075" upper="11.9991386075" effort="12000.0" velocity="573.0" />
+  </joint>
+  <joint name="MNP_SWING" type="revolute">
+    <origin xyz="0.5595 -0.13 0.118" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="UFRAME" />
+    <child link="MNP_SWING" />
+    <limit lower="-1.0471975512" upper="1.0471975512" effort="12000.0" velocity="1146.0" />
+  </joint>
+  <joint name="MANIBOOM" type="revolute">
+    <origin xyz="0.06999999999999973 -3.608224830031759e-16 0.14000000000000035" rpy="-1.57079632679 1.57079632679 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="MNP_SWING" />
+    <child link="MANIBOOM" />
+    <limit lower="0.0" upper="2.00712863979" effort="15000.0" velocity="573.0" />
+  </joint>
+  <joint name="MANIARM" type="revolute">
+    <origin xyz="-1.48 0.08000000000000063 -4.163336342344337e-16" rpy="0.0 -0.0 3.14159265359" />
+    <axis xyz="0 0 1" />
+    <parent link="MANIBOOM" />
+    <child link="MANIARM" />
+    <limit lower="-1.91986217719" upper="0.0" effort="12000.0" velocity="573.0" />
+  </joint>
+  <joint name="MANIELBOW" type="revolute">
+    <origin xyz="-0.5499999999999989 0.2700000000000006 4.718447854656915e-16" rpy="1.57079632679 7.77156117238e-16 1.57079632679" />
+    <axis xyz="0 1 0" />
+    <parent link="MANIARM" />
+    <child link="MANIELBOW" />
+    <limit lower="-1.57079632679" upper="0.349065850399" effort="10000.0" velocity="573.0" />
+  </joint>
+  <joint name="YAWJOINT" type="revolute">
+    <origin xyz="-3.3306690738754696e-16 3.608224830031759e-16 -0.23000000000000043" rpy="0.0 -0.0 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="MANIELBOW" />
+    <child link="YAWJOINT" />
+    <limit lower="-0.881042206407" upper="0.881042206407" effort="10000.0" velocity="573.0" />
+  </joint>
+  <joint name="HANDBASE" type="revolute">
+    <origin xyz="0.0 1.0547118733938987e-15 -0.4053000000000009" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 -1" />
+    <parent link="YAWJOINT" />
+    <child link="HANDBASE" />
+    <limit lower="-4.71238898038" upper="4.71238898038" effort="8000.0" velocity="573.0" />
+  </joint>
+  <joint name="PUSHROD" type="prismatic">
+    <origin xyz="2.220446049250313e-16 7.771561172376096e-16 -0.09170000000000034" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 -1" />
+    <parent link="HANDBASE" />
+    <child link="PUSHROD" />
+    <limit lower="-0.000884881930761" upper="0.0" effort="8000.0" velocity="573.0" />
+  </joint>
+  <joint name="HANDSLNK_I" type="revolute">
+    <origin xyz="-1.1102230246251565e-16 3.608224830031759e-16 4.440892098500626e-16" rpy="-1.57079632679 0.502146933762 3.14159265359" />
+    <axis xyz="0 0 1" />
+    <parent link="PUSHROD" />
+    <child link="HANDSLNK_I" />
+    <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
+  </joint>
+  <joint name="HANDSLNK_O" type="revolute">
+    <origin xyz="-1.1102230246251565e-16 3.608224830031759e-16 4.440892098500626e-16" rpy="1.57079632679 0.502146933762 -3.16645213446e-17" />
+    <axis xyz="0 0 1" />
+    <parent link="PUSHROD" />
+    <child link="HANDSLNK_O" />
+    <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
+  </joint>
+  <joint name="MANIFNG_U" type="revolute">
+    <origin xyz="0.030000000000000138 7.771561172376096e-16 -0.14000000000000035" rpy="1.57079632679 1.45266895236 1.78987944049e-14" />
+    <axis xyz="0 0 1" />
+    <parent link="HANDBASE" />
+    <child link="MANIFNG_U" />
+    <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
+  </joint>
+  <joint name="HANDTIP_U" type="revolute">
+    <origin xyz="0.17100000000000015 -4.440892098500626e-16 0.0" rpy="1.68550260069e-17 -6.51459040917e-17 -0.118127374433" />
+    <axis xyz="0 0 1" />
+    <parent link="MANIFNG_U" />
+    <child link="HANDTIP_U" />
+    <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
+  </joint>
+  <joint name="HANDLNK_I" type="revolute">
+    <origin xyz="1.1102230246251565e-16 0.006500000000000783 -0.15500000000000025" rpy="1.57079632679 1.45266895236 1.78987944049e-14" />
+    <axis xyz="0 0 1" />
+    <parent link="HANDBASE" />
+    <child link="HANDLNK_I" />
+    <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
+  </joint>
+  <joint name="MANIFNG_L" type="revolute">
+    <origin xyz="-0.029999999999999805 8.049116928532385e-16 -0.14000000000000035" rpy="1.57079632679 1.45266922743 3.14159265359" />
+    <parent link="HANDBASE" />
+    <child link="MANIFNG_L" />
+    <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
+  </joint>
+  <joint name="HANDTIP_L" type="revolute">
+    <origin xyz="0.17100000000000004 0.0 -1.942890293094024e-16" rpy="-2.80434529179e-16 1.00458830582e-16 -0.118127374433" />
+    <parent link="MANIFNG_L" />
+    <child link="HANDTIP_L" />
+    <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
+  </joint>
+  <joint name="HANDLNK_O" type="revolute">
+    <origin xyz="1.1102230246251565e-16 -0.006499999999999201 -0.15500000000000025" rpy="1.57079632679 1.45266922743 3.14159265359" />
+    <parent link="HANDBASE" />
+    <child link="HANDLNK_O" />
+    <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
+  </joint>
+  <joint name="WHEEL_L0" type="continuous">
+    <origin xyz="0.74 0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TFRAME" />
+    <child link="WHEEL_L0" />
+  </joint>
+  <joint name="WHEEL_L1" type="continuous">
+    <origin xyz="0.26 0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TFRAME" />
+    <child link="WHEEL_L1" />
+  </joint>
+  <joint name="WHEEL_L2" type="continuous">
+    <origin xyz="-0.22 0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TFRAME" />
+    <child link="WHEEL_L2" />
+  </joint>
+  <joint name="WHEEL_L3" type="continuous">
+    <origin xyz="-0.7 0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TFRAME" />
+    <child link="WHEEL_L3" />
+  </joint>
+  <joint name="WHEEL_R0" type="continuous">
+    <origin xyz="0.74 -0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TFRAME" />
+    <child link="WHEEL_R0" />
+  </joint>
+  <joint name="WHEEL_R1" type="continuous">
+    <origin xyz="0.26 -0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TFRAME" />
+    <child link="WHEEL_R1" />
+  </joint>
+  <joint name="WHEEL_R2" type="continuous">
+    <origin xyz="-0.22 -0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TFRAME" />
+    <child link="WHEEL_R2" />
+  </joint>
+  <joint name="WHEEL_R3" type="continuous">
+    <origin xyz="-0.7 -0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="TFRAME" />
+    <child link="WHEEL_R3" />
+  </joint>
+  <joint name="WIRE_GUARD_L" type="fixed">
+    <origin xyz="0.02 0.61 0.2" rpy="0.0 -0.0 0.0" />
+    <parent link="TFRAME" />
+    <child link="WIRE_GUARD_L" />
+  </joint>
+  <joint name="WIRE_GUARD_R" type="fixed">
+    <origin xyz="0.02 -0.61 0.2" rpy="0.0 -0.0 0.0" />
+    <parent link="TFRAME" />
+    <child link="WIRE_GUARD_R" />
+  </joint>
+  <link name="SWING_TORQUE">
+  </link>
+  <joint name="SWING_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="BLOCK" />
+    <child link="SWING_TORQUE" />
+  </joint>
+  <sensor name="SWING_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="BLOCK" />
+  </sensor>
+  <link name="BOOM_TORQUE">
+  </link>
+  <joint name="BOOM_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 7.14632589097e-16 3.14159265359" />
+    <parent link="BOOM" />
+    <child link="BOOM_TORQUE" />
+  </joint>
+  <sensor name="BOOM_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 7.14632589097e-16 3.14159265359" />
+    <parent link="BOOM" />
+  </sensor>
+  <link name="ARM_TORQUE">
+  </link>
+  <joint name="ARM_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 7.14632589097e-16 3.14159265359" />
+    <parent link="ARM" />
+    <child link="ARM_TORQUE" />
+  </joint>
+  <sensor name="ARM_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 7.14632589097e-16 3.14159265359" />
+    <parent link="ARM" />
+  </sensor>
+  <link name="HAND_P_TORQUE">
+  </link>
+  <joint name="HAND_P_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 7.14632589097e-16 3.14159265359" />
+    <parent link="TOHKU_PITCH" />
+    <child link="HAND_P_TORQUE" />
+  </joint>
+  <sensor name="HAND_P_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 7.14632589097e-16 3.14159265359" />
+    <parent link="TOHKU_PITCH" />
+  </sensor>
+  <link name="MNP_SWING_TORQUE">
+  </link>
+  <joint name="MNP_SWING_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 -0.0 1.57079632679" />
+    <parent link="MNP_SWING" />
+    <child link="MNP_SWING_TORQUE" />
+  </joint>
+  <sensor name="MNP_SWING_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 -0.0 1.57079632679" />
+    <parent link="MNP_SWING" />
+  </sensor>
+  <link name="MNP_BOOM_TORQUE">
+  </link>
+  <joint name="MNP_BOOM_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="7.8859849469e-16 9.95799250103e-17 -1.57079632679" />
+    <parent link="MANIBOOM" />
+    <child link="MNP_BOOM_TORQUE" />
+  </joint>
+  <sensor name="MNP_BOOM_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="7.8859849469e-16 9.95799250103e-17 -1.57079632679" />
+    <parent link="MANIBOOM" />
+  </sensor>
+  <link name="MNP_ARM_TORQUE">
+  </link>
+  <joint name="MNP_ARM_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="7.8859849469e-16 9.95799250103e-17 -1.57079632679" />
+    <parent link="MANIARM" />
+    <child link="MNP_ARM_TORQUE" />
+  </joint>
+  <sensor name="MNP_ARM_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="7.8859849469e-16 9.95799250103e-17 -1.57079632679" />
+    <parent link="MANIARM" />
+  </sensor>
+  <link name="MNP_ELBOW_TORQUE">
+  </link>
+  <joint name="MNP_ELBOW_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="7.8859849469e-16 9.95799250103e-17 -1.57079632679" />
+    <parent link="MANIELBOW" />
+    <child link="MNP_ELBOW_TORQUE" />
+  </joint>
+  <sensor name="MNP_ELBOW_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="7.8859849469e-16 9.95799250103e-17 -1.57079632679" />
+    <parent link="MANIELBOW" />
+  </sensor>
+  <link name="MNP_YAW_TORQUE">
+  </link>
+  <joint name="MNP_YAW_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+    <parent link="YAWJOINT" />
+    <child link="MNP_YAW_TORQUE" />
+  </joint>
+  <sensor name="MNP_YAW_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -1.57079632679 0.0" />
+    <parent link="YAWJOINT" />
+  </sensor>
+  <link name="MNP_ROLL_TORQUE">
+  </link>
+  <joint name="MNP_ROLL_TORQUE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 -2.88998133609e-16 -3.00440511061e-16" />
+    <parent link="HANDBASE" />
+    <child link="MNP_ROLL_TORQUE" />
+  </joint>
+  <sensor name="MNP_ROLL_TORQUE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 -2.88998133609e-16 -3.00440511061e-16" />
+    <parent link="HANDBASE" />
+  </sensor>
+  <link name="MNP_PUSH_FORCE">
+  </link>
+  <joint name="MNP_PUSH_FORCE_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="PUSHROD" />
+    <child link="MNP_PUSH_FORCE" />
+  </joint>
+  <sensor name="MNP_PUSH_FORCE_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="PUSHROD" />
+  </sensor>
+</robot>

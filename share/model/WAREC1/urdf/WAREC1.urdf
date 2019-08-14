@@ -1,0 +1,3449 @@
+<robot name="warec">
+  <link name="RL_HIP_R">
+    <inertial>
+      <mass value="2.4001" />
+      <origin xyz="-0.00771 -0.01238 -0.09652" rpy="0 -0 0" />
+      <inertia ixx="0.01764829" ixy="-0.00022958" ixz="-0.00178949" iyy="0.01677372" iyz="0.00202659" izz="0.00834906" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RL_HIP_R-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.0705 0.0 0.0" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.04" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 -0.021 -0.044" rpy="1.23918376892 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.06 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 0.021 -0.044" rpy="1.90240888467 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.06 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 0.0 -0.071" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.022 0.12" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.077" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.01 0.125 0.14" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.0 0.0" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.025" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 -0.026 -0.048" rpy="1.08210413624 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 -0.012 -0.022" rpy="1.08210413624 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.026 -0.048" rpy="2.05948851735 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.012 -0.022" rpy="2.05948851735 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.0 -0.071" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.024 0.123" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.0 -0.05" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.024 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0705 -0.17" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.026 0.0705 -0.11" rpy="-0.0 1.2217304764 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0163 0.0705 -0.136" rpy="-0.0 1.2217304764 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.026 0.0705 -0.11" rpy="-3.14159265359 1.2217304764 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0163 0.0705 -0.136" rpy="-3.14159265359 1.2217304764 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0685 -0.085" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.013 0.118" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0705 -0.099" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.008 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 -0.17" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.046" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03 -0.0705 -0.11" rpy="-0.0 1.41371669412 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0263 -0.0705 -0.136" rpy="-0.0 1.41371669412 -0.0" />
+      <geometry>
+        <box size="0.06 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03 -0.0705 -0.11" rpy="-3.14159265359 1.41371669412 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0263 -0.0705 -0.136" rpy="-3.14159265359 1.41371669412 -3.14159265359" />
+      <geometry>
+        <box size="0.06 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0685 -0.085" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.013 0.118" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 -0.11" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.008 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.085 -0.14" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.117 0.02 0.063" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RL_HIP_P">
+    <inertial>
+      <mass value="8.64" />
+      <origin xyz="-1e-05 0.00091 -0.07045" rpy="0 -0 0" />
+      <inertia ixx="0.08705723" ixy="-5.01e-06" ixz="-6.22e-06" iyy="0.08623435" iyz="0.00027574" izz="0.02298262" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RL_HIP_P-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.092" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.12 0.13 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0815 -0.065" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.19 0.029 0.058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.045" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.038 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.078" length="0.052" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.045 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.078" length="0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.138" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.222" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.178" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.045" length="0.05" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RL_HIP_Y">
+    <inertial>
+      <mass value="1.72" />
+      <origin xyz="0.0199 -0.01113 -0.02905" rpy="0 -0 0" />
+      <inertia ixx="0.00864071" ixy="-0.00039465" ixz="-0.00167025" iyy="0.00651989" iyz="0.00083342" izz="0.00534558" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RL_HIP_Y-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.008" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <box size="0.086 0.01 0.145" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07125 -0.024" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.001 0.07125 -0.056" rpy="-0.0 0.872664625997 -0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0458 0.07125 -0.051" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.057 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.005" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.043 0.07125 -0.075" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.041" length="0.006" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.07125 -0.024" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.001 -0.07125 -0.056" rpy="-0.0 0.872664625997 -0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0458 -0.07125 -0.051" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.057 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.018 -0.08035 -0.058" rpy="-0.0 0.767944870878 -0.0" />
+      <geometry>
+        <box size="0.12 0.024 0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.043 -0.06825 -0.075" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.041" length="0.012" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RL_KNEE_P">
+    <inertial>
+      <mass value="5.72" />
+      <origin xyz="-0.02134 -0.00027 -0.06496" rpy="0 -0 0" />
+      <inertia ixx="0.04513699" ixy="-9.396e-05" ixz="0.00925777" iyy="0.04550396" iyz="-0.00017902" izz="0.01607654" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RL_KNEE_P-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.045 0.0 -0.09" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.13 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03 0.0 -0.04" rpy="-3.14159265359 1.308996939 -3.14159265359" />
+      <geometry>
+        <box size="0.068 0.13 0.081" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.023 0.078 -0.036" rpy="-0.0 0.575958653158 -0.0" />
+      <geometry>
+        <box size="0.065 0.024 0.142" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.047 0.071 -0.118" rpy="-0.191986217719 -0.0 0.0" />
+      <geometry>
+        <box size="0.03 0.016 0.058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.05025 0.0" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.02925 0.0" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.057" length="0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.004 0.0" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.045" length="0.068" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.048 0.0" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.044 0.0 -0.1284" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 0.0 -0.16184" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.039" length="0.033" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 0.0 -0.1844" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.046" length="0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 0.0 -0.2024" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.027" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RL_ANKLE_Y">
+    <inertial>
+      <mass value="1.16" />
+      <origin xyz="0.0 -0.00909 -0.02873" rpy="0 -0 0" />
+      <inertia ixx="0.00482359" ixy="3e-08" ixz="0.0" iyy="0.0033678" iyz="0.00044654" izz="0.00216019" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RL_ANKLE_Y-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.009" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.09 0.13 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0618 -0.08" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 0.0618 -0.057" rpy="-0.0 1.34390352404 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 0.0618 -0.057" rpy="-3.14159265359 1.34390352404 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0618 -0.025" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.035 0.008 0.0797" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0618 -0.08" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 -0.0618 -0.057" rpy="-0.0 1.34390352404 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 -0.0618 -0.057" rpy="-3.14159265359 1.34390352404 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0618 -0.025" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.035 0.008 0.0797" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 -0.08" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.02" length="0.0155" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 -0.0705 -0.057" rpy="-0.0 1.34390352404 -0.0" />
+      <geometry>
+        <box size="0.04 0.0155 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 -0.0705 -0.057" rpy="-3.14159265359 1.34390352404 -3.14159265359" />
+      <geometry>
+        <box size="0.04 0.0155 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 -0.029" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.026 0.0155 0.058" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RL_ANKLE_P">
+    <inertial>
+      <mass value="5.06" />
+      <origin xyz="0.00215 0.0017 -0.07672" rpy="0 -0 0" />
+      <inertia ixx="0.03534068" ixy="-2.587e-05" ixz="-0.00070201" iyy="0.0355447" iyz="0.00069448" izz="0.01095592" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RL_ANKLE_P-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.055" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.117 0.11" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0557 -0.02" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.006 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.068 -0.027" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.1 0.03 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0545 0.0 -0.097" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.045 0.084 0.0058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0545 0.0 -0.097" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.045 0.084 0.0058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.07 0.0 -0.121" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.124 0.058 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0402 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.037" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0025 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.038" length="0.037" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.035 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.046" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0395 0.0 -0.154" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.05" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0035 0.0 -0.154" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.038" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.035 0.0 -0.154" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.061" length="0.0454" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RL_ANKLE_R">
+    <inertial>
+      <mass value="0.82" />
+      <origin xyz="-0.01007 0.0 -0.02816" rpy="0 -0 0" />
+      <inertia ixx="0.00132859" ixy="-2.8e-07" ixz="-0.00019601" iyy="0.00261108" iyz="-1.2e-07" izz="0.00200116" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RL_ANKLE_R-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.07" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.12 0.077 0.006" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 0.0 -0.06" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.08 0.0057" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 -0.0139 -0.035" rpy="1.308996939 -0.0 -0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 0.0155 -0.035" rpy="0.261799387799 -0.0 -0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.06 0.0 0.0" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.028" length="0.012" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.0 -0.06" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.08 0.0057" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 -0.0139 -0.035" rpy="1.308996939 -0.0 -0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.0155 -0.035" rpy="0.261799387799 -0.0 -0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.0 0.0" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.028" length="0.006" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RL_HOOK">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 -0.0225" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RL_HOOK-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.045" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0772 0.0 -0.045899999999999996" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.1057 0.1 0.0126" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.1 0.0 -0.039099999999999996" rpy="-0.0 0.261799387799 -0.0" />
+      <geometry>
+        <box size="0.059 0.1 0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.118 0.0 -0.0291" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.02 0.1 0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.1251 0.0 -0.0355" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.034 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0033 0.0 -0.0265" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.143 0.1 0.0078" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0414 0.0 -0.0353" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.054 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.068 0.0 -0.0034000000000000002" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.042 0.1 0.0038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 0.0 -0.008499999999999999" rpy="-0.0 1.308996939 -0.0" />
+      <geometry>
+        <box size="0.042 0.1 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0725 0.0 0.010800000000000004" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.0135 0.1 0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0787 0.0 0.013499999999999998" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.008 0.1 0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0772 0.0 0.008" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.013 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0164 0.0 -0.0373" rpy="-3.14159265359 0.785398163397 -3.14159265359" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.01675 0.0 -0.0373" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.04275 0.0 -0.0373" rpy="-3.14159265359 0.785398163397 -3.14159265359" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0297 0.0 -0.0348" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.027 0.1 0.017" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0297 0.0 -0.048600000000000004" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.011 0.1 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0801 0.0 -0.0378" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.028 0.1 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.067 0.0 -0.028999999999999998" rpy="-0.0 0.349065850399 -0.0" />
+      <geometry>
+        <box size="0.013 0.1 0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0897 0.0 -0.0475" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.01 0.1 0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RR_HIP_R">
+    <inertial>
+      <mass value="2.4001" />
+      <origin xyz="-0.00771 0.01238 -0.09652" rpy="0 -0 0" />
+      <inertia ixx="0.01764809" ixy="0.00022896" ixz="-0.00178956" iyy="0.01677341" iyz="-0.00202747" izz="0.00834914" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RR_HIP_R-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.0705 0.0 0.0" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.04" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 -0.021 -0.044" rpy="1.23918376892 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.06 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 0.021 -0.044" rpy="1.90240888467 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.06 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 0.0 -0.071" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.022 0.12" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.077" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.01 0.125 0.14" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.0 0.0" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.025" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 -0.026 -0.048" rpy="1.08210413624 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 -0.012 -0.022" rpy="1.08210413624 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.026 -0.048" rpy="2.05948851735 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.012 -0.022" rpy="2.05948851735 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.0 -0.071" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.024 0.123" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.0 -0.05" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <box size="0.008 0.024 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0705 -0.17" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.046" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03 0.0705 -0.11" rpy="-0.0 1.41371669412 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0263 0.0705 -0.136" rpy="-0.0 1.41371669412 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03 0.0705 -0.11" rpy="-3.14159265359 1.41371669412 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0263 0.0705 -0.136" rpy="-3.14159265359 1.41371669412 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0685 -0.085" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.013 0.118" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0705 -0.099" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.008 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 -0.17" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.026 -0.0705 -0.11" rpy="-0.0 1.2217304764 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0163 -0.0705 -0.136" rpy="-0.0 1.2217304764 -0.0" />
+      <geometry>
+        <box size="0.06 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.026 -0.0705 -0.11" rpy="-3.14159265359 1.2217304764 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0163 -0.0705 -0.136" rpy="-3.14159265359 1.2217304764 -3.14159265359" />
+      <geometry>
+        <box size="0.06 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0685 -0.085" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.013 0.118" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 -0.11" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.008 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.085 -0.14" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.117 0.02 0.063" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RR_HIP_P">
+    <inertial>
+      <mass value="8.64" />
+      <origin xyz="1e-05 -0.00091 -0.07045" rpy="0 -0 0" />
+      <inertia ixx="0.08705723" ixy="-5.01e-06" ixz="6.22e-06" iyy="0.08623435" iyz="-0.00027574" izz="0.02298262" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RR_HIP_P-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.092" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.12 0.13 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0815 -0.065" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.19 0.029 0.058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.045" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.038 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.078" length="0.052" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.045 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.078" length="0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.138" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.222" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.178" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.045" length="0.05" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RR_HIP_Y">
+    <inertial>
+      <mass value="1.72" />
+      <origin xyz="0.01991 0.01113 -0.02905" rpy="0 -0 0" />
+      <inertia ixx="0.00864067" ixy="0.00039402" ixz="-0.00167061" iyy="0.00652026" iyz="-0.00083341" izz="0.00534599" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RR_HIP_Y-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.008" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <box size="0.086 0.01 0.145" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07125 -0.024" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.001 0.07125 -0.056" rpy="-0.0 0.872664625997 -0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0458 0.07125 -0.051" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.057 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 -0.005" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.043 0.06825 -0.075" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.041" length="0.012" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.07125 -0.024" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.001 -0.07125 -0.056" rpy="-0.0 0.872664625997 -0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0458 -0.07125 -0.051" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.057 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.018 0.08035 -0.058" rpy="-0.0 0.767944870878 -0.0" />
+      <geometry>
+        <box size="0.12 0.024 0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.043 -0.07125 -0.075" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.041" length="0.006" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RR_KNEE_P">
+    <inertial>
+      <mass value="5.72" />
+      <origin xyz="-0.02128 0.00026 -0.06497" rpy="0 -0 0" />
+      <inertia ixx="0.04510836" ixy="8.919e-05" ixz="0.00925738" iyy="0.04548141" iyz="0.00018274" izz="0.01605364" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RR_KNEE_P-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.045 0.0 -0.09" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.13 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03 0.0 -0.04" rpy="-3.14159265359 1.308996939 -3.14159265359" />
+      <geometry>
+        <box size="0.068 0.13 0.081" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.023 -0.078 -0.036" rpy="-0.0 0.575958653158 -0.0" />
+      <geometry>
+        <box size="0.065 0.024 0.142" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.047 -0.071 -0.118" rpy="0.191986217719 -0.0 -0.0" />
+      <geometry>
+        <box size="0.03 0.016 0.058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.05 0.0" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0285 0.0" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.057" length="0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.01225 0.0" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.045" length="0.068" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.04725 0.0" rpy="1.57079632679 -0.0 -0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.044 0.0 -0.1284" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 0.0 -0.16184" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.039" length="0.033" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 0.0 -0.1844" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.046" length="0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 0.0 -0.2024" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.027" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RR_ANKLE_Y">
+    <inertial>
+      <mass value="1.16" />
+      <origin xyz="0.0 0.00909 -0.02873" rpy="0 -0 0" />
+      <inertia ixx="0.00482359" ixy="3e-08" ixz="0.0" iyy="0.0033678" iyz="-0.00044654" izz="0.00216019" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RR_ANKLE_Y-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.009" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.09 0.13 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0618 -0.08" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 0.0618 -0.057" rpy="-0.0 1.34390352404 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 0.0618 -0.057" rpy="-3.14159265359 1.34390352404 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0618 -0.025" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.035 0.008 0.0797" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0618 -0.08" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 -0.0618 -0.057" rpy="-0.0 1.34390352404 -0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 -0.0618 -0.057" rpy="-3.14159265359 1.34390352404 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0618 -0.025" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.035 0.008 0.0797" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 -0.08" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.02" length="0.0155" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 -0.0705 -0.057" rpy="-0.0 1.34390352404 -0.0" />
+      <geometry>
+        <box size="0.04 0.0155 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 -0.0705 -0.057" rpy="-3.14159265359 1.34390352404 -3.14159265359" />
+      <geometry>
+        <box size="0.04 0.0155 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 -0.029" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.026 0.0155 0.058" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RR_ANKLE_P">
+    <inertial>
+      <mass value="5.06" />
+      <origin xyz="0.00215 -0.00173 -0.07672" rpy="0 -0 0" />
+      <inertia ixx="0.03534024" ixy="1.143e-05" ixz="-0.00069161" iyy="0.03554489" iyz="-0.00068223" izz="0.01095641" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RR_ANKLE_P-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.055" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.117 0.11" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0557 -0.02" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.006 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.068 -0.023" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.106 0.03 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0545 0.0 -0.097" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.045 0.084 0.0058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0545 0.0 -0.097" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.045 0.084 0.0058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.07 0.0 -0.121" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.124 0.058 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.039 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.037" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.005 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.038" length="0.037" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.036 0.0" rpy="1.57079632679 1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.046" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0395 0.0 -0.154" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.05" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0035 0.0 -0.154" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.038" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.035 0.0 -0.154" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.061" length="0.0454" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RR_ANKLE_R">
+    <inertial>
+      <mass value="0.82" />
+      <origin xyz="-0.01007 0.0 -0.02816" rpy="0 -0 0" />
+      <inertia ixx="0.00132859" ixy="-2.8e-07" ixz="-0.00019601" iyy="0.00261108" iyz="-1.2e-07" izz="0.00200116" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RR_ANKLE_R-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.07" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.12 0.077 0.006" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 0.0 -0.06" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.08 0.0057" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 -0.0139 -0.035" rpy="1.308996939 -0.0 -0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 0.0155 -0.035" rpy="0.261799387799 -0.0 -0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.06 0.0 0.0" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.028" length="0.012" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.0 -0.06" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.08 0.0057" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 -0.0139 -0.035" rpy="1.308996939 -0.0 -0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.0155 -0.035" rpy="0.261799387799 -0.0 -0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.0 0.0" rpy="1.57079632679 -3.88578058619e-16 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.028" length="0.006" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="RR_HOOK">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 -0.0225" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-RR_HOOK-visual-0.dae" scale="1.0 1.0 1.0" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.045" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0772 0.0 -0.045899999999999996" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.1057 0.1 0.0126" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.1 0.0 -0.039099999999999996" rpy="-0.0 0.261799387799 -0.0" />
+      <geometry>
+        <box size="0.059 0.1 0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.118 0.0 -0.0291" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.02 0.1 0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.1251 0.0 -0.0355" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.034 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0033 0.0 -0.0265" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.143 0.1 0.0078" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0414 0.0 -0.0353" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.054 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.068 0.0 -0.0034000000000000002" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.042 0.1 0.0038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 0.0 -0.008499999999999999" rpy="-0.0 1.308996939 -0.0" />
+      <geometry>
+        <box size="0.042 0.1 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0725 0.0 0.010800000000000004" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.0135 0.1 0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0787 0.0 0.013499999999999998" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.008 0.1 0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0772 0.0 0.008" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.013 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0164 0.0 -0.0373" rpy="-3.14159265359 0.785398163397 -3.14159265359" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.01675 0.0 -0.0373" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.04275 0.0 -0.0373" rpy="-3.14159265359 0.785398163397 -3.14159265359" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0297 0.0 -0.0348" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.027 0.1 0.017" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0297 0.0 -0.048600000000000004" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.011 0.1 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0801 0.0 -0.0378" rpy="-0.0 0.785398163397 -0.0" />
+      <geometry>
+        <box size="0.028 0.1 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.067 0.0 -0.028999999999999998" rpy="-0.0 0.349065850399 -0.0" />
+      <geometry>
+        <box size="0.013 0.1 0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0897 0.0 -0.0475" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.01 0.1 0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FL_HIP_R">
+    <inertial>
+      <mass value="2.4001" />
+      <origin xyz="-0.00771 -0.01238 0.09652" rpy="0 -0 0" />
+      <inertia ixx="0.01764809" ixy="-0.00022896" ixz="0.00178956" iyy="0.01677341" iyz="-0.00202747" izz="0.00834914" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FL_HIP_R-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.0705 0.0 0.0" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.04" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 0.02100000000000002 0.04400000000000001" rpy="-1.90240888467 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.06 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 -0.021000000000000005 0.04400000000000002" rpy="-1.23918376892 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.06 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 8.694992273946209e-18 0.07100000000000002" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.022 0.12" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 9.429780353434622e-18 0.07700000000000003" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.01 0.125 0.14" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.0 0.0" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.025" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.026000000000000016 0.04800000000000002" rpy="-2.05948851735 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.012000000000000009 0.022000000000000006" rpy="-2.05948851735 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 -0.026000000000000002 0.04800000000000003" rpy="-1.08210413624 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 -0.012000000000000002 0.02200000000000001" rpy="-1.08210413624 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 8.694992273946209e-18 0.07100000000000002" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.024 0.123" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 6.123233995736768e-18 0.050000000000000024" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.024 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 0.1700000000000001" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.046" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03 -0.07050000000000001 0.11000000000000006" rpy="3.14159265359 -1.41371669412 2.35208601817e-15" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0263 -0.07050000000000001 0.13600000000000007" rpy="3.14159265359 -1.41371669412 2.35208601817e-15" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03 -0.07050000000000001 0.11000000000000006" rpy="-1.33524554968e-15 -1.41371669412 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0263 -0.07050000000000001 0.13600000000000007" rpy="-1.33524554968e-15 -1.41371669412 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.06850000000000002 0.08500000000000005" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.013 0.118" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.07050000000000001 0.09900000000000006" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.008 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07050000000000005 0.17000000000000007" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.026 0.07050000000000003 0.11000000000000004" rpy="3.14159265359 -1.2217304764 9.50125211727e-16" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0163 0.07050000000000003 0.13600000000000007" rpy="3.14159265359 -1.2217304764 9.50125211727e-16" />
+      <geometry>
+        <box size="0.06 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.026 0.07050000000000003 0.11000000000000004" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0163 0.07050000000000003 0.13600000000000007" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.06 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.06850000000000005 0.08500000000000003" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.013 0.118" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07050000000000003 0.11000000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.008 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.08500000000000003 0.1400000000000001" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.117 0.02 0.063" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FL_HIP_P">
+    <inertial>
+      <mass value="8.64" />
+      <origin xyz="1e-05 0.00091 0.07045" rpy="0 -0 0" />
+      <inertia ixx="0.08705723" ixy="5.01e-06" ixz="-6.22e-06" iyy="0.08623435" iyz="-0.00027574" izz="0.02298262" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FL_HIP_P-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 1.1266750552155652e-17 0.09200000000000004" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.12 0.13 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.08150000000000003 0.06500000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.19 0.029 0.058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.045" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.03800000000000001 -4.653657836759943e-18" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.078" length="0.052" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.04500000000000002 5.51091059616309e-18" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.078" length="0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 1.690012582823348e-17 0.13800000000000007" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 2.7187158941071246e-17 0.22200000000000011" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 2.179871302482289e-17 0.17800000000000007" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.045" length="0.05" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FL_HIP_Y">
+    <inertial>
+      <mass value="1.72" />
+      <origin xyz="0.01991 -0.01113 0.02905" rpy="0 -0 0" />
+      <inertia ixx="0.00864067" ixy="-0.00039402" ixz="0.00167061" iyy="0.00652026" iyz="-0.00083341" izz="0.00534599" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FL_HIP_Y-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 9.797174393178827e-19 0.008000000000000004" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <box size="0.086 0.01 0.145" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.07125000000000002 0.02400000000000002" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.001 -0.07125000000000002 0.056000000000000036" rpy="3.14159265359 -0.872664625997 3.72496321439e-16" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0458 -0.07125000000000002 0.05100000000000003" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.057 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 6.123233995736767e-19 0.005000000000000003" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.043 -0.06825000000000002 0.07500000000000004" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.041" length="0.012" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07125000000000002 0.024000000000000004" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.001 0.07125000000000002 0.056000000000000015" rpy="3.14159265359 -0.872664625997 3.72496321439e-16" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0458 0.07125000000000002 0.05100000000000001" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.057 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.018 -0.08035000000000003 0.05800000000000004" rpy="3.14159265359 -0.767944870878 2.95041123168e-16" />
+      <geometry>
+        <box size="0.12 0.024 0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.043 0.07125000000000004 0.07500000000000002" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.041" length="0.006" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FL_KNEE_P">
+    <inertial>
+      <mass value="5.72" />
+      <origin xyz="-0.02128 -0.00026 0.06497" rpy="0 -0 0" />
+      <inertia ixx="0.04510836" ixy="-8.919e-05" ixz="-0.00925738" iyy="0.04548141" iyz="0.00018274" izz="0.01605364" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FL_KNEE_P-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.045 1.102182119232618e-17 0.09000000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.13 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03 4.8985871965894135e-18 0.04000000000000002" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.068 0.13 0.081" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.023 0.07800000000000003 0.036000000000000004" rpy="3.14159265359 -0.575958653158 4.14725991461e-17" />
+      <geometry>
+        <box size="0.065 0.024 0.142" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.047 0.07100000000000004 0.11800000000000004" rpy="-2.94960643587 -0.0 0.0" />
+      <geometry>
+        <box size="0.03 0.016 0.058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.050000000000000024 6.123233995736768e-18" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.028500000000000015 3.4902433775699574e-18" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.057" length="0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.012250000000000006 -1.500192328955508e-18" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.045" length="0.068" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.04725000000000002 -5.786456125971245e-18" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.044 1.5724464901052018e-17 0.12840000000000004" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 1.9819683797400768e-17 0.1618400000000001" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.039" length="0.033" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 2.25824869762772e-17 0.1844000000000001" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.046" length="0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 2.4786851214742433e-17 0.20240000000000008" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.027" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FL_ANKLE_Y">
+    <inertial>
+      <mass value="1.16" />
+      <origin xyz="0.0 -0.00909 0.02873" rpy="0 -0 0" />
+      <inertia ixx="0.00482359" ixy="-3e-08" ixz="0.0" iyy="0.0033678" iyz="-0.00044654" izz="0.00216019" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FL_ANKLE_Y-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 1.102182119232618e-18 0.009000000000000003" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.09 0.13 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.06180000000000002 0.08000000000000004" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 -0.06180000000000002 0.05700000000000004" rpy="3.14159265359 -1.34390352404 1.56784367982e-15" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 -0.06180000000000002 0.05700000000000004" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.06180000000000003 0.02500000000000002" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.035 0.008 0.0797" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.061800000000000035 0.08000000000000003" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 0.061800000000000035 0.05700000000000002" rpy="3.14159265359 -1.34390352404 1.56784367982e-15" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 0.061800000000000035 0.05700000000000002" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.06180000000000003 0.025000000000000005" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.035 0.008 0.0797" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07050000000000003 0.08000000000000003" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.02" length="0.0155" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 0.07050000000000003 0.057000000000000016" rpy="3.14159265359 -1.34390352404 1.56784367982e-15" />
+      <geometry>
+        <box size="0.04 0.0155 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 0.07050000000000003 0.057000000000000016" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.04 0.0155 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07050000000000002 0.029000000000000005" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.026 0.0155 0.058" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FL_ANKLE_P">
+    <inertial>
+      <mass value="5.06" />
+      <origin xyz="0.00215 0.00173 0.07672" rpy="0 -0 0" />
+      <inertia ixx="0.03534024" ixy="-1.143e-05" ixz="0.00069161" iyy="0.03554489" iyz="-0.00068223" izz="0.01095641" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FL_ANKLE_P-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 6.735557395310444e-18 0.05500000000000003" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.117 0.11" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.05570000000000003 0.020000000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.006 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.06800000000000003 0.023000000000000003" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.106 0.03 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0545 1.1879073951729329e-17 0.09700000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.045 0.084 0.0058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0545 1.1879073951729329e-17 0.09700000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.045 0.084 0.0058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.07 1.4818226269682975e-17 0.12100000000000005" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.124 0.058 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.039000000000000014 4.7761225166746785e-18" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.037" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.005000000000000003 6.123233995736767e-19" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.038" length="0.037" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.03600000000000001 -4.408728476930472e-18" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.046" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0395 1.8859560706869244e-17 0.15400000000000005" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.05" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0035 1.8859560706869244e-17 0.15400000000000005" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.038" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.035 1.8859560706869244e-17 0.15400000000000005" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.061" length="0.0454" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FL_ANKLE_R">
+    <inertial>
+      <mass value="0.82" />
+      <origin xyz="-0.01007 0.0 0.02816" rpy="0 -0 0" />
+      <inertia ixx="0.00132859" ixy="2.8e-07" ixz="0.00019601" iyy="0.00261108" iyz="-1.2e-07" izz="0.00200116" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FL_ANKLE_R-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 8.572527594031475e-18 0.07000000000000003" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.12 0.077 0.006" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 7.34788079488412e-18 0.060000000000000026" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.08 0.0057" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 0.01390000000000001 0.03500000000000002" rpy="-1.83259571459 -0.0 0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 -0.015500000000000003 0.035000000000000024" rpy="-2.87979326579 -0.0 0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.06 0.0 0.0" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.028" length="0.012" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 7.34788079488412e-18 0.060000000000000026" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.08 0.0057" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.01390000000000001 0.03500000000000002" rpy="-1.83259571459 -0.0 0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 -0.015500000000000003 0.035000000000000024" rpy="-2.87979326579 -0.0 0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.0 0.0" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.028" length="0.006" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FL_HOOK">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0225" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FL_HOOK-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.045" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0772 2.8656735100048073e-18 0.04590000000000001" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.1057 0.1 0.0126" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.1 2.0329136865846066e-18 0.03910000000000001" rpy="3.14159265359 -0.261799387799 1.6548732745e-17" />
+      <geometry>
+        <box size="0.059 0.1 0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.118 8.082668874372533e-19 0.0291" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.02 0.1 0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.1251 1.5920408388915595e-18 0.035500000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.034 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0033 4.898587196589414e-19 0.026500000000000003" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.143 0.1 0.0078" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0414 1.5675479029086126e-18 0.035300000000000005" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.054 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.068 -2.339075386371445e-18 0.0033999999999999933" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.042 0.1 0.0038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 -1.714505518806295e-18 0.008499999999999992" rpy="3.14159265359 -1.308996939 2.88045933863e-16" />
+      <geometry>
+        <box size="0.042 0.1 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0725 -4.078073841160688e-18 -0.010800000000000018" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.0135 0.1 0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0787 -4.408728476930472e-18 -0.013500000000000012" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.008 0.1 0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0772 -3.735172737399428e-18 -0.008000000000000014" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.013 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0164 1.812477262738083e-18 0.03730000000000001" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.01675 1.812477262738083e-18 0.03730000000000001" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.04275 1.812477262738083e-18 0.03730000000000001" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0297 1.5063155629512448e-18 0.034800000000000005" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.027 0.1 0.017" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0297 3.1963281457745927e-18 0.04860000000000001" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.011 0.1 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0801 1.8737096026954506e-18 0.03780000000000001" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.028 0.1 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.067 7.960204194457797e-19 0.029" rpy="3.14159265359 -0.349065850399 2.26305581478e-17" />
+      <geometry>
+        <box size="0.013 0.1 0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0897 3.061616997868384e-18 0.047500000000000014" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.01 0.1 0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FR_HIP_R">
+    <inertial>
+      <mass value="2.4001" />
+      <origin xyz="-0.00771 0.01238 0.09652" rpy="0 -0 0" />
+      <inertia ixx="0.01764829" ixy="0.00022958" ixz="0.00178949" iyy="0.01677372" iyz="0.00202659" izz="0.00834906" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FR_HIP_R-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.0705 0.0 0.0" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.04" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 0.02100000000000002 0.04400000000000001" rpy="-1.90240888467 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.06 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 -0.021000000000000005 0.04400000000000002" rpy="-1.23918376892 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.06 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 8.694992273946209e-18 0.07100000000000002" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.022 0.12" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 9.429780353434622e-18 0.07700000000000003" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.01 0.125 0.14" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.0 0.0" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.025" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.026000000000000016 0.04800000000000002" rpy="-2.05948851735 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 0.012000000000000009 0.022000000000000006" rpy="-2.05948851735 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 -0.026000000000000002 0.04800000000000003" rpy="-1.08210413624 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 -0.012000000000000002 0.02200000000000001" rpy="-1.08210413624 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.05 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 8.694992273946209e-18 0.07100000000000002" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.024 0.123" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0705 6.123233995736768e-18 0.050000000000000024" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <box size="0.008 0.024 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.0705 0.1700000000000001" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.026 -0.07050000000000001 0.11000000000000006" rpy="3.14159265359 -1.2217304764 9.50125211727e-16" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0163 -0.07050000000000001 0.13600000000000007" rpy="3.14159265359 -1.2217304764 9.50125211727e-16" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.026 -0.07050000000000001 0.11000000000000006" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0163 -0.07050000000000001 0.13600000000000007" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.06850000000000002 0.08500000000000005" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.013 0.118" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.07050000000000001 0.09900000000000006" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.008 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07050000000000005 0.17000000000000007" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.046" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03 0.07050000000000003 0.11000000000000004" rpy="3.14159265359 -1.41371669412 2.35208601817e-15" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0263 0.07050000000000003 0.13600000000000007" rpy="3.14159265359 -1.41371669412 2.35208601817e-15" />
+      <geometry>
+        <box size="0.06 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.03 0.07050000000000003 0.11000000000000004" rpy="-1.33524554968e-15 -1.41371669412 -3.14159265359" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0263 0.07050000000000003 0.13600000000000007" rpy="-1.33524554968e-15 -1.41371669412 -3.14159265359" />
+      <geometry>
+        <box size="0.06 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.06850000000000005 0.08500000000000003" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.02 0.013 0.118" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07050000000000003 0.11000000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.008 0.02" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.08500000000000006 0.14000000000000007" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.117 0.02 0.063" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FR_HIP_P">
+    <inertial>
+      <mass value="8.64" />
+      <origin xyz="-1e-05 -0.00091 0.07045" rpy="0 -0 0" />
+      <inertia ixx="0.08705723" ixy="5.01e-06" ixz="6.22e-06" iyy="0.08623435" iyz="0.00027574" izz="0.02298262" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FR_HIP_P-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 1.1266750552155652e-17 0.09200000000000004" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.12 0.13 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.08150000000000003 0.06500000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.19 0.029 0.058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.045" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.03800000000000001 -4.653657836759943e-18" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.078" length="0.052" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.04500000000000002 5.51091059616309e-18" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.078" length="0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 1.690012582823348e-17 0.13800000000000007" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 2.7187158941071246e-17 0.22200000000000011" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 2.179871302482289e-17 0.17800000000000007" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.045" length="0.05" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FR_HIP_Y">
+    <inertial>
+      <mass value="1.72" />
+      <origin xyz="0.0199 0.01113 0.02905" rpy="0 -0 0" />
+      <inertia ixx="0.00864071" ixy="0.00039465" ixz="0.00167025" iyy="0.00651989" iyz="0.00083342" izz="0.00534558" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FR_HIP_Y-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 9.797174393178827e-19 0.008000000000000004" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <box size="0.086 0.01 0.145" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.07125000000000002 0.02400000000000002" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.001 -0.07125000000000002 0.056000000000000036" rpy="3.14159265359 -0.872664625997 3.72496321439e-16" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0458 -0.07125000000000002 0.05100000000000003" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.057 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 6.123233995736767e-19 0.005000000000000003" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.043 -0.07125000000000001 0.07500000000000004" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.041" length="0.006" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07125000000000002 0.024000000000000004" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.001 0.07125000000000002 0.056000000000000015" rpy="3.14159265359 -0.872664625997 3.72496321439e-16" />
+      <geometry>
+        <box size="0.08 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0458 0.07125000000000002 0.05100000000000001" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.057 0.006 0.04" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.018 0.08035000000000006 0.05800000000000002" rpy="3.14159265359 -0.767944870878 2.95041123168e-16" />
+      <geometry>
+        <box size="0.12 0.024 0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.043 0.06825000000000005 0.07500000000000002" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.041" length="0.012" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FR_KNEE_P">
+    <inertial>
+      <mass value="5.72" />
+      <origin xyz="-0.02134 0.00027 0.06496" rpy="0 -0 0" />
+      <inertia ixx="0.04513699" ixy="9.396e-05" ixz="-0.00925777" iyy="0.04550396" iyz="-0.00017902" izz="0.01607654" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FR_KNEE_P-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.045 1.102182119232618e-17 0.09000000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.13 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.03 4.8985871965894135e-18 0.04000000000000002" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.068 0.13 0.081" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.023 -0.07800000000000003 0.036000000000000025" rpy="3.14159265359 -0.575958653158 4.14725991461e-17" />
+      <geometry>
+        <box size="0.065 0.024 0.142" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.047 -0.07100000000000001 0.11800000000000005" rpy="2.94960643587 -0.0 -0.0" />
+      <geometry>
+        <box size="0.03 0.016 0.058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.050250000000000024 -6.153850165715452e-18" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.029250000000000016 -3.5820918875060094e-18" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.057" length="0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.004000000000000002 -4.898587196589414e-19" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.045" length="0.068" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.04800000000000002 5.878304635907297e-18" rpy="-1.57079632679 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.044 1.5724464901052018e-17 0.12840000000000004" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 1.9819683797400768e-17 0.1618400000000001" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.039" length="0.033" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 2.25824869762772e-17 0.1844000000000001" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.046" length="0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.046 2.4786851214742433e-17 0.20240000000000008" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.027" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FR_ANKLE_Y">
+    <inertial>
+      <mass value="1.16" />
+      <origin xyz="0.0 0.00909 0.02873" rpy="0 -0 0" />
+      <inertia ixx="0.00482359" ixy="-3e-08" ixz="0.0" iyy="0.0033678" iyz="0.00044654" izz="0.00216019" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FR_ANKLE_Y-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 1.102182119232618e-18 0.009000000000000003" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.09 0.13 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.06180000000000002 0.08000000000000004" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 -0.06180000000000002 0.05700000000000004" rpy="3.14159265359 -1.34390352404 1.56784367982e-15" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 -0.06180000000000002 0.05700000000000004" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.06180000000000003 0.02500000000000002" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.035 0.008 0.0797" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.061800000000000035 0.08000000000000003" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 0.061800000000000035 0.05700000000000002" rpy="3.14159265359 -1.34390352404 1.56784367982e-15" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 0.061800000000000035 0.05700000000000002" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.05 0.008 0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.06180000000000003 0.025000000000000005" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.035 0.008 0.0797" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07050000000000003 0.08000000000000003" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.02" length="0.0155" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0097 0.07050000000000003 0.057000000000000016" rpy="3.14159265359 -1.34390352404 1.56784367982e-15" />
+      <geometry>
+        <box size="0.04 0.0155 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0097 0.07050000000000003 0.057000000000000016" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.04 0.0155 0.03" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.07050000000000002 0.029000000000000005" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.026 0.0155 0.058" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FR_ANKLE_P">
+    <inertial>
+      <mass value="5.06" />
+      <origin xyz="0.00215 -0.0017 0.07672" rpy="0 -0 0" />
+      <inertia ixx="0.03534068" ixy="2.587e-05" ixz="0.00070201" iyy="0.0355447" iyz="0.00069448" izz="0.01095592" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FR_ANKLE_P-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 6.735557395310444e-18 0.05500000000000003" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.117 0.11" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.05570000000000003 0.020000000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.04 0.006 0.1" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.06800000000000003 0.02700000000000002" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.1 0.03 0.06" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0545 1.1879073951729329e-17 0.09700000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.045 0.084 0.0058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0545 1.1879073951729329e-17 0.09700000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.045 0.084 0.0058" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.07 1.4818226269682975e-17 0.12100000000000005" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.124 0.058 0.024" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.04020000000000002 -4.923080132572361e-18" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.037" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.0025000000000000014 -3.0616169978683835e-19" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.038" length="0.037" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.03500000000000002 4.2862637970157375e-18" rpy="-1.57079632679 -1.57079632679 0.0" />
+      <geometry>
+        <cylinder radius="0.061" length="0.046" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0395 1.8859560706869244e-17 0.15400000000000005" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.05" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0035 1.8859560706869244e-17 0.15400000000000005" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.038" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.035 1.8859560706869244e-17 0.15400000000000005" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.061" length="0.0454" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FR_ANKLE_R">
+    <inertial>
+      <mass value="0.82" />
+      <origin xyz="-0.01007 0.0 0.02816" rpy="0 -0 0" />
+      <inertia ixx="0.00132859" ixy="2.8e-07" ixz="0.00019601" iyy="0.00261108" iyz="-1.2e-07" izz="0.00200116" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FR_ANKLE_R-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 8.572527594031475e-18 0.07000000000000003" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.12 0.077 0.006" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 7.34788079488412e-18 0.060000000000000026" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.08 0.0057" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 0.01390000000000001 0.03500000000000002" rpy="-1.83259571459 -0.0 0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.063 -0.015500000000000003 0.035000000000000024" rpy="-2.87979326579 -0.0 0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.06 0.0 0.0" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.028" length="0.012" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 7.34788079488412e-18 0.060000000000000026" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.024 0.08 0.0057" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.01390000000000001 0.03500000000000002" rpy="-1.83259571459 -0.0 0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 -0.015500000000000003 0.035000000000000024" rpy="-2.87979326579 -0.0 0.0" />
+      <geometry>
+        <box size="0.0057 0.04 0.044" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.063 0.0 0.0" rpy="-1.57079632679 -2.22044604925e-16 -1.57079632679" />
+      <geometry>
+        <cylinder radius="0.028" length="0.006" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="FR_HOOK">
+    <inertial>
+      <mass value="1e-06" />
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0225" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-FR_HOOK-visual-0.dae" scale="1.0 1.0000000000000004 1.0000000000000004" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.045" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0772 2.8656735100048073e-18 0.04590000000000001" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.1057 0.1 0.0126" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.1 2.0329136865846066e-18 0.03910000000000001" rpy="3.14159265359 -0.261799387799 1.6548732745e-17" />
+      <geometry>
+        <box size="0.059 0.1 0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.118 8.082668874372533e-19 0.0291" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.02 0.1 0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.1251 1.5920408388915595e-18 0.035500000000000004" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.034 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0033 4.898587196589414e-19 0.026500000000000003" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.143 0.1 0.0078" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0414 1.5675479029086126e-18 0.035300000000000005" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.054 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.068 -2.339075386371445e-18 0.0033999999999999933" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.042 0.1 0.0038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0705 -1.714505518806295e-18 0.008499999999999992" rpy="3.14159265359 -1.308996939 2.88045933863e-16" />
+      <geometry>
+        <box size="0.042 0.1 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0725 -4.078073841160688e-18 -0.010800000000000018" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.0135 0.1 0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0787 -4.408728476930472e-18 -0.013500000000000012" rpy="3.14159265359 -1.57079632679 0.0" />
+      <geometry>
+        <box size="0.008 0.1 0.013" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0772 -3.735172737399428e-18 -0.008000000000000014" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.013 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0164 1.812477262738083e-18 0.03730000000000001" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.01675 1.812477262738083e-18 0.03730000000000001" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.04275 1.812477262738083e-18 0.03730000000000001" rpy="0.0 -0.0 0.0" />
+      <geometry>
+        <box size="0.032 0.1 0.01" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0297 1.5063155629512448e-18 0.034800000000000005" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.027 0.1 0.017" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0297 3.1963281457745927e-18 0.04860000000000001" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.011 0.1 0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0801 1.8737096026954506e-18 0.03780000000000001" rpy="3.14159265359 -0.785398163397 3.06616755663e-16" />
+      <geometry>
+        <box size="0.028 0.1 0.014" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.067 7.960204194457797e-19 0.029" rpy="3.14159265359 -0.349065850399 2.26305581478e-17" />
+      <geometry>
+        <box size="0.013 0.1 0.008" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0897 3.061616997868384e-18 0.047500000000000014" rpy="3.14159265359 -0.0 0.0" />
+      <geometry>
+        <box size="0.01 0.1 0.01" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="BASE">
+    <inertial>
+      <mass value="47.12" />
+      <origin xyz="0.02263 -0.00136 0.27279" rpy="0 -0 0" />
+      <inertia ixx="2.27861715" ixy="0.0127815" ixz="0.00094062" iyy="1.9299188" iyz="-0.00016286" izz="0.87692246" />
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <mesh filename="package://aizu_spider_tnk_description/urdf/warec/warec-BASE-visual-0.dae" scale="1.0000000000000002 1.0 1.0000000000000002" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.2750000000000001 0.0 0.0" rpy="-0.0 1.57079632679 0.0" />
+      <geometry>
+        <box size="0.22 0.283 0.465" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.5481720000000001 -0.164497 -0.04200000000000001" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.056" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.5481720000000001 -0.164497 0.0" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.04493" length="0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.5481720000000001 -0.164497 0.045000000000000005" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.057" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.164497 -0.04200000000000001" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.056" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.164497 0.0" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.04493" length="0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 -0.164497 0.045000000000000005" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.057" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.5481720000000001 0.164497 -0.04200000000000001" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.056" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.5481720000000001 0.164497 0.0" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.04493" length="0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.5481720000000001 0.164497 0.045000000000000005" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.057" length="0.036" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.164497 -0.04200000000000001" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.056" length="0.042" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.164497 0.0" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.04493" length="0.05" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0 0.164497 0.045000000000000005" rpy="3.14159265359 8.65956056235e-17 1.57079632679" />
+      <geometry>
+        <cylinder radius="0.057" length="0.036" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="RL_HIP_R" type="revolute">
+    <origin xyz="-5.000000000000001e-06 0.164905 0.0" rpy="-0.0 1.57079632679 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="BASE" />
+    <child link="RL_HIP_R" />
+    <limit lower="-0.890117918517" upper="2.58308729295" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RL_HIP_P" type="revolute">
+    <origin xyz="0.0 -1.6653345369377348e-16 -0.16899999999999993" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="RL_HIP_R" />
+    <child link="RL_HIP_P" />
+    <limit lower="-1.86750229963" upper="1.86750229963" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RL_HIP_Y" type="continuous">
+    <origin xyz="0.0 2.7755575615628914e-17 -0.24100000000000005" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="RL_HIP_P" />
+    <child link="RL_HIP_Y" />
+  </joint>
+  <joint name="RL_KNEE_P" type="revolute">
+    <origin xyz="0.046 1.942890293094024e-16 -0.07804000000000028" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="RL_HIP_Y" />
+    <child link="RL_KNEE_P" />
+    <limit lower="-2.84488668075" upper="0.663225115758" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RL_ANKLE_Y" type="continuous">
+    <origin xyz="-0.045999999999999854 2.7755575615628914e-17 -0.2130000000000002" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="RL_KNEE_P" />
+    <child link="RL_ANKLE_Y" />
+  </joint>
+  <joint name="RL_ANKLE_P" type="revolute">
+    <origin xyz="0.0 0.0 -0.07999999999999963" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="RL_ANKLE_Y" />
+    <child link="RL_ANKLE_P" />
+    <limit lower="-1.62315620435" upper="1.62315620435" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RL_ANKLE_R" type="revolute">
+    <origin xyz="0.0 8.326672684688674e-17 -0.15400000000000014" rpy="0.0 -0.0 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="RL_ANKLE_P" />
+    <child link="RL_ANKLE_R" />
+    <limit lower="-1.85004900711" upper="1.85004900711" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RL_HOOK" type="fixed">
+    <origin xyz="0.0 -4.163336342344337e-16 -0.09549999999999959" rpy="0.0 -0.0 0.0" />
+    <parent link="RL_ANKLE_R" />
+    <child link="RL_HOOK" />
+  </joint>
+  <joint name="RR_HIP_R" type="revolute">
+    <origin xyz="-5.000000000000001e-06 -0.164905 0.0" rpy="-0.0 1.57079632679 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="BASE" />
+    <child link="RR_HIP_R" />
+    <limit lower="-2.58308729295" upper="0.890117918517" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RR_HIP_P" type="revolute">
+    <origin xyz="0.0 1.6653345369377348e-16 -0.16899999999999993" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="RR_HIP_R" />
+    <child link="RR_HIP_P" />
+    <limit lower="-1.86750229963" upper="1.86750229963" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RR_HIP_Y" type="continuous">
+    <origin xyz="0.0 -2.7755575615628914e-17 -0.24100000000000005" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="RR_HIP_P" />
+    <child link="RR_HIP_Y" />
+  </joint>
+  <joint name="RR_KNEE_P" type="revolute">
+    <origin xyz="0.046 -4.440892098500626e-16 -0.07803999999999983" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="RR_HIP_Y" />
+    <child link="RR_KNEE_P" />
+    <limit lower="-2.84488668075" upper="0.663225115758" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RR_ANKLE_Y" type="continuous">
+    <origin xyz="-0.045999999999999854 -2.7755575615628914e-17 -0.2130000000000002" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="RR_KNEE_P" />
+    <child link="RR_ANKLE_Y" />
+  </joint>
+  <joint name="RR_ANKLE_P" type="revolute">
+    <origin xyz="0.0 0.0 -0.07999999999999952" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="RR_ANKLE_Y" />
+    <child link="RR_ANKLE_P" />
+    <limit lower="-1.62315620435" upper="1.62315620435" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RR_ANKLE_R" type="revolute">
+    <origin xyz="0.0 -8.326672684688674e-17 -0.15400000000000014" rpy="0.0 -0.0 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="RR_ANKLE_P" />
+    <child link="RR_ANKLE_R" />
+    <limit lower="-1.85004900711" upper="1.85004900711" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="RR_HOOK" type="fixed">
+    <origin xyz="0.0 -2.7755575615628914e-17 -0.0954999999999997" rpy="0.0 -0.0 0.0" />
+    <parent link="RR_ANKLE_R" />
+    <child link="RR_HOOK" />
+  </joint>
+  <joint name="FL_HIP_R" type="revolute">
+    <origin xyz="0.5458050000000001 0.164905 0.0" rpy="-0.0 1.57079632679 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="BASE" />
+    <child link="FL_HIP_R" />
+    <limit lower="-2.58308729295" upper="0.890117918517" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FL_HIP_P" type="revolute">
+    <origin xyz="0.0 2.220446049250313e-16 0.16900000000000026" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="FL_HIP_R" />
+    <child link="FL_HIP_P" />
+    <limit lower="-1.86750229963" upper="1.86750229963" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FL_HIP_Y" type="continuous">
+    <origin xyz="0.0 -1.1102230246251565e-16 0.241" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="FL_HIP_P" />
+    <child link="FL_HIP_Y" />
+  </joint>
+  <joint name="FL_KNEE_P" type="revolute">
+    <origin xyz="0.046 -8.326672684688674e-17 0.07803999999999989" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="FL_HIP_Y" />
+    <child link="FL_KNEE_P" />
+    <limit lower="-0.488692190558" upper="2.84488668075" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FL_ANKLE_Y" type="continuous">
+    <origin xyz="-0.045999999999999264 -4.996003610813204e-16 0.2129999999999994" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="FL_KNEE_P" />
+    <child link="FL_ANKLE_Y" />
+  </joint>
+  <joint name="FL_ANKLE_P" type="revolute">
+    <origin xyz="0.0 2.220446049250313e-16 0.08000000000000007" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="FL_ANKLE_Y" />
+    <child link="FL_ANKLE_P" />
+    <limit lower="-1.62315620435" upper="1.62315620435" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FL_ANKLE_R" type="revolute">
+    <origin xyz="0.0 -2.7755575615628914e-16 0.15400000000000036" rpy="0.0 -0.0 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="FL_ANKLE_P" />
+    <child link="FL_ANKLE_R" />
+    <limit lower="-1.85004900711" upper="1.85004900711" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FL_HOOK" type="fixed">
+    <origin xyz="0.0 -1.942890293094024e-16 0.09549999999999992" rpy="0.0 -0.0 0.0" />
+    <parent link="FL_ANKLE_R" />
+    <child link="FL_HOOK" />
+  </joint>
+  <joint name="FR_HIP_R" type="revolute">
+    <origin xyz="0.5458050000000001 -0.164905 0.0" rpy="-0.0 1.57079632679 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="BASE" />
+    <child link="FR_HIP_R" />
+    <limit lower="-0.890117918517" upper="2.58308729295" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FR_HIP_P" type="revolute">
+    <origin xyz="0.0 -2.220446049250313e-16 0.16900000000000026" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="FR_HIP_R" />
+    <child link="FR_HIP_P" />
+    <limit lower="-1.86750229963" upper="1.86750229963" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FR_HIP_Y" type="continuous">
+    <origin xyz="0.0 1.1102230246251565e-16 0.24099999999999988" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="FR_HIP_P" />
+    <child link="FR_HIP_Y" />
+  </joint>
+  <joint name="FR_KNEE_P" type="revolute">
+    <origin xyz="0.046 8.326672684688674e-17 0.07803999999999989" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="FR_HIP_Y" />
+    <child link="FR_KNEE_P" />
+    <limit lower="-0.663225115758" upper="2.84488668075" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FR_ANKLE_Y" type="continuous">
+    <origin xyz="-0.04599999999999913 3.608224830031759e-16 0.21300000000000008" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <parent link="FR_KNEE_P" />
+    <child link="FR_ANKLE_Y" />
+  </joint>
+  <joint name="FR_ANKLE_P" type="revolute">
+    <origin xyz="0.0 -3.3306690738754696e-16 0.08000000000000007" rpy="0.0 -0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <parent link="FR_ANKLE_Y" />
+    <child link="FR_ANKLE_P" />
+    <limit lower="-1.62315620435" upper="1.62315620435" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FR_ANKLE_R" type="revolute">
+    <origin xyz="0.0 -1.6653345369377348e-16 0.15399999999999991" rpy="0.0 -0.0 0.0" />
+    <axis xyz="1 0 0" />
+    <parent link="FR_ANKLE_P" />
+    <child link="FR_ANKLE_R" />
+    <limit lower="-1.85004900711" upper="1.85004900711" effort="1000" velocity="1000000.0" />
+  </joint>
+  <joint name="FR_HOOK" type="fixed">
+    <origin xyz="0.0 -2.220446049250313e-16 0.0954999999999997" rpy="0.0 -0.0 0.0" />
+    <parent link="FR_ANKLE_R" />
+    <child link="FR_HOOK" />
+  </joint>
+  <link name="RL_wrench">
+  </link>
+  <joint name="RL_wrench_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="RL_HOOK" />
+    <child link="RL_wrench" />
+  </joint>
+  <sensor name="RL_wrench_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="RL_HOOK" />
+  </sensor>
+  <link name="RR_wrench">
+  </link>
+  <joint name="RR_wrench_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="RR_HOOK" />
+    <child link="RR_wrench" />
+  </joint>
+  <sensor name="RR_wrench_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="RR_HOOK" />
+  </sensor>
+  <link name="FL_wrench">
+  </link>
+  <joint name="FL_wrench_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="FL_HOOK" />
+    <child link="FL_wrench" />
+  </joint>
+  <sensor name="FL_wrench_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="FL_HOOK" />
+  </sensor>
+  <link name="FR_wrench">
+  </link>
+  <joint name="FR_wrench_JOINT" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="FR_HOOK" />
+    <child link="FR_wrench" />
+  </joint>
+  <sensor name="FR_wrench_SENSOR" update_rate="20">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
+    <parent link="FR_HOOK" />
+  </sensor>
+</robot>
