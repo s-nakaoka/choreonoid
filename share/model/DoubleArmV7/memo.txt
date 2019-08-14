@@ -1,2 +1,7 @@
 dmanibktrod_v7.wrl
 block100_prt.wrl 
+はstlへ変換できなかった．
+
+# 変更部分
+1. .wrl は事前に stl に変換
+2. .bodyファイル内部の.wrl を .stl に変更
