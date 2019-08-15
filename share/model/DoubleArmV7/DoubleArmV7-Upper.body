@@ -312,7 +312,7 @@ links:
             height: 360
             fieldOfView: 96
             farClipDistance: 5
-            on: false
+            on: true
           -
             type: Camera
             name: Mid_BOTTOM_CAMERA
@@ -334,7 +334,7 @@ links:
             height: 720
             fieldOfView: 40
             farClipDistance: 5
-            on: false
+            on: true
   -
     name: BLOCK
     parent: MFRAME
@@ -723,7 +723,7 @@ links:
             height: 720
             fieldOfView: 115.97
             farClipDistance: 5
-            on: false
+            on: true
   -
     name: TOHKU_ROLL
     parent: TOHKU_PITCH
@@ -1707,7 +1707,7 @@ links:
             height: 720
             fieldOfView: 115.97
             farClipDistance: 5
-            on: false
+            on: true
   -
     name: HANDBASE
     parent: YAWJOINT
