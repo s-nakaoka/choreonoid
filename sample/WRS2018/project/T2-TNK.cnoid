@@ -16,11 +16,11 @@ items:
       children: 
         - 
           id: 2
-          name: "T1"
+          name: "T2"
           plugin: Base
           class: SubProjectItem
           data: 
-            filename: "${SHARE}/WRS2018/project/T1L.cnoid"
+            filename: "${SHARE}/WRS2018/project/T2.cnoid"
             format: PROJECT
             saveMode: "Manual save"
         - 
@@ -69,7 +69,7 @@ items:
                 antiAliasing: false
         - 
           id: 5
-          name: "DoubleArmV7A"
+          name: "DoubleArmV7A-TNK"
           plugin: Base
           class: SubProjectItem
           data:
