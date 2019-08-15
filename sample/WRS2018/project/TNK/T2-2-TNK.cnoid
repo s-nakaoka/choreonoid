@@ -16,11 +16,11 @@ items:
       children: 
         - 
           id: 2
-          name: "T1"
+          name: "T2-2"
           plugin: Base
           class: SubProjectItem
           data: 
-            filename: "${SHARE}/WRS2018/project/T1L.cnoid"
+            filename: "${SHARE}/WRS2018/project/T2-2.cnoid"
             format: PROJECT
             saveMode: "Manual save"
         - 
@@ -173,6 +173,7 @@ views:
     name: "Camera Scene"
     plugin: Base
     class: SceneView
+    mounted: true
     state: 
       editMode: false
       viewpointControlMode: thirdPerson
@@ -366,8 +367,8 @@ viewAreas:
               children: 
                 - 
                   type: pane
-                  views: [ 5, 6 ]
-                  current: 5
+                  views: [ 5, 6, 4 ]
+                  current: 4
                 - 
                   type: pane
                   views: [ 3 ]
