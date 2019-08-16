@@ -1837,7 +1837,6 @@ links:
     name: HANDSLNK_I
     parent: PUSHROD
     rotation: [ [ 0, 1, 0, 90 ], [ 1, 0, 0, 90 ], [ 0, 0, -1, 61.2291 ] ]
-    jointId: 16
     jointType: revolute
     jointAxis: Z
     jointRange: [ -171.9, 171.9 ]
@@ -1871,7 +1870,6 @@ links:
     name: HANDSLNK_O
     parent: PUSHROD
     rotation: [ [ 0, 1, 0, 90 ], [ 1, 0, 0, 90 ], [ 0, 0, 1, 61.2291 ] ]
-    jointId: 17
     jointType: revolute
     jointAxis: Z
     jointRange: [ -171.9, 171.9 ]
@@ -1906,7 +1904,6 @@ links:
     parent: HANDBASE
     translation: [ 0.03, 0, -0.14 ]
     rotation: [ [ 0, 1, 0, 90 ], [ 1, 0, 0, 90 ], [ 0, 0, 1, 6.7682 ] ]
-    jointId: 18
     jointType: revolute
     jointAxis: Z
     jointRange: [ -171.9, 171.9 ]
@@ -1979,7 +1976,6 @@ links:
     parent: MANIFNG_U
     translation: [ 0.171, 0, 0 ]
     rotation: [ 0, 0, -1, 6.7682 ]
-    jointId: 19
     jointType: revolute
     jointAxis: Z
     jointRange: [ -171.9, 171.9 ]
@@ -2059,7 +2055,6 @@ links:
     parent: HANDBASE
     translation: [ 0, 0.0065, -0.155 ]
     rotation: [ [ 0, 1, 0, 90 ], [ 1, 0, 0, 90 ], [ 0, 0, 1, 6.7682 ] ]
-    jointId: 20
     jointType: revolute
     jointAxis: Z
     jointRange: [ -171.9, 171.9 ]
@@ -2102,7 +2097,6 @@ links:
     parent: HANDBASE
     translation: [ -0.03, 0, -0.14 ]
     rotation: [ [ 0, 1, 0, 90 ], [ 1, 0, 0, 90 ], [ 0.998256, -0.0590292, 0, 180 ] ]
-    jointId: 21
     jointType: revolute
     jointRange: [ -171.9, 171.9 ]
     maxJointVelocity: 573
@@ -2122,7 +2116,6 @@ links:
     parent: MANIFNG_L
     translation: [ 0.171, 0, 0 ]
     rotation: [ 0, 0, -1, 6.7682 ]
-    jointId: 22
     jointType: revolute
     jointRange: [ -171.9, 171.9 ]
     maxJointVelocity: 573
@@ -2143,7 +2136,6 @@ links:
     parent: HANDBASE
     translation: [ 0, -0.0065, -0.155 ]
     rotation: [ [ 0, 1, 0, 90 ], [ 1, 0, 0, 90 ], [ 0.998256, -0.0590292, 0, 180 ] ]
-    jointId: 23
     jointType: revolute
     jointRange: [ -171.9, 171.9 ]
     maxJointVelocity: 573
