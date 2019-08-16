@@ -66,7 +66,6 @@ links:
     name: WHEEL_L0
     parent: TFRAME
     jointType: revolute
-    jointId: 24
     jointAxis: Y
     translation: [ 0.74, 0.600, -0.295 ]
     centerOfMass: [ 0, 0, 0 ]
@@ -89,7 +88,6 @@ links:
   -
     name: WHEEL_L1
     parent: TFRAME
-    jointId: 25
     jointType: revolute
     jointAxis: Y
     translation: [ 0.26, 0.600, -0.295 ]
@@ -105,7 +103,6 @@ links:
   -
     name: WHEEL_L2
     parent: TFRAME
-    jointId: 26
     jointType: revolute
     jointAxis: Y
     translation: [ -0.22, 0.600, -0.295 ]
@@ -121,7 +118,6 @@ links:
   -
     name: WHEEL_L3
     parent: TFRAME
-    jointId: 27
     jointType: revolute
     jointAxis: Y
     translation: [ -0.70, 0.600, -0.295 ]
@@ -137,7 +133,6 @@ links:
   -
     name: WHEEL_R0
     parent: TFRAME
-    jointId: 28
     jointType: revolute
     jointAxis: Y
     translation: [ 0.74, -0.600, -0.295 ]
@@ -153,7 +148,6 @@ links:
   -
     name: WHEEL_R1
     parent: TFRAME
-    jointId: 29
     jointType: revolute
     jointAxis: Y
     translation: [ 0.26, -0.600, -0.295 ]
@@ -169,7 +163,6 @@ links:
   -
     name: WHEEL_R2
     parent: TFRAME
-    jointId: 30
     jointType: revolute
     jointAxis: Y
     translation: [ -0.22, -0.600, -0.295 ]
@@ -185,7 +178,6 @@ links:
   -
     name: WHEEL_R3
     parent: TFRAME
-    jointId: 31
     jointType: revolute
     jointAxis: Y
     translation: [ -0.70, -0.600, -0.295 ]
