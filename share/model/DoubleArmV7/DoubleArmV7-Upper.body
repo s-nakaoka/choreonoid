@@ -716,9 +716,20 @@ links:
                 geometry: { type: Cylinder, radius: 0.040, height: 0.180 }
           - 
             type: Camera
-            name: Lower_Hand_Camera
+            name: Lower_Hand_Axial_Camera
             rotation: [ -0.171088,  0.970288,  0.171088, 91.73 ]
-            translation: [ -0.2, 0.20, 0 ]
+            translation: [ -0.2, 0.0, 0.20 ]
+            format: COLOR
+            width: 1280
+            height: 720
+            fieldOfView: 115.97
+            farClipDistance: 5
+            on: true
+          - 
+            type: Camera
+            name: Lower_Hand_Thrust_Camera
+            rotation: [ 0.970288, -0.171088, 0.171088, -91.73 ]
+            translation: [ -0.2, 0.0, 0.2 ]
             format: COLOR
             width: 1280
             height: 720
@@ -1700,9 +1711,20 @@ links:
                     geometry: { type: Cylinder, radius: 0.049, height: 0.1 }
           -
             type: Camera
-            name: Upper_Hand_Camera
+            name: Upper_Hand_Axial_Camera
             translation: [ -1.0, 0.0, 0.0 ]
             rotation: [ 0, 1, 0, 90.0 ]
+            format: COLOR
+            width: 1280
+            height: 720
+            fieldOfView: 115.97
+            farClipDistance: 5
+            on: true
+          -
+            type: Camera
+            name: Upper_Hand_Thrust_Camera
+            translation: [ -1.0, 0.0, 0.0 ]
+            rotation: [ 1, 0, 0, -90.0 ]
             format: COLOR
             width: 1280
             height: 720
