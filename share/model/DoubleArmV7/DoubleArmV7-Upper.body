@@ -1700,7 +1700,7 @@ links:
           -
             type: Camera
             name: Upper_Hand_Camera
-            translation: [ -0.2, 0.15, 0.0 ]
+            translation: [ -1.0, 0.0, 0.0 ]
             rotation: [ 0, 1, 0, 90.0 ]
             format: COLOR
             width: 1280
