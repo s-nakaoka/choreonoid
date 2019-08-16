@@ -53,6 +53,7 @@ links:
             scanRate:  20
             maxDistance: 100.0
             minDistance: 3.0
+            on: true
             elements:
               RigidBody:
                 translation: [ 0, 0, 0.03 ]
