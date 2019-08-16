@@ -373,7 +373,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="7.8859849469e-16 9.95799250103e-17 -1.57079632679" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-MANIARM-visual-0.dae" scale="1.0000000000000013 1.000000000000002 1.0000000000000016" />
+        <mesh filename="DoubleArmV7-Upper-MANIARM-visual-0.dae" scale="1.0000000000000013 1.000000000000002 1.0000000000000016" />
       </geometry>
     </visual>
   </link>
@@ -414,7 +414,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDSLNK_I-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+        <mesh filename="DoubleArmV7-Upper-HANDSLNK_I-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
       </geometry>
     </visual>
     <collision>
@@ -445,7 +445,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDSLNK_O-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+        <mesh filename="DoubleArmV7-Upper-HANDSLNK_O-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
       </geometry>
     </visual>
     <collision>
@@ -476,7 +476,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-MANIFNG_U-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+        <mesh filename="DoubleArmV7-Upper-MANIFNG_U-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
       </geometry>
     </visual>
     <collision>
@@ -555,7 +555,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDTIP_U-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+        <mesh filename="DoubleArmV7-Upper-HANDTIP_U-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
       </geometry>
     </visual>
     <collision>
@@ -640,7 +640,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDLNK_I-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+        <mesh filename="DoubleArmV7-Upper-HANDLNK_I-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
       </geometry>
     </visual>
     <collision>
@@ -683,7 +683,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-MANIFNG_L-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+        <mesh filename="DoubleArmV7-Upper-MANIFNG_L-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
       </geometry>
     </visual>
     <collision>
@@ -762,7 +762,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDTIP_L-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+        <mesh filename="DoubleArmV7-Upper-HANDTIP_L-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
       </geometry>
     </visual>
     <collision>
@@ -847,7 +847,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-1.35515238445e-15 -1.57079632679 0.0" />
       <geometry>
-        <mesh filename="package://aizu_spider_tnk_description/urdf/darm/DoubleArmV7-Upper-HANDLNK_O-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
+        <mesh filename="DoubleArmV7-Upper-HANDLNK_O-visual-0.dae" scale="1.000000000000002 1.0000000000000016 1.0000000000000022" />
       </geometry>
     </visual>
     <collision>
@@ -971,225 +971,225 @@
     </inertial>
   </link>
   <joint name="MFRAME" type="revolute">
-    <origin xyz="0.0 0.0 0.52" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 0 1" />
     <parent link="TFRAME" />
     <child link="MFRAME" />
     <limit lower="-11.9991386075" upper="11.9991386075" effort="12000.0" velocity="180.0" />
   </joint>
   <joint name="BLOCK" type="revolute">
-    <origin xyz="0.845 -0.11 0.19199999999999995" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.845 -0.11 0.192" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 0 1" />
     <parent link="MFRAME" />
     <child link="BLOCK" />
     <limit lower="-0.837758040957" upper="1.21300383014" effort="12000.0" velocity="1146.0" />
   </joint>
   <joint name="BOOM" type="revolute">
-    <origin xyz="0.06999999999999984 -3.608224830031759e-16 0.20000000000000007" rpy="1.57079632679 8.65956056235e-17 3.14159265359" />
+    <origin xyz="0.0700000000000004 1.5265566588595902e-16 0.20000000000000012" rpy="1.57079632679 8.65956056235e-17 3.14159265359" />
     <axis xyz="0 0 1" />
     <parent link="BLOCK" />
     <child link="BOOM" />
     <limit lower="-1.31074226825" upper="0.928515162061" effort="15000.0" velocity="1146.0" />
   </joint>
   <joint name="ARM" type="revolute">
-    <origin xyz="-1.7599999999999996 1.3322676295501878e-15 1.1102230246251565e-16" rpy="0.0 -0.0 0.0" />
+    <origin xyz="-1.7599999999999993 5.551115123125783e-16 -9.71445146547012e-17" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 0 1" />
     <parent link="BOOM" />
     <child link="ARM" />
     <limit lower="0.535816080362" upper="2.65464579228" effort="12000.0" velocity="1146.0" />
   </joint>
   <joint name="TOHKU_PITCH" type="revolute">
-    <origin xyz="-0.9649999999999999 -1.1102230246251565e-16 2.914335439641036e-16" rpy="1.57079632679 1.16573417586e-15 1.57079632679" />
+    <origin xyz="-0.9649999999999999 1.6653345369377348e-16 -5.551115123125783e-17" rpy="1.57079632679 -1.11022302463e-16 1.57079632679" />
     <axis xyz="0 1 0" />
     <parent link="ARM" />
     <child link="TOHKU_PITCH" />
     <limit lower="-0.588175957922" upper="1.57079632679" effort="10000.0" velocity="5730.0" />
   </joint>
   <joint name="TOHKU_ROLL" type="revolute">
-    <origin xyz="4.440892098500626e-16 1.5543122344752192e-15 -0.22699999999999942" rpy="0.0 -0.0 0.0" />
+    <origin xyz="9.992007221626409e-16 1.3183898417423734e-15 -0.22699999999999942" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 0 1" />
     <parent link="TOHKU_PITCH" />
     <child link="TOHKU_ROLL" />
     <limit lower="-3.14159265359" upper="3.14159265359" effort="10000.0" velocity="573.0" />
   </joint>
   <joint name="TOHKU_TIP_01" type="revolute">
-    <origin xyz="-1.1102230246251565e-16 1.942890293094024e-16 -0.3089999999999997" rpy="0.0 -0.0 0.0" />
+    <origin xyz="9.992007221626409e-16 -7.077671781985373e-16 -0.3089999999999997" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TOHKU_ROLL" />
     <child link="TOHKU_TIP_01" />
     <limit lower="-0.349065850399" upper="0.0" effort="10000.0" velocity="573.0" />
   </joint>
   <joint name="TOHKU_TIP_02" type="revolute">
-    <origin xyz="-1.1102230246251565e-16 1.942890293094024e-16 -0.3089999999999997" rpy="0.0 -0.0 3.14159265359" />
+    <origin xyz="9.992007221626409e-16 -7.077671781985373e-16 -0.3089999999999997" rpy="0.0 -0.0 3.14159265359" />
     <axis xyz="0 1 0" />
     <parent link="TOHKU_ROLL" />
     <child link="TOHKU_TIP_02" />
     <limit lower="-0.349065850399" upper="0.0" effort="10000.0" velocity="573.0" />
   </joint>
   <joint name="UFRAME" type="revolute">
-    <origin xyz="0.0 0.0 0.8200000000000001" rpy="0.0 -0.0 3.14159265359" />
+    <origin xyz="0.0 0.0 0.3" rpy="0.0 -0.0 3.14159265359" />
     <axis xyz="0 0 1" />
     <parent link="TFRAME" />
     <child link="UFRAME" />
     <limit lower="-11.9991386075" upper="11.9991386075" effort="12000.0" velocity="573.0" />
   </joint>
   <joint name="MNP_SWING" type="revolute">
-    <origin xyz="0.5595 -0.13 0.118" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.5595 -0.13 0.11800000000000005" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 0 1" />
     <parent link="UFRAME" />
     <child link="MNP_SWING" />
     <limit lower="-1.0471975512" upper="1.0471975512" effort="12000.0" velocity="1146.0" />
   </joint>
   <joint name="MANIBOOM" type="revolute">
-    <origin xyz="0.06999999999999973 -3.608224830031759e-16 0.14000000000000035" rpy="-1.57079632679 1.57079632679 0.0" />
+    <origin xyz="0.07000000000000028 1.942890293094024e-16 0.1400000000000003" rpy="-1.57079632679 1.57079632679 0.0" />
     <axis xyz="0 0 1" />
     <parent link="MNP_SWING" />
     <child link="MANIBOOM" />
     <limit lower="0.0" upper="2.00712863979" effort="15000.0" velocity="573.0" />
   </joint>
   <joint name="MANIARM" type="revolute">
-    <origin xyz="-1.48 0.08000000000000063 -4.163336342344337e-16" rpy="0.0 -0.0 3.14159265359" />
+    <origin xyz="-1.4799999999999995 0.0800000000000003 -4.718447854656915e-16" rpy="0.0 -0.0 3.14159265359" />
     <axis xyz="0 0 1" />
     <parent link="MANIBOOM" />
     <child link="MANIARM" />
     <limit lower="-1.91986217719" upper="0.0" effort="12000.0" velocity="573.0" />
   </joint>
   <joint name="MANIELBOW" type="revolute">
-    <origin xyz="-0.5499999999999989 0.2700000000000006 4.718447854656915e-16" rpy="1.57079632679 7.77156117238e-16 1.57079632679" />
+    <origin xyz="-0.5499999999999989 0.27000000000000035 1.942890293094024e-16" rpy="1.57079632679 1.16573417586e-15 1.57079632679" />
     <axis xyz="0 1 0" />
     <parent link="MANIARM" />
     <child link="MANIELBOW" />
     <limit lower="-1.57079632679" upper="0.349065850399" effort="10000.0" velocity="573.0" />
   </joint>
   <joint name="YAWJOINT" type="revolute">
-    <origin xyz="-3.3306690738754696e-16 3.608224830031759e-16 -0.23000000000000043" rpy="0.0 -0.0 0.0" />
+    <origin xyz="-4.440892098500626e-16 5.273559366969494e-16 -0.2300000000000002" rpy="0.0 -0.0 0.0" />
     <axis xyz="1 0 0" />
     <parent link="MANIELBOW" />
     <child link="YAWJOINT" />
     <limit lower="-0.881042206407" upper="0.881042206407" effort="10000.0" velocity="573.0" />
   </joint>
   <joint name="HANDBASE" type="revolute">
-    <origin xyz="0.0 1.0547118733938987e-15 -0.4053000000000009" rpy="0.0 -0.0 0.0" />
+    <origin xyz="-4.440892098500626e-16 -2.7755575615628914e-17 -0.40529999999999977" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 0 -1" />
     <parent link="YAWJOINT" />
     <child link="HANDBASE" />
     <limit lower="-4.71238898038" upper="4.71238898038" effort="8000.0" velocity="573.0" />
   </joint>
   <joint name="PUSHROD" type="prismatic">
-    <origin xyz="2.220446049250313e-16 7.771561172376096e-16 -0.09170000000000034" rpy="0.0 -0.0 0.0" />
+    <origin xyz="-1.1102230246251565e-16 -2.7755575615628914e-17 -0.0917" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 0 -1" />
     <parent link="HANDBASE" />
     <child link="PUSHROD" />
     <limit lower="-0.000884881930761" upper="0.0" effort="8000.0" velocity="573.0" />
   </joint>
   <joint name="HANDSLNK_I" type="revolute">
-    <origin xyz="-1.1102230246251565e-16 3.608224830031759e-16 4.440892098500626e-16" rpy="-1.57079632679 0.502146933762 3.14159265359" />
+    <origin xyz="1.1102230246251565e-16 3.885780586188048e-16 1.1102230246251565e-16" rpy="-1.57079632679 0.502146933762 3.14159265359" />
     <axis xyz="0 0 1" />
     <parent link="PUSHROD" />
     <child link="HANDSLNK_I" />
     <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
   </joint>
   <joint name="HANDSLNK_O" type="revolute">
-    <origin xyz="-1.1102230246251565e-16 3.608224830031759e-16 4.440892098500626e-16" rpy="1.57079632679 0.502146933762 -3.16645213446e-17" />
+    <origin xyz="1.1102230246251565e-16 3.885780586188048e-16 1.1102230246251565e-16" rpy="1.57079632679 0.502146933762 1.89987128067e-16" />
     <axis xyz="0 0 1" />
     <parent link="PUSHROD" />
     <child link="HANDSLNK_O" />
     <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
   </joint>
   <joint name="MANIFNG_U" type="revolute">
-    <origin xyz="0.030000000000000138 7.771561172376096e-16 -0.14000000000000035" rpy="1.57079632679 1.45266895236 1.78987944049e-14" />
+    <origin xyz="0.029999999999999916 -2.7755575615628914e-17 -0.1399999999999999" rpy="1.57079632679 1.45266895236 4.23918814852e-15" />
     <axis xyz="0 0 1" />
     <parent link="HANDBASE" />
     <child link="MANIFNG_U" />
     <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
   </joint>
   <joint name="HANDTIP_U" type="revolute">
-    <origin xyz="0.17100000000000015 -4.440892098500626e-16 0.0" rpy="1.68550260069e-17 -6.51459040917e-17 -0.118127374433" />
+    <origin xyz="0.1710000000000006 -2.220446049250313e-16 -3.885780586188048e-16" rpy="-3.54187949632e-16 -1.17224040023e-16 -0.118127374433" />
     <axis xyz="0 0 1" />
     <parent link="MANIFNG_U" />
     <child link="HANDTIP_U" />
     <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
   </joint>
   <joint name="HANDLNK_I" type="revolute">
-    <origin xyz="1.1102230246251565e-16 0.006500000000000783 -0.15500000000000025" rpy="1.57079632679 1.45266895236 1.78987944049e-14" />
+    <origin xyz="-1.1102230246251565e-16 0.006499999999999978 -0.15499999999999992" rpy="1.57079632679 1.45266895236 4.23918814852e-15" />
     <axis xyz="0 0 1" />
     <parent link="HANDBASE" />
     <child link="HANDLNK_I" />
     <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
   </joint>
   <joint name="MANIFNG_L" type="revolute">
-    <origin xyz="-0.029999999999999805 8.049116928532385e-16 -0.14000000000000035" rpy="1.57079632679 1.45266922743 3.14159265359" />
+    <origin xyz="-0.030000000000000027 0.0 -0.1399999999999999" rpy="1.57079632679 1.45266922743 3.14159265359" />
     <parent link="HANDBASE" />
     <child link="MANIFNG_L" />
     <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
   </joint>
   <joint name="HANDTIP_L" type="revolute">
-    <origin xyz="0.17100000000000004 0.0 -1.942890293094024e-16" rpy="-2.80434529179e-16 1.00458830582e-16 -0.118127374433" />
+    <origin xyz="0.17099999999999982 4.440892098500626e-16 3.0531133177191805e-16" rpy="-9.18211105227e-19 9.17549819597e-17 -0.118127374433" />
     <parent link="MANIFNG_L" />
     <child link="HANDTIP_L" />
     <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
   </joint>
   <joint name="HANDLNK_O" type="revolute">
-    <origin xyz="1.1102230246251565e-16 -0.006499999999999201 -0.15500000000000025" rpy="1.57079632679 1.45266922743 3.14159265359" />
+    <origin xyz="-1.1102230246251565e-16 -0.0065000000000000335 -0.15499999999999992" rpy="1.57079632679 1.45266922743 3.14159265359" />
     <parent link="HANDBASE" />
     <child link="HANDLNK_O" />
     <limit lower="-3.00022098418" upper="3.00022098418" effort="100.0" velocity="573.0" />
   </joint>
   <joint name="WHEEL_L0" type="continuous">
-    <origin xyz="0.74 0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.74 0.6 -0.295" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TFRAME" />
     <child link="WHEEL_L0" />
   </joint>
   <joint name="WHEEL_L1" type="continuous">
-    <origin xyz="0.26 0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.26 0.6 -0.295" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TFRAME" />
     <child link="WHEEL_L1" />
   </joint>
   <joint name="WHEEL_L2" type="continuous">
-    <origin xyz="-0.22 0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <origin xyz="-0.22 0.6 -0.295" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TFRAME" />
     <child link="WHEEL_L2" />
   </joint>
   <joint name="WHEEL_L3" type="continuous">
-    <origin xyz="-0.7 0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <origin xyz="-0.7 0.6 -0.295" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TFRAME" />
     <child link="WHEEL_L3" />
   </joint>
   <joint name="WHEEL_R0" type="continuous">
-    <origin xyz="0.74 -0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.74 -0.6 -0.295" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TFRAME" />
     <child link="WHEEL_R0" />
   </joint>
   <joint name="WHEEL_R1" type="continuous">
-    <origin xyz="0.26 -0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.26 -0.6 -0.295" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TFRAME" />
     <child link="WHEEL_R1" />
   </joint>
   <joint name="WHEEL_R2" type="continuous">
-    <origin xyz="-0.22 -0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <origin xyz="-0.22 -0.6 -0.295" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TFRAME" />
     <child link="WHEEL_R2" />
   </joint>
   <joint name="WHEEL_R3" type="continuous">
-    <origin xyz="-0.7 -0.6 0.22500000000000003" rpy="0.0 -0.0 0.0" />
+    <origin xyz="-0.7 -0.6 -0.295" rpy="0.0 -0.0 0.0" />
     <axis xyz="0 1 0" />
     <parent link="TFRAME" />
     <child link="WHEEL_R3" />
   </joint>
   <joint name="WIRE_GUARD_L" type="fixed">
-    <origin xyz="0.02 0.61 0.2" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.02 0.61 -0.32" rpy="0.0 -0.0 0.0" />
     <parent link="TFRAME" />
     <child link="WIRE_GUARD_L" />
   </joint>
   <joint name="WIRE_GUARD_R" type="fixed">
-    <origin xyz="0.02 -0.61 0.2" rpy="0.0 -0.0 0.0" />
+    <origin xyz="0.02 -0.61 -0.32" rpy="0.0 -0.0 0.0" />
     <parent link="TFRAME" />
     <child link="WIRE_GUARD_R" />
   </joint>
