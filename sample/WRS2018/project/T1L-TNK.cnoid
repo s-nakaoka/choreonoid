@@ -73,6 +73,6 @@ items:
           plugin: Base
           class: SubProjectItem
           data:
-            filename: "${SHARE}/WRS2018/project/DoubleArmV7A.cnoid"
+            filename: "${SHARE}/WRS2018/project/TNK/DoubleArmV7A-TNK.cnoid"
             format: PROJECT
             saveMode: "Manual save"

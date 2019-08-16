@@ -16,11 +16,11 @@ items:
       children: 
         - 
           id: 2
-          name: "T1"
+          name: "TS2"
           plugin: Base
           class: SubProjectItem
           data: 
-            filename: "${SHARE}/WRS2018/project/T1L.cnoid"
+            filename: "${SHARE}/WRS2019/TS2.cnoid"
             format: PROJECT
             saveMode: "Manual save"
         - 
