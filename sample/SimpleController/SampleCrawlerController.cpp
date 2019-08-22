@@ -17,8 +17,8 @@ class SampleCrawlerController : public SimpleController
 public:
     virtual bool initialize(SimpleControllerIO* io) override
     {
-        crawlerL = io->body()->link("CRAWLER_TRACK_L");
-        crawlerR = io->body()->link("CRAWLER_TRACK_R");
+        crawlerL = io->body()->link("TRACK_L");
+        crawlerR = io->body()->link("TRACK_R");
 
         if(!crawlerL || !crawlerR){
             io->os() << "Crawlers are not found" << std::endl;
