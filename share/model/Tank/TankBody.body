@@ -448,10 +448,10 @@ links:
                 width: 720
                 height: 480
                 frameRate: 30
-                on: false
+                on: true
               -
                 type: RangeSensor
-                name: VLP-16
+                name: VLP16
                 translation: [ 0, 0, 0.1 ]
                 rotation: [ [ 1, 0, 0, 90 ], [ 0, 1, 0, -90 ] ]
                 yawRange: 360.0
@@ -460,7 +460,7 @@ links:
                 pitchStep: 2.0
                 scanRate:  5
                 maxDistance: 100.0
-                on: false
+                on: true
               -
                 type: Transform
                 translation: [ -0.01, 0, 0.045 ]
