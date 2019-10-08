@@ -22,7 +22,7 @@ class CNOID_EXPORT TactileSensor : public Device
   virtual const char* typeName() override;
   void copyStateFrom(const TactileSensor& other);
   virtual void copyStateFrom(const DeviceState& other) override;
-  virtual Device* clone() const override;
+  // virtual Device* clone() const override;
   virtual DeviceState* cloneState() const override;
   virtual void forEachActualType(std::function<bool(const std::type_info& type)> func) override;
   virtual void clearState() override;
@@ -35,6 +35,9 @@ class CNOID_EXPORT TactileSensor : public Device
   
   const ForceData& forceData() const { return *forceData_; }
   ForceData& forceData() { return *forceData_; }
+
+ protected:
+  virtual Device* doClone(BodyCloneMap* cloneMap) const override;
   
  private:
 
