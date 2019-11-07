@@ -709,7 +709,7 @@ void PhysXLink::setVelocityToPhysX()
 
 
 PhysXBody::PhysXBody(const Body& orgBody)
-    : SimulationBody(new Body(orgBody))
+    : SimulationBody(orgBody.clone())
 {
     pxAggregate = 0;
     extraJoints.clear();
