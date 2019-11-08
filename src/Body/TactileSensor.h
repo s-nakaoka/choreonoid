@@ -37,7 +37,8 @@ class CNOID_EXPORT TactileSensor : public Device
   ForceData& forceData() { return *forceData_; }
 
  protected:
-  virtual Device* doClone(BodyCloneMap* cloneMap) const override;
+  //virtual Device* doClone(BodyCloneMap* cloneMap) const override;
+  virtual Referenced* doClone(CloneMap* cloneMap) const override;
   
  private:
 

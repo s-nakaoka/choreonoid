@@ -45,7 +45,8 @@ void TactileSensor::copyStateFrom(const DeviceState& other)
 
 
 // Device* TactileSensor::clone() const
-Device* TactileSensor::doClone(BodyCloneMap*) const
+//Device* TactileSensor::doClone(BodyCloneMap*) const
+Referenced* TactileSensor::doClone(CloneMap*) const
 {
   return new TactileSensor(*this, false);
 }
