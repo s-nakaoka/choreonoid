@@ -42,23 +42,8 @@ public:
     ItemManagerImpl(const string& moduleName, MenuManager& menuManager);
     ~ItemManagerImpl();
 
-    typedef list<shared_ptr<ItemManager::CreationPanelFilterBase>> CreationPanelFilterList;
-    typedef set<pair<string, shared_ptr<ItemManager::CreationPanelFilterBase>>> CreationPanelFilterSet;
-    
-    class CreationPanelBase : public QDialog
-    {
-    public:
-        CreationPanelBase(const QString& title, ItemPtr protoItem, bool isSingleton);
-        void addPanel(ItemCreationPanel* panel);
-        ItemPtr createItem(ItemPtr parentItem);
-        CreationPanelFilterList preFilters;
-        CreationPanelFilterList postFilters;
-    private:
-        QVBoxLayout* panelLayout;
-        ItemPtr protoItem;
-        bool isSingleton;
-    };
-    
+    class CreationPanelBase;
+
     struct Saver;
     typedef shared_ptr<Saver> SaverPtr;
     
@@ -67,7 +52,7 @@ public:
 
     struct ClassInfo
     {
-        ClassInfo() { creationPanelBase = 0; }
+        ClassInfo() { creationPanelBase = nullptr; }
         ~ClassInfo() { delete creationPanelBase; }
         string moduleName;
         string className;
@@ -82,6 +67,24 @@ public:
     typedef shared_ptr<ClassInfo> ClassInfoPtr;
     
     typedef map<string, ClassInfoPtr> ClassInfoMap;
+
+    typedef list<shared_ptr<ItemManager::CreationPanelFilterBase>> CreationPanelFilterList;
+    typedef set<pair<string, shared_ptr<ItemManager::CreationPanelFilterBase>>> CreationPanelFilterSet;
+    
+    class CreationPanelBase : public QDialog
+    {
+    public:
+        CreationPanelBase(const QString& title, ClassInfo& classInfo, ItemPtr protoItem, bool isSingleton);
+        void addPanel(ItemCreationPanel* panel);
+        ItemPtr createItem(ItemPtr parentItem);
+        CreationPanelFilterList preFilters;
+        CreationPanelFilterList postFilters;
+    private:
+        ClassInfo& classInfo;
+        QVBoxLayout* panelLayout;
+        ItemPtr protoItem;
+        bool isSingleton;
+    };
     
     struct Loader : public QObject
     {
@@ -146,9 +149,9 @@ public:
     static SaverPtr determineSaver(list<SaverPtr>& savers, const string& filename, const string& formatId);
     static bool overwrite(Item* item, bool forceOverwrite, const string& formatId);
 
-    static void onNewItemActivated(CreationPanelBase* base);
+    void onNewItemActivated(CreationPanelBase* base);
     void onLoadItemActivated();
-    static void onLoadSpecificTypeItemActivated(LoaderPtr loader);
+    void onLoadSpecificTypeItemActivated(LoaderPtr loader);
     void onReloadSelectedItemsActivated();
     void onSaveSelectedItemsActivated();
     void onSaveSelectedItemsAsActivated();
@@ -276,21 +279,21 @@ ItemManagerImpl::ItemManagerImpl(const string& moduleName, MenuManager& menuMana
         menuManager.setPath("/File");
         /*
         menuManager.addItem(_("Open Item"))
-            ->sigTriggered().connect(std::bind(&ItemManagerImpl::onLoadItemActivated, this));
+            ->sigTriggered().connect([&](){ onLoadItemActivated(); });
         */
         menuManager.setPath(N_("Open ..."));
         menuManager.setPath("/File");
         menuManager.addItem(_("Reload Selected Items"))
-            ->sigTriggered().connect(std::bind(&ItemManagerImpl::onReloadSelectedItemsActivated, this));
+            ->sigTriggered().connect([&](){ onReloadSelectedItemsActivated(); });
         
         menuManager.addSeparator();
 
         menuManager.addItem(_("Save Selected Items"))
-            ->sigTriggered().connect(std::bind(&ItemManagerImpl::onSaveSelectedItemsActivated, this));
+            ->sigTriggered().connect([&](){ onSaveSelectedItemsActivated(); });
         menuManager.addItem(_("Save Selected Items As"))
-            ->sigTriggered().connect(std::bind(&ItemManagerImpl::onSaveSelectedItemsAsActivated, this));
+            ->sigTriggered().connect([&](){ onSaveSelectedItemsAsActivated(); });
         menuManager.addItem(_("Save All Items"))
-            ->sigTriggered().connect(std::bind(&ItemManagerImpl::onSaveAllItemsActivated, this));
+            ->sigTriggered().connect([&](){ onSaveAllItemsActivated(); });
 
         menuManager.addSeparator();
         
@@ -299,7 +302,7 @@ ItemManagerImpl::ItemManagerImpl(const string& moduleName, MenuManager& menuMana
         
         menuManager.setPath("/File");
         menuManager.addItem(_("Export Selected Items"))
-            ->sigTriggered().connect(std::bind(&ItemManagerImpl::onExportSelectedItemsActivated, this));
+            ->sigTriggered().connect([&](){ onExportSelectedItemsActivated(); });
         
         menuManager.addSeparator();
 
@@ -560,7 +563,7 @@ void ItemManagerImpl::addCreationPanelFilter
 
 ItemManagerImpl::CreationPanelBase* ItemManagerImpl::getOrCreateCreationPanelBase(const string& typeId)
 {
-    CreationPanelBase* base = 0;
+    CreationPanelBase* base = nullptr;
     
     ClassInfoMap::iterator p = typeIdToClassInfoMap.find(typeId);
     if(p != typeIdToClassInfoMap.end()){
@@ -581,14 +584,11 @@ ItemManagerImpl::CreationPanelBase* ItemManagerImpl::getOrCreateCreationPanelBas
             ItemPtr protoItem;
             if(info->isSingleton){
                 protoItem = info->singletonInstance;
-            } else {
-                protoItem = info->factory();
-                protoItem->setName(info->name);
             }
-            base = new CreationPanelBase(title, protoItem, info->isSingleton);
+            base = new CreationPanelBase(title, *info, protoItem, info->isSingleton);
             base->hide();
             menuManager.setPath("/File/New ...").addItem(translatedName)
-                ->sigTriggered().connect(std::bind(ItemManagerImpl::onNewItemActivated, base));
+                ->sigTriggered().connect([=](){ onNewItemActivated(base); });
             info->creationPanelBase = base;
         }
     }
@@ -599,11 +599,10 @@ ItemManagerImpl::CreationPanelBase* ItemManagerImpl::getOrCreateCreationPanelBas
 
 void ItemManagerImpl::onNewItemActivated(CreationPanelBase* base)
 {
-    ItemTreeView* itemTreeView = ItemTreeView::mainInstance();
-    ItemList<Item> parentItems = itemTreeView->selectedItems();
+    ItemList<Item> parentItems = ItemTreeView::instance()->selectedItems();
 
     if(parentItems.empty()){
-        parentItems.push_back(itemTreeView->rootItem());
+        parentItems.push_back(RootItem::instance());
     }
     for(size_t i=0; i < parentItems.size(); ++i){
         ItemPtr parentItem = parentItems[i];
@@ -615,8 +614,10 @@ void ItemManagerImpl::onNewItemActivated(CreationPanelBase* base)
 }
 
 
-ItemManagerImpl::CreationPanelBase::CreationPanelBase(const QString& title, ItemPtr protoItem, bool isSingleton)
+ItemManagerImpl::CreationPanelBase::CreationPanelBase
+(const QString& title, ClassInfo& classInfo, ItemPtr protoItem, bool isSingleton)
     : QDialog(MainWindow::instance()),
+      classInfo(classInfo),
       protoItem(protoItem),
       isSingleton(isSingleton)
 {
@@ -651,7 +652,7 @@ ItemPtr ItemManagerImpl::CreationPanelBase::createItem(ItemPtr parentItem)
 {
     if(isSingleton){
         if(protoItem->parentItem()){
-            return 0;
+            return nullptr;
         }
     }
             
@@ -668,9 +669,19 @@ ItemPtr ItemManagerImpl::CreationPanelBase::createItem(ItemPtr parentItem)
 
     bool result = true;
 
+    if(!protoItem && (!preFilters.empty() || !postFilters.empty())){
+        protoItem = classInfo.factory();
+        protoItem->setName(classInfo.name);
+    }
+    ItemPtr item = protoItem;
+    if(!item){
+        item = classInfo.factory();
+        item->setName(classInfo.name);
+    }
+
     for(CreationPanelFilterList::iterator p = preFilters.begin(); p != preFilters.end(); ++p){
         auto filter = *p;
-        if(!(*filter)(protoItem.get(), parentItem.get())){
+        if(!(*filter)(item, parentItem)){
             result = false;
             break;
         }
@@ -678,7 +689,7 @@ ItemPtr ItemManagerImpl::CreationPanelBase::createItem(ItemPtr parentItem)
 
     if(result){
         for(size_t i=0; i < panels.size(); ++i){
-            if(!panels[i]->initializePanel(protoItem.get())){
+            if(!panels[i]->initializePanel(item)){
                 result = false;
                 break;
             }
@@ -688,7 +699,7 @@ ItemPtr ItemManagerImpl::CreationPanelBase::createItem(ItemPtr parentItem)
     if(result){
         if(exec() == QDialog::Accepted){
             for(size_t i=0; i < panels.size(); ++i){
-                if(!panels[i]->initializeItem(protoItem.get())){
+                if(!panels[i]->initializeItem(item)){
                     result = false;
                     break;
                 }
@@ -696,7 +707,7 @@ ItemPtr ItemManagerImpl::CreationPanelBase::createItem(ItemPtr parentItem)
             if(result){
                 for(CreationPanelFilterList::iterator p = postFilters.begin(); p != postFilters.end(); ++p){
                     auto filter = *p;
-                    if(!(*filter)(protoItem.get(), parentItem.get())){
+                    if(!(*filter)(item, parentItem)){
                         result = false;
                         break;
                     }
@@ -710,9 +721,11 @@ ItemPtr ItemManagerImpl::CreationPanelBase::createItem(ItemPtr parentItem)
     ItemPtr newItem;
     if(result){
         if(isSingleton){
-            newItem = protoItem;
-        } else {
+            newItem = item;
+        } else if(protoItem){
             newItem = protoItem->duplicate();
+        } else {
+            newItem = item;
         }
     }
     
@@ -775,7 +788,7 @@ void ItemManagerImpl::addLoader
             }
             menuManager.addItem(caption.c_str())
                 ->sigTriggered().connect(
-                    std::bind(&ItemManagerImpl::onLoadSpecificTypeItemActivated, loader));
+                    [=](){ onLoadSpecificTypeItemActivated(loader); });
         }
         
         registeredLoaders.insert(loader);
@@ -993,8 +1006,8 @@ void ItemManagerImpl::onLoadSpecificTypeItemActivated(LoaderPtr loader)
                   
         QStringList filenames = dialog.selectedFiles();
 
-        ItemTreeView* itemTreeView = ItemTreeView::instance();
-        Item* parentItem = itemTreeView->selectedItem<Item>();
+        auto itv = ItemTreeView::instance();
+        Item* parentItem = itv->selectedItem<Item>();
         if(!parentItem){
             parentItem = RootItem::instance();
         }
@@ -1008,7 +1021,7 @@ void ItemManagerImpl::onLoadSpecificTypeItemActivated(LoaderPtr loader)
                 parentItem->addChildItem(item, true);
 
                 if(checkCheckBox.isChecked()){
-                    itemTreeView->checkItem(item);
+                    itv->checkItem(item);
                 }
             }
         }
@@ -1329,7 +1342,7 @@ bool ItemManagerImpl::overwrite(Item* item, bool forceOverwrite, const string& f
 
 void ItemManagerImpl::onReloadSelectedItemsActivated()
 {
-    ItemManager::reloadItems(ItemTreeView::mainInstance()->selectedItems());
+    ItemManager::reloadItems(ItemTreeView::instance()->selectedItems());
 }
 
 
@@ -1386,7 +1399,7 @@ Item* ItemManager::findOriginalItemForReloadedItem(Item* item)
 
 void ItemManagerImpl::onSaveSelectedItemsActivated()
 {
-    const ItemList<>& selectedItems = ItemTreeView::mainInstance()->selectedItems();
+    const ItemList<>& selectedItems = ItemTreeView::instance()->selectedItems();
     for(size_t i=0; i < selectedItems.size(); ++i){
         overwrite(selectedItems.get(i), true, "");
     }
@@ -1395,7 +1408,7 @@ void ItemManagerImpl::onSaveSelectedItemsActivated()
 
 void ItemManagerImpl::onSaveSelectedItemsAsActivated()
 {
-    const ItemList<>& selectedItems = ItemTreeView::mainInstance()->selectedItems();
+    const ItemList<>& selectedItems = ItemTreeView::instance()->selectedItems();
     for(size_t i=0; i < selectedItems.size(); ++i){
         string formatId;
         save(selectedItems.get(i), true, false, selectedItems[i]->headItem()->name(), formatId);
@@ -1411,7 +1424,7 @@ void ItemManagerImpl::onSaveAllItemsActivated()
 
 void ItemManagerImpl::onExportSelectedItemsActivated()
 {
-    const ItemList<>& selectedItems = ItemTreeView::mainInstance()->selectedItems();
+    const ItemList<>& selectedItems = ItemTreeView::instance()->selectedItems();
     for(size_t i=0; i < selectedItems.size(); ++i){
         string formatId;
         save(selectedItems.get(i), true, true, selectedItems[i]->headItem()->name(), formatId);

@@ -32,6 +32,11 @@ public:
 
     void append(Link* link, bool isDownward = true);
 
+    bool remove(Link* link);
+
+    //! @return prepended link
+    Link* prependRootAdjacentLinkToward(Link* link);
+
     int numLinks() const {
         return static_cast<int>(links_.size());
     }
@@ -45,7 +50,7 @@ public:
     }
 
     Link* rootLink() const {
-        return (links_.empty() ? 0 : links_.front());
+        return (links_.empty() ? nullptr : links_.front());
     }
 
     Link* link(int index) const {
@@ -78,13 +83,12 @@ public:
     accessor links(){ return accessor(links_); }
     const_accessor links() const { return const_accessor(links_); }
 
-    // Deprecated. Use links() instead of the following functions.
     typedef container::iterator iterator;
     typedef container::const_iterator const_iterator;
-    iterator begin() { return links_.begin(); }
-    iterator end() { return links_.end(); }
-    const_iterator begin() const { return links_.begin(); }
-    const_iterator end() const { return links_.end(); }
+    iterator begin() { return links().begin(); }
+    iterator end() { return links().end(); }
+    const_iterator begin() const { return links().begin(); }
+    const_iterator end() const { return links().end(); }
 	
     /**
        If the connection from the queried link to the next link is downward (forward) direction,
@@ -103,6 +107,7 @@ protected:
 
 private:
     void traverse(Link* link, bool doUpward, bool doDownward, bool isUpward, Link* prev);
+    Link* findRootAdjacentLink(Link* link, Link* prev, Link* root, bool& isUpward);
 };
 
 }
