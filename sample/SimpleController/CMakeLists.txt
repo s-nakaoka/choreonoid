@@ -35,24 +35,18 @@ list(APPEND project_files SampleCrawler.cnoid SampleCrawlerJoystick.cnoid Sample
 
 # Tank
 add_cnoid_simple_controller(TankJoystickController TankJoystickController.cpp)
-list(APPEND project_files Tank.cnoid TankVisionSensors.cnoid AgxTank.cnoid)
+list(APPEND project_files Tank.cnoid TankVisionSensors.cnoid)
 
 # DoubleArmV7
 add_cnoid_simple_controller(DoubleArmV7Controller DoubleArmV7Controller.cpp)
-list(APPEND project_files DoubleArmV7S.cnoid DoubleArmV7A.cnoid)
+list(APPEND project_files DoubleArmV7S.cnoid)
 
 # JACO2
 add_cnoid_simple_controller(Jaco2Controller Jaco2Controller.cpp)
 
 # AizuSpider Controller
 add_cnoid_simple_controller(AizuSpiderController AizuSpiderController.cpp)
-
-# Jaco2 ROS Controller
-# add_cnoid_simple_controller(Jaco2test Jaco2ControllerROS.cpp)
-
-list(APPEND project_files
-  AizuSpiderNS.cnoid AizuSpiderNA.cnoid AizuSpiderSS.cnoid
-  AizuSpiderSA.cnoid AizuSpiderDS.cnoid AizuSpiderDA.cnoid)
+list(APPEND project_files AizuSpiderNS.cnoid AizuSpiderSS.cnoid AizuSpiderDS.cnoid)
 
 # AizuWheel
 add_cnoid_simple_controller(AizuWheelController AizuWheelController.cpp)
