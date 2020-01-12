@@ -7,6 +7,8 @@
 #include "ProjectManager.h"
 #include "MessageView.h"
 #include "ItemTreeView.h"
+#include "PutPropertyFunction.h"
+#include "Archive.h"
 #include <cnoid/ConnectionSet>
 #include <fmt/format.h>
 #include <set>
@@ -151,12 +153,13 @@ void SubProjectItemImpl::doLoadSubProject(const std::string& filename)
 {
     projectFilesBeingLoaded.insert(filename);
 
-    auto items = projectManager()->loadProject(filename, self);
+    auto pm = projectManager();
+    auto items = pm->loadProject(filename, self);
 
     projectFilesBeingLoaded.erase(filename);
 
-    if(!ProjectManager::isProjectBeingLoaded()){
-        ItemTreeView::instance()->expandItem(self);
+    if(!pm->isLoadingProject()){
+        ItemTreeView::instance()->itemTreeWidget()->setExpanded(self);
     }
 
     if(saveMode.is(SubProjectItem::AUTOMATIC_SAVE)){
@@ -169,10 +172,7 @@ void SubProjectItemImpl::enableSubProjectUpdateDetection()
 {
     updateConnections.disconnect();
 
-    ItemList<> subTreeItems;
-    subTreeItems.extractSubTreeItems(self);
-
-    for(auto& item : subTreeItems){
+    for(auto& item : self->descendantItems()){
         updateConnections.add(
             item->sigNameChanged().connect(
                 [&](const std::string&){ onSubProjectUpdated(); }));

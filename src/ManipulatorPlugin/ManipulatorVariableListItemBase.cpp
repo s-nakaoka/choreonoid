@@ -1,6 +1,7 @@
 #include "ManipulatorVariableListItemBase.h"
 #include <cnoid/ManipulatorVariableList>
 #include <cnoid/ItemManager>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/ConnectionSet>
 #include "gettext.h"
@@ -19,6 +20,12 @@ public:
     Impl(const Impl& org);
 };
 
+}
+
+
+void ManipulatorVariableListItemBase::initializeClass(ExtensionManager* ext)
+{
+    ext->itemManager().registerAbstractClass<ManipulatorVariableListItemBase>();
 }
 
 

@@ -6,7 +6,8 @@
 #include "RobotAccessBar.h"
 #include "RobotAccessItem.h"
 #include <cnoid/RootItem>
-#include <cnoid/ItemTreeView>
+#include <cnoid/RootItem>
+#include <cnoid/ItemList>
 #include <cnoid/MessageView>
 #include "gettext.h"
 
@@ -28,6 +29,7 @@ public:
     void onSendPoseButtonClicked();
     void onServoButtonToggled(bool on);
 };
+
 }
 
 
@@ -36,8 +38,7 @@ namespace {
 void forEachCheckedRobotAccessItems
 (std::function<void(RobotAccessItem* item)> func, const char* noTargetMessage)
 {
-    ItemList<RobotAccessItem> items =
-        ItemTreeView::instance()->checkedItems<RobotAccessItem>();
+    auto items = RootItem::instance()->checkedItems<RobotAccessItem>();
     if(items.empty()){
         MessageView::instance()->putln(noTargetMessage);
     } else {
@@ -46,6 +47,7 @@ void forEachCheckedRobotAccessItems
         }
     }
 }
+
 }
         
 

@@ -25,8 +25,6 @@
 #include <QStyle>
 #include "gettext.h"
 
-#include <iostream>
-
 using namespace std;
 using namespace cnoid;
 
@@ -81,7 +79,7 @@ public:
     void createOptionMenu();
     void onActivated();
     void onMenuButtonClicked();
-    void onSelectedBodyItemsChanged(const ItemList<BodyItem>& selected);
+    void onCurrentBodyItemChanged(BodyItem* bodyItem);
     void setBodyItem(BodyItem* bodyItem);
     void updateIndicatorGrid();
     void initializeIndicators(int num);
@@ -167,9 +165,9 @@ public:
     {
         if(overlapJointName){
             grid.addWidget(&nameLabel, row++, col, 1, 6);
-            grid.addWidget(&idLabel, row, col);
+            grid.addWidget(&idLabel, row, col++);
         } else {
-            grid.addWidget(&idLabel, row, col);
+            grid.addWidget(&idLabel, row, col++);
             grid.addWidget(&nameLabel, row, col++);
         }
         grid.addWidget(&spin, row, col++);
@@ -439,12 +437,11 @@ void JointDisplacementView::Impl::createPanel()
     int bmargin = style->pixelMetric(QStyle::PM_LayoutBottomMargin);
 
     auto vbox = new QVBoxLayout;
-    vbox->setContentsMargins(0, 0, 0, 0);
     vbox->setSpacing(0);
     self->setLayout(vbox);
 
     auto hbox = new QHBoxLayout;
-    hbox->setContentsMargins(lmargin / 2, rmargin / 2, tmargin / 2, bmargin / 2);
+    hbox->setContentsMargins(lmargin / 2, tmargin / 2, rmargin / 2, bmargin / 2);
     hbox->addStretch(1);
     targetLabel.setStyleSheet("font-weight: bold");
     targetLabel.setAlignment(Qt::AlignLeft);
@@ -529,17 +526,10 @@ void JointDisplacementView::onActivated()
 void JointDisplacementView::Impl::onActivated()
 {
     bodySelectionManagerConnection =
-        bodySelectionManager->sigSelectedBodyItemsChanged().connect(
-            [&](const ItemList<BodyItem>& bodyItems){
-                onSelectedBodyItemsChanged(bodyItems); });
+        bodySelectionManager->sigCurrentBodyItemChanged().connect(
+            [&](BodyItem* bodyItem){ onCurrentBodyItemChanged(bodyItem); });
 
-    onSelectedBodyItemsChanged(bodySelectionManager->selectedBodyItems());
-    
-    if(!currentBodyItem){
-        ItemList<BodyItem> allBodyItems;
-        allBodyItems.extractChildItems(RootItem::instance());
-        onSelectedBodyItemsChanged(allBodyItems);
-    }
+    onCurrentBodyItemChanged(bodySelectionManager->currentBodyItem());
 }
 
 
@@ -556,12 +546,20 @@ void JointDisplacementView::Impl::onMenuButtonClicked()
 }
 
 
-void JointDisplacementView::Impl::onSelectedBodyItemsChanged(const ItemList<BodyItem>& selected)
+void JointDisplacementView::Impl::onCurrentBodyItemChanged(BodyItem* bodyItem)
 {
-    for(auto& item : selected){
-        if(item->body()->numJoints() > 0){
-            setBodyItem(item);
-            return;
+    if(!bodyItem){
+        setBodyItem(nullptr);
+    } else {
+        if(bodyItem->body()->numJoints() > 0){
+            setBodyItem(bodyItem);
+        } else {
+            while(bodyItem = bodyItem->parentBodyItem()){
+                if(bodyItem->body()->numJoints() > 0){
+                    setBodyItem(bodyItem);
+                    break;
+                }
+            }
         }
     }
 }

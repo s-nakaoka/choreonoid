@@ -9,10 +9,12 @@
 #include "FisheyeLensConverter.h"
 #include <cnoid/ItemManager>
 #include <cnoid/MessageView>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/ValueTreeUtil>
 #include <cnoid/GL1SceneRenderer>
 #include <cnoid/GLSLSceneRenderer>
+#include <cnoid/RenderableItem>
 #include <cnoid/Body>
 #include <cnoid/Camera>
 #include <cnoid/RangeCamera>
@@ -290,7 +292,7 @@ public:
 
 void GLVisionSimulatorItem::initializeClass(ExtensionManager* ext)
 {
-    ext->itemManager().registerClass<GLVisionSimulatorItem>(N_("GLVisionSimulatorItem"));
+    ext->itemManager().registerClass<GLVisionSimulatorItem, SubSimulatorItem>(N_("GLVisionSimulatorItem"));
     ext->itemManager().addCreationPanel<GLVisionSimulatorItem>();
 }
 
@@ -766,16 +768,11 @@ SensorScenePtr SensorRenderer::createSensorScene(const vector<SimulationBody*>& 
     }
 
     if(simImpl->shootAllSceneObjects){
-        WorldItem* worldItem = simImpl->self->findOwnerItem<WorldItem>();
-        if(worldItem){
-            ItemList<> items;
-            items.extractChildItems(worldItem);
-            for(size_t i=0; i < items.size(); ++i){
-                Item* item = items.get(i);
-                SceneProvider* sceneProvider = dynamic_cast<SceneProvider*>(item);
-                if(sceneProvider && !dynamic_cast<BodyItem*>(item)){
-                    auto node = sceneProvider->cloneScene(simImpl->cloneMap);
-                    if(node){
+        if(auto worldItem = simImpl->self->findOwnerItem<WorldItem>()){
+            for(auto& item : worldItem->descendantItems()){
+                auto renderable = dynamic_cast<RenderableItem*>(item.get());
+                if(renderable && !dynamic_cast<BodyItem*>(item.get())){
+                    if(auto node = renderable->getScene()->cloneNode(simImpl->cloneMap)){
                         scene->root->addChild(node);
                     }
                 }

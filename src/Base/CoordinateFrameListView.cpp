@@ -1,11 +1,11 @@
 #include "CoordinateFrameListView.h"
 #include "CoordinateFrameListItem.h"
+#include "ViewManager.h"
+#include "MenuManager.h"
+#include "TargetItemPicker.h"
 #include "PositionEditManager.h"
+#include "Buttons.h"
 #include <cnoid/CoordinateFrameList>
-#include <cnoid/ViewManager>
-#include <cnoid/MenuManager>
-#include <cnoid/TargetItemPicker>
-#include <cnoid/Buttons>
 #include <cnoid/EigenUtil>
 #include <QBoxLayout>
 #include <QLabel>
@@ -329,16 +329,17 @@ void FrameListModel::addFrame(int row, CoordinateFrame* frame, bool doInsert)
 {
     if(frames){
         int newFrameRow = doInsert ? row : row + 1;
-        if(newFrameRow != 0 || !defaultFrame){
-            if(numFrames() == 0){
-                // Remove the empty row first
-                beginRemoveRows(QModelIndex(), 0, 0);
-                endRemoveRows();
+        int newFrameIndex = isDefaultFrameEnabled_ ? (newFrameRow - 1) : newFrameRow;
+        if(frames->insert(newFrameIndex, frame)){
+            if(newFrameRow != 0 || !defaultFrame){
+                if(numFrames() == 0){
+                    // Remove the empty row first
+                    beginRemoveRows(QModelIndex(), 0, 0);
+                    endRemoveRows();
+                }
+                beginInsertRows(QModelIndex(), newFrameRow, newFrameRow);
+                endInsertRows();
             }
-            beginInsertRows(QModelIndex(), newFrameRow, newFrameRow);
-            int newFrameIndex = isDefaultFrameEnabled_ ? (newFrameRow - 1) : newFrameRow;
-            frames->insert(newFrameIndex, frame);
-            endInsertRows();
         }
     }
 }

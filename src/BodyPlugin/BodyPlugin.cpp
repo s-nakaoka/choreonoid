@@ -8,9 +8,12 @@
 #include "SimulatorItem.h"
 #include "AISTSimulatorItem.h"
 #include "KinematicSimulatorItem.h"
+#include "ControllerItem.h"
 #include "SimpleControllerItem.h"
 #include "BodyMotionControllerItem.h"
+#include "SubSimulatorItem.h"
 #include "GLVisionSimulatorItem.h"
+#include "SimulationScriptItem.h"
 #include "BodyMotionItem.h"
 #include "ZMPSeqItem.h"
 #include "MultiDeviceStateSeqItem.h"
@@ -22,7 +25,7 @@
 #include "BodySelectionManager.h"
 #include "KinematicFaultChecker.h"
 #include "SplineFilterDialog.h"
-#include "PositionView.h"
+#include "LinkPositionView.h"
 #include "LinkSelectionView.h"
 #include "LinkPropertyView.h"
 #include "JointDisplacementView.h"
@@ -81,9 +84,12 @@ public:
         SimulatorItem::initializeClass(this);
         AISTSimulatorItem::initializeClass(this);
         KinematicSimulatorItem::initializeClass(this);
+        ControllerItem::initializeClass(this);
         SimpleControllerItem::initializeClass(this);
         BodyMotionControllerItem::initializeClass(this);
+        SubSimulatorItem::initializeClass(this);
         GLVisionSimulatorItem::initializeClass(this);
+        SimulationScriptItem::initializeClass(this);
         BodyMotionItem::initializeClass(this);
         WorldLogFileItem::initializeClass(this);
         IoConnectionMapItem::initializeClass(this);
@@ -107,7 +113,7 @@ public:
         addToolBar(LeggedBodyBar::instance());
         addToolBar(KinematicsBar::instance());
 
-        PositionView::initializeClass(this);
+        LinkPositionView::initializeClass(this);
         LinkSelectionView::initializeClass(this);
         LinkPropertyView::initializeClass(this);
         JointDisplacementView::initializeClass(this);

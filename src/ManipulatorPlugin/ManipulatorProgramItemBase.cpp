@@ -4,6 +4,7 @@
 #include <cnoid/ItemManager>
 #include <cnoid/BodyItem>
 #include <cnoid/LinkKinematicsKit>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include "gettext.h"
 
@@ -26,6 +27,12 @@ public:
     void setTargetBodyItem(BodyItem* bodyItem);    
 };
 
+}
+
+
+void ManipulatorProgramItemBase::initializeClass(ExtensionManager* ext)
+{
+    ext->itemManager().registerAbstractClass<ManipulatorProgramItemBase>();
 }
 
 
@@ -92,6 +99,7 @@ void ManipulatorProgramItemBase::setName(const std::string& name)
 {
     Item::setName(name);
     impl->program->setName(name);
+    suggestFileUpdate();
 }
 
 

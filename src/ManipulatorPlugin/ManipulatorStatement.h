@@ -15,15 +15,6 @@ class Mapping;
 class CNOID_EXPORT ManipulatorStatement : public CloneableReferenced
 {
 public:
-    typedef ManipulatorStatement* (*FactoryFunction)();
-
-    template<class StatementType>
-    static void registerType(const char* type){
-        registerFactory(type, []() -> ManipulatorStatement* { return new StatementType; });
-    }
-
-    static ManipulatorStatement* create(const std::string& type);
-
     ManipulatorStatement* clone() const {
         return static_cast<ManipulatorStatement*>(doClone(nullptr));
     }
@@ -33,6 +24,8 @@ public:
 
     ManipulatorProgram* holderProgram() const;
     ManipulatorProgram* topLevelProgram() const;
+
+    virtual ManipulatorProgram* getLowerLevelProgram();
 
     void notifyUpdate();
 
@@ -45,8 +38,6 @@ protected:
     ManipulatorStatement(const ManipulatorStatement& org);
     
 private:
-    static void registerFactory(const char* type, FactoryFunction factory);
-
     weak_ref_ptr<ManipulatorProgram> holderProgram_;
 
     friend class ManipulatorProgram;

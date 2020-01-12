@@ -48,6 +48,7 @@ private:
     float transparency_;
     float shininess_;
 };
+
 typedef ref_ptr<SgMaterial> SgMaterialPtr;
 
 
@@ -82,6 +83,7 @@ protected:
 private:
     std::shared_ptr<Image> image_;
 };
+
 typedef ref_ptr<SgImage> SgImagePtr;
 
 
@@ -114,6 +116,7 @@ private:
     Vector2 translation_;
     double rotation_;
 };
+
 typedef ref_ptr<SgTextureTransform> SgTextureTransformPtr;
 
 
@@ -149,6 +152,7 @@ private:
     bool repeatS_;
     bool repeatT_;
 };
+
 typedef ref_ptr<SgTexture> SgTexturePtr;
 
 
@@ -307,6 +311,7 @@ private:
     SgIndexArray texCoordIndices_;
     bool isSolid_;
 };
+
 typedef ref_ptr<SgMeshBase> SgMeshBasePtr;
 
 
@@ -432,6 +437,7 @@ private:
     SgIndexArray triangleVertices_;
     Primitive primitive_;
 };
+
 typedef ref_ptr<SgMesh> SgMeshPtr;
 
 
@@ -490,7 +496,7 @@ public:
     SgTexture* getOrCreateTexture();
 
 protected:
-    SgShape(int polymorhicId);
+    SgShape(int classId);
     virtual Referenced* doClone(CloneMap* cloneMap) const override;
 
 private:
@@ -498,13 +504,14 @@ private:
     SgMaterialPtr material_;
     SgTexturePtr texture_;
 };
+
 typedef ref_ptr<SgShape> SgShapePtr;
 
 
 class CNOID_EXPORT SgPlot : public SgNode
 {
 protected:
-    SgPlot(int polymorhicId);
+    SgPlot(int classId);
     SgPlot(const SgPlot& org, CloneMap* cloneMap = nullptr);
     ~SgPlot();
     
@@ -556,6 +563,7 @@ private:
     SgIndexArray colorIndices_;
     SgMaterialPtr material_;
 };
+
 typedef ref_ptr<SgPlot> SgPlotPtr;
 
 
@@ -573,12 +581,13 @@ public:
     double pointSize() const { return pointSize_; }
 
 protected:
-    SgPointSet(int polymorhicId);
+    SgPointSet(int classId);
     virtual Referenced* doClone(CloneMap* cloneMap) const override;
 
 private:
     double pointSize_;
 };
+
 typedef ref_ptr<SgPointSet> SgPointSetPtr;
 
 
@@ -631,13 +640,14 @@ public:
     float lineWidth() const { return lineWidth_; }
 
 protected:
-    SgLineSet(int polymorhicId);
+    SgLineSet(int classId);
     virtual Referenced* doClone(CloneMap* cloneMap) const override;
 
 private:
     SgIndexArray lineVertices_;
     float lineWidth_;
 };
+
 typedef ref_ptr<SgLineSet> SgLineSetPtr;
 
 
@@ -647,6 +657,21 @@ public:
     SgOverlay();
     SgOverlay(const SgOverlay& org, CloneMap* cloneMap = nullptr);
     ~SgOverlay();
+
+protected:
+    SgOverlay(int classId);
+    virtual Referenced* doClone(CloneMap* cloneMap) const override;
+};
+
+typedef ref_ptr<SgOverlay> SgOverlayPtr;
+
+
+class CNOID_EXPORT SgViewportOverlay : public SgOverlay
+{
+public:
+    SgViewportOverlay();
+    SgViewportOverlay(const SgViewportOverlay& org, CloneMap* cloneMap = nullptr);
+    ~SgViewportOverlay();
 
     struct ViewVolume {
         double left;
@@ -660,9 +685,11 @@ public:
     virtual void calcViewVolume(double viewportWidth, double viewportHeight, ViewVolume& io_volume);
 
 protected:
-    SgOverlay(int polymorhicId);
+    SgViewportOverlay(int classId);
     virtual Referenced* doClone(CloneMap* cloneMap) const override;
 };
+
+typedef ref_ptr<SgViewportOverlay> SgViewportOverlayPtr;
 
 }
 

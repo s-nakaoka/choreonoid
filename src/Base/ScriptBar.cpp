@@ -5,7 +5,8 @@
 #include "ScriptBar.h"
 #include "ScriptItem.h"
 #include <cnoid/ExtensionManager>
-#include <cnoid/ItemTreeView>
+#include <cnoid/RootItem>
+#include <cnoid/ItemList>
 #include "gettext.h"
 
 using namespace cnoid;
@@ -39,7 +40,7 @@ ScriptBar::~ScriptBar()
 
 void ScriptBar::executeCheckedScriptItems()
 {
-    ItemList<ScriptItem> scripts = ItemTreeView::mainInstance()->checkedItems<ScriptItem>();
+    ItemList<ScriptItem> scripts = RootItem::instance()->checkedItems<ScriptItem>();
     for(size_t i=0; i < scripts.size(); ++i){
         scripts[i]->execute();
     }

@@ -7,6 +7,7 @@
 #include "KinematicsBar.h"
 #include <cnoid/ItemManager>
 #include <cnoid/RootItem>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/MessageView>
 #include <cnoid/ConnectionSet>
@@ -354,9 +355,7 @@ void WorldItemImpl::updateCollisionDetector(bool forceUpdate)
 void WorldItemImpl::updateColdetBodyInfos(vector<ColdetBodyInfo>& infos)
 {
     infos.clear();
-    ItemList<BodyItem> bodyItems;
-    bodyItems.extractChildItems(self);
-    for(auto bodyItem : bodyItems){
+    for(auto bodyItem : self->descendantItems<BodyItem>()){
         if(bodyItem->isCollisionDetectionEnabled()){
             infos.push_back(ColdetBodyInfo(bodyItem));
         }

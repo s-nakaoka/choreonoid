@@ -4,6 +4,7 @@
 #include <cnoid/ControllerItem>
 #include "ManipulatorProgram.h"
 #include <typeindex>
+#include <memory>
 #include "exportdecl.h"
 
 namespace cnoid {
@@ -17,6 +18,8 @@ class ManipulatorVariableSet;
 class CNOID_EXPORT ManipulatorControllerItemBase : public ControllerItem
 {
 public:
+    static void initializeClass(ExtensionManager* ext);
+    
     ManipulatorControllerItemBase();
     ManipulatorControllerItemBase(const ManipulatorControllerItemBase& org);
     virtual ~ManipulatorControllerItemBase();
@@ -52,7 +55,8 @@ protected:
     ManipulatorProgram* getCurrentProgram();
     ManipulatorProgram::iterator getCurrentIterator();
     void setCurrent(ManipulatorProgram::iterator iter);
-    void setCurrent(ManipulatorProgram* program, ManipulatorProgram::iterator iter);
+    void setCurrent(
+        ManipulatorProgram* program, ManipulatorProgram::iterator iter, ManipulatorProgram::iterator upperNext);
 
     ManipulatorProgram* findProgram(const std::string& name);
 
@@ -87,9 +91,19 @@ private:
     class Impl;
     Impl* impl;
 };
-        
+
 typedef ref_ptr<ManipulatorControllerItemBase> ManipulatorControllerItemBasePtr;
 
+
+class CNOID_EXPORT ManipulatorControllerLog : public Referenced
+{
+public:
+    std::shared_ptr<std::string> topLevelProgramName;
+    std::vector<int> hierachicalPosition;
+};
+
+typedef ref_ptr<ManipulatorControllerLog> ManipulatorControllerLogPtr;
+        
 }
 
 #endif

@@ -7,9 +7,9 @@
 #include "BodyMotionItem.h"
 #include <cnoid/ItemManager>
 #include <cnoid/ItemList>
-#include <cnoid/ItemTreeView>
 #include <cnoid/ControllerIO>
 #include <cnoid/MessageView>
+#include <cnoid/PutPropertyFunction>
 #include <fmt/format.h>
 #include "gettext.h"
 
@@ -39,7 +39,7 @@ public:
 void BodyMotionControllerItem::initializeClass(ExtensionManager* ext)
 {
     ItemManager& itemManager = ext->itemManager();
-    itemManager.registerClass<BodyMotionControllerItem>(N_("BodyMotionControllerItem"));
+    itemManager.registerClass<BodyMotionControllerItem, ControllerItem>(N_("BodyMotionControllerItem"));
     itemManager.addCreationPanel<BodyMotionControllerItem>();
 }
 
@@ -79,9 +79,9 @@ bool BodyMotionControllerItem::initialize(ControllerIO* io)
 bool BodyMotionControllerItemImpl::initialize(ControllerIO* io)
 {
     auto mv = MessageView::instance();
-    
-    ItemList<BodyMotionItem> motionItems;
-    if(!motionItems.extractChildItems(self)){
+
+    auto motionItems = self->descendantItems<BodyMotionItem>();
+    if(motionItems.empty()){
         mv->putln(
             format(_("Any body motion item for {} is not found."), self->name()),
             MessageView::ERROR);
@@ -89,9 +89,8 @@ bool BodyMotionControllerItemImpl::initialize(ControllerIO* io)
     }
     motionItem = motionItems.front();
     // find the first checked item
-    ItemTreeView* itv = ItemTreeView::instance();
     for(size_t i=0; i < motionItems.size(); ++i){
-        if(itv->isItemChecked(motionItems[i])){
+        if(motionItems[i]->isChecked()){
             motionItem = motionItems[i];
             break;
         }

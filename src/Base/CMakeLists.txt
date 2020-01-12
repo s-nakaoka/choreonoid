@@ -18,14 +18,19 @@ set(sources
   View.cpp
   MessageView.cpp
   ItemManager.cpp
+  ItemClassRegistry.cpp
   Item.cpp
+  PolymorphicItemFunctionSet.cpp
   RootItem.cpp
   ItemList.cpp
   ItemPath.cpp
+  ItemTreeWidget.cpp
   ItemTreeView.cpp
   ItemPropertyView.cpp
   TargetItemPicker.cpp
   StringListComboBox.cpp
+  PositionWidget.cpp
+  LocationView.cpp
   PositionEditManager.cpp
   MultiSeqItemCreationPanel.cpp
   ToolBar.cpp
@@ -71,6 +76,7 @@ set(sources
   MultiSE3SeqItem.cpp
   MultiSE3MatrixSeqItem.cpp
   Vector3SeqItem.cpp
+  ReferencedObjectSeqItem.cpp
   CoordinateFrameListItem.cpp
   MultiCoordinateFrameListItem.cpp
   ExtCommandItem.cpp
@@ -94,9 +100,6 @@ set(sources
   InteractiveCameraTransform.cpp
   SceneProjector.cpp
   SceneDragProjector.cpp
-  SceneDragger.cpp
-  TranslationDragger.cpp
-  RotationDragger.cpp
   PositionDragger.cpp
   RectRegionMarker.cpp
   SceneView.cpp
@@ -167,10 +170,15 @@ set(headers
   PluginManager.h
   Plugin.h
   MessageView.h
+  ItemTreeWidget.h
   ItemTreeView.h
   ItemList.h
   Item.h
+  PlaceableItem.h
+  RenderableItem.h
+  ImageableItem.h
   TargetItemPicker.h
+  PositionWidget.h
   PositionEditManager.h
   PutPropertyFunction.h
   RootItem.h
@@ -182,6 +190,7 @@ set(headers
   MultiSE3SeqItem.h
   MultiSE3MatrixSeqItem.h
   Vector3SeqItem.h
+  ReferencedObjectSeqItem.h
   CoordinateFrameListItem.h
   MultiCoordinateFrameListItem.h
   ExtCommandItem.h
@@ -192,6 +201,8 @@ set(headers
   TimeSyncItemEngine.h
   GraphBar.h
   ItemManager.h
+  ItemClassRegistry.h
+  PolymorphicItemFunctionSet.h
   AppConfig.h
   AppUtil.h
   Archive.h
@@ -202,9 +213,6 @@ set(headers
   SceneWidgetEvent.h
   SceneProjector.h
   SceneDragProjector.h
-  SceneDragger.h
-  TranslationDragger.h
-  RotationDragger.h
   PositionDragger.h
   SceneBar.h
   SceneWidgetEditable.h

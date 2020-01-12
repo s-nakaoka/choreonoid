@@ -4,11 +4,12 @@
 */
 
 #include "MessageLogItem.h"
-#include <cnoid/ExtensionManager>
-#include <cnoid/ItemManager>
-#include <cnoid/MessageView>
+#include "ExtensionManager.h"
+#include "ItemManager.h"
+#include "MessageView.h"
+#include "PutPropertyFunction.h"
+#include "Archive.h"
 #include <cnoid/ExecutablePath>
-#include <cnoid/Archive>
 #include <cnoid/stdx/filesystem>
 #include <fstream>
 #include <regex>
@@ -47,7 +48,7 @@ public:
 
 void MessageLogItem::initializeClass(ExtensionManager* ext)
 {
-    ext->itemManager().registerClass<MessageLogItem>(N_("MessageLogItem"));
+    ext->itemManager().registerClass<MessageLogItem, AbstractTextItem>(N_("MessageLogItem"));
     ext->itemManager().addCreationPanel<MessageLogItem>();
 }
 

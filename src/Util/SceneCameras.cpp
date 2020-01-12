@@ -4,13 +4,14 @@
 */
 
 #include "SceneCameras.h"
+#include "SceneNodeClassRegistry.h"
 
 using namespace std;
 using namespace cnoid;
 
 
-SgCamera::SgCamera(int polymorhicId)
-    : SgPreprocessed(polymorhicId)
+SgCamera::SgCamera(int classId)
+    : SgPreprocessed(classId)
 {
     nearClipDistance_ = 0.04;
     farClipDistance_ = 200.0;
@@ -43,15 +44,15 @@ Affine3 SgCamera::positionLookingAt(const Vector3& eye, const Vector3& center, c
 }
 
 
-SgPerspectiveCamera::SgPerspectiveCamera(int polymorhicId)
-    : SgCamera(polymorhicId)
+SgPerspectiveCamera::SgPerspectiveCamera(int classId)
+    : SgCamera(classId)
 {
     fieldOfView_ = 0.785398;
 }
 
 
 SgPerspectiveCamera::SgPerspectiveCamera()
-    : SgPerspectiveCamera(findPolymorphicId<SgPerspectiveCamera>())
+    : SgPerspectiveCamera(findClassId<SgPerspectiveCamera>())
 {
 
 }
@@ -83,15 +84,15 @@ double SgPerspectiveCamera::fovy(double aspectRatio, double fieldOfView)
 }
 
 
-SgOrthographicCamera::SgOrthographicCamera(int polymorhicId)
-    : SgCamera(polymorhicId)
+SgOrthographicCamera::SgOrthographicCamera(int classId)
+    : SgCamera(classId)
 {
     height_ = 2.0;
 }
 
 
 SgOrthographicCamera::SgOrthographicCamera()
-    : SgOrthographicCamera(findPolymorphicId<SgOrthographicCamera>())
+    : SgOrthographicCamera(findClassId<SgOrthographicCamera>())
 {
 
 }
@@ -112,11 +113,12 @@ Referenced* SgOrthographicCamera::doClone(CloneMap*) const
 
 namespace {
 
-struct NodeTypeRegistration {
-    NodeTypeRegistration() {
-        SgNode::registerType<SgCamera, SgPreprocessed>();
-        SgNode::registerType<SgPerspectiveCamera, SgCamera>();
-        SgNode::registerType<SgOrthographicCamera, SgCamera>();
+struct NodeClassRegistration {
+    NodeClassRegistration() {
+        SceneNodeClassRegistry::instance()
+            .registerClass<SgCamera, SgPreprocessed>()
+            .registerClass<SgPerspectiveCamera, SgCamera>()
+            .registerClass<SgOrthographicCamera, SgCamera>();
     }
 } registration;
 

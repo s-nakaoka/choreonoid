@@ -3,8 +3,7 @@
 */
 
 #include "ItemPropertyView.h"
-#include "ItemTreeView.h"
-#include "Item.h"
+#include "TargetItemPicker.h"
 #include "ViewManager.h"
 #include "MenuManager.h"
 #include "PutPropertyFunction.h"
@@ -399,6 +398,7 @@ public:
     CustomizedTableWidget* tableWidget;
     int fontPointSizeDiff;
         
+    TargetItemPicker<Item> targetItemPicker;
     ItemPtr currentItem;
     ConnectionSet itemConnections;
     int tmpListIndex;
@@ -409,8 +409,6 @@ public:
     std::vector<PropertyPtr> properties;
         
     bool isPressedPathValid;
-
-    Connection selectionChangedConnection;
 
     // PutPropertyFunction's virtual functions
     PutPropertyFunction& decimals(int d) {
@@ -515,7 +513,7 @@ public:
     void clear();
     void updateProperties(bool isItemChanged = false);
     void addProperty(const std::string& name, PropertyItem* propertyItem);
-    void onItemSelectionChanged(const ItemList<>& items);
+    void onTargetItemSpecified(Item* item);
     void zoomFontSize(int pointSizeDiff);
 };
 
@@ -661,7 +659,8 @@ ItemPropertyView::ItemPropertyView()
 
 
 ItemPropertyViewImpl::ItemPropertyViewImpl(ItemPropertyView* self)
-    : self(self)
+    : self(self),
+      targetItemPicker(self)
 {
     self->setDefaultLayoutArea(View::LEFT_BOTTOM);
 
@@ -705,9 +704,8 @@ ItemPropertyViewImpl::ItemPropertyViewImpl(ItemPropertyView* self)
     vbox->addWidget(tableWidget);
     self->setLayout(vbox);
 
-    selectionChangedConnection =
-        ItemTreeView::mainInstance()->sigSelectionChanged().connect(
-            [&](const ItemList<>& items){ onItemSelectionChanged(items); });
+    targetItemPicker.sigTargetItemSpecified().connect(
+        [&](Item* item){ onTargetItemSpecified(item); });
 
     fontPointSizeDiff = 0;
     MappingPtr config = AppConfig::archive()->openMapping("ItemPropertyView");
@@ -736,7 +734,6 @@ ItemPropertyViewImpl::~ItemPropertyViewImpl()
     }
 
     itemConnections.disconnect();
-    selectionChangedConnection.disconnect();
 }
 
 
@@ -797,13 +794,11 @@ void ItemPropertyViewImpl::addProperty(const std::string& name, PropertyItem* pr
 }
 
 
-void ItemPropertyViewImpl::onItemSelectionChanged(const ItemList<>& items)
+void ItemPropertyViewImpl::onTargetItemSpecified(Item* item)
 {
     if(TRACE_FUNCTIONS){
-        cout << "ItemPropertyView::onItemSelectionChanged()" << endl;
+        cout << "ItemPropertyView::onTargetItemSpecified()" << endl;
     }
-
-    Item* item = items.toSingle();
 
     if(item != currentItem){
         itemConnections.disconnect();

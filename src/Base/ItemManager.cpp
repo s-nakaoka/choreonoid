@@ -5,7 +5,7 @@
 #include "ItemManager.h"
 #include "Item.h"
 #include "RootItem.h"
-#include "ItemTreeView.h"
+#include "ItemClassRegistry.h"
 #include "MenuManager.h"
 #include "AppConfig.h"
 #include "MainWindow.h"
@@ -76,7 +76,7 @@ public:
     public:
         CreationPanelBase(const QString& title, ClassInfo& classInfo, ItemPtr protoItem, bool isSingleton);
         void addPanel(ItemCreationPanel* panel);
-        ItemPtr createItem(ItemPtr parentItem);
+        Item* createItem(Item* parentItem);
         CreationPanelFilterList preFilters;
         CreationPanelFilterList postFilters;
     private:
@@ -163,6 +163,8 @@ public:
 
 namespace {
 
+ItemClassRegistry* itemClassRegistry = nullptr;
+
 class DefaultCreationPanel : public ItemCreationPanel
 {
     QLineEdit* nameEntry;
@@ -198,9 +200,6 @@ ClassInfoMap typeIdToClassInfoMap;
 typedef map<string, ItemManagerImpl*> ModuleNameToItemManagerImplMap;
 ModuleNameToItemManagerImplMap moduleNameToItemManagerImplMap;
     
-typedef map<string, ItemManagerImpl::CreationPanelBase*> CreationPanelBaseMap;
-CreationPanelBaseMap creationPanelBaseMap;
-
 QWidget* importMenu;
 
 std::map<ItemPtr, ItemPtr> reloadedItemToOriginalItemMap;
@@ -273,6 +272,8 @@ ItemManagerImpl::ItemManagerImpl(const string& moduleName, MenuManager& menuMana
       menuManager(menuManager)
 {
     if(!isStaticMembersInitialized){
+
+        itemClassRegistry = &ItemClassRegistry::instance();
 
         menuManager.setPath("/File").setPath(N_("New ..."));
         
@@ -369,15 +370,8 @@ ItemManagerImpl::~ItemManagerImpl()
         }
     }
 
-    // unregister item class identifiers, CreationPanelBases and savers
     for(auto q = registeredTypeIds.begin(); q != registeredTypeIds.end(); ++q){
         const string& id = *q;
-        CreationPanelBaseMap::iterator s = creationPanelBaseMap.find(id);
-        if(s != creationPanelBaseMap.end()){
-            CreationPanelBase* base = s->second;
-            delete base;
-            creationPanelBaseMap.erase(s);
-        }
         typeIdToClassInfoMap.erase(id);
     }
 
@@ -424,9 +418,13 @@ void ItemManager::bindTextDomain(const std::string& domain)
 
 
 void ItemManager::registerClassSub
-(std::function<Item*()> factory, Item* singletonInstance, const std::string& typeId, const std::string& className)
+(const std::string& className, const std::type_info& type, const std::type_info& superType,
+ std::function<Item*()> factory, Item* singletonInstance)
 {
-    impl->registerClass(factory, singletonInstance, typeId, className);
+    if(factory || singletonInstance){
+        impl->registerClass(factory, singletonInstance, type.name(), className);
+    }
+    itemClassRegistry->registerClassAsTypeInfo(type, superType);
 }
 
 
@@ -599,18 +597,42 @@ ItemManagerImpl::CreationPanelBase* ItemManagerImpl::getOrCreateCreationPanelBas
 
 void ItemManagerImpl::onNewItemActivated(CreationPanelBase* base)
 {
-    ItemList<Item> parentItems = ItemTreeView::instance()->selectedItems();
+    ItemList<Item> parentItems = RootItem::instance()->selectedItems();
 
     if(parentItems.empty()){
         parentItems.push_back(RootItem::instance());
     }
     for(size_t i=0; i < parentItems.size(); ++i){
-        ItemPtr parentItem = parentItems[i];
-        ItemPtr newItem = base->createItem(parentItem);
+        auto parentItem = parentItems[i];
+        auto newItem = base->createItem(parentItem);
         if(newItem){
             parentItem->addChildItem(newItem, true);
         }
     }
+}
+
+
+Item* ItemManager::createNewItem_(const std::type_info& type, Item* parentItem)
+{
+    Item* newItem = nullptr;
+    
+    auto iter = typeIdToClassInfoMap.find(type.name());
+    if(iter == typeIdToClassInfoMap.end()){
+        showWarningDialog(format(_("Class {} is not registered as an item class."), type.name()));
+
+    } else {
+        auto& info = iter->second;
+        auto panel = info->creationPanelBase;
+        if(!panel){
+            showWarningDialog(format(_("The panel to create {} is not registered."), info->className));
+        } else {
+            if(!parentItem){
+                parentItem = RootItem::instance();
+            }
+            newItem = panel->createItem(parentItem);
+        }
+    }
+    return newItem;
 }
 
 
@@ -648,7 +670,7 @@ void ItemManagerImpl::CreationPanelBase::addPanel(ItemCreationPanel* panel)
 }
 
 
-ItemPtr ItemManagerImpl::CreationPanelBase::createItem(ItemPtr parentItem)
+Item* ItemManagerImpl::CreationPanelBase::createItem(Item* parentItem)
 {
     if(isSingleton){
         if(protoItem->parentItem()){
@@ -718,18 +740,13 @@ ItemPtr ItemManagerImpl::CreationPanelBase::createItem(ItemPtr parentItem)
         }
     }
     
-    ItemPtr newItem;
-    if(result){
-        if(isSingleton){
-            newItem = item;
-        } else if(protoItem){
-            newItem = protoItem->duplicate();
-        } else {
-            newItem = item;
-        }
+    if(!result){
+        item = nullptr;
+    } else if(item == protoItem && !isSingleton){
+        item = item->duplicate();
     }
-    
-    return newItem;
+
+    return item.retn();
 }
 
 
@@ -963,11 +980,15 @@ void ItemManagerImpl::onLoadSpecificTypeItemActivated(LoaderPtr loader)
     static const char* checkConfigKey = "defaultChecked";
 
     bool isCheckedByDefault = false;
-    CheckBox checkCheckBox(_("Check the item(s) in ItemTreeView"));
+    CheckBox checkCheckBox(_("Check the item(s)"));
     QGridLayout* layout = dynamic_cast<QGridLayout*>(dialog.layout());
 
     if(layout){
-        Mapping* conf = AppConfig::archive()->findMapping("ItemTreeView");
+        Mapping* conf = AppConfig::archive()->findMapping("ItemManager");
+        if(!conf->isValid()){
+            // for backward compatibility
+            conf = AppConfig::archive()->findMapping("ItemTreeView");
+        }
         if(conf->isValid()){
             conf = conf->findMapping(checkConfigKey);
             if(conf->isValid()){
@@ -997,7 +1018,7 @@ void ItemManagerImpl::onLoadSpecificTypeItemActivated(LoaderPtr loader)
 
         if(checkCheckBox.isChecked() != isCheckedByDefault){
             Mapping* checkConfig = config
-                ->openMapping("ItemTreeView")
+                ->openMapping("ItemManager")
                 ->openMapping(checkConfigKey)
                 ->openMapping(classInfo->moduleName);
             checkConfig->write(classInfo->className, checkCheckBox.isChecked());
@@ -1006,8 +1027,7 @@ void ItemManagerImpl::onLoadSpecificTypeItemActivated(LoaderPtr loader)
                   
         QStringList filenames = dialog.selectedFiles();
 
-        auto itv = ItemTreeView::instance();
-        Item* parentItem = itv->selectedItem<Item>();
+        Item* parentItem = RootItem::instance()->selectedItems().toSingle();
         if(!parentItem){
             parentItem = RootItem::instance();
         }
@@ -1021,7 +1041,7 @@ void ItemManagerImpl::onLoadSpecificTypeItemActivated(LoaderPtr loader)
                 parentItem->addChildItem(item, true);
 
                 if(checkCheckBox.isChecked()){
-                    itv->checkItem(item);
+                    item->setChecked(true);
                 }
             }
         }
@@ -1342,7 +1362,7 @@ bool ItemManagerImpl::overwrite(Item* item, bool forceOverwrite, const string& f
 
 void ItemManagerImpl::onReloadSelectedItemsActivated()
 {
-    ItemManager::reloadItems(ItemTreeView::instance()->selectedItems());
+    ItemManager::reloadItems(RootItem::instance()->selectedItems());
 }
 
 
@@ -1399,7 +1419,7 @@ Item* ItemManager::findOriginalItemForReloadedItem(Item* item)
 
 void ItemManagerImpl::onSaveSelectedItemsActivated()
 {
-    const ItemList<>& selectedItems = ItemTreeView::instance()->selectedItems();
+    const ItemList<>& selectedItems = RootItem::instance()->selectedItems();
     for(size_t i=0; i < selectedItems.size(); ++i){
         overwrite(selectedItems.get(i), true, "");
     }
@@ -1408,7 +1428,7 @@ void ItemManagerImpl::onSaveSelectedItemsActivated()
 
 void ItemManagerImpl::onSaveSelectedItemsAsActivated()
 {
-    const ItemList<>& selectedItems = ItemTreeView::instance()->selectedItems();
+    const ItemList<>& selectedItems = RootItem::instance()->selectedItems();
     for(size_t i=0; i < selectedItems.size(); ++i){
         string formatId;
         save(selectedItems.get(i), true, false, selectedItems[i]->headItem()->name(), formatId);
@@ -1424,7 +1444,7 @@ void ItemManagerImpl::onSaveAllItemsActivated()
 
 void ItemManagerImpl::onExportSelectedItemsActivated()
 {
-    const ItemList<>& selectedItems = ItemTreeView::instance()->selectedItems();
+    const ItemList<>& selectedItems = RootItem::instance()->selectedItems();
     for(size_t i=0; i < selectedItems.size(); ++i){
         string formatId;
         save(selectedItems.get(i), true, true, selectedItems[i]->headItem()->name(), formatId);

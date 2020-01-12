@@ -7,6 +7,7 @@
 #include <cnoid/BodyItem>
 #include <cnoid/Body>
 #include <cnoid/Link>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/MessageView>
 #include <cnoid/ExecutablePath>
@@ -17,6 +18,7 @@
 #include <QLibrary>
 #include <fmt/format.h>
 #include <set>
+#include <bitset>
 #include "gettext.h"
 
 using namespace std;
@@ -150,7 +152,7 @@ public:
 void SimpleControllerItem::initializeClass(ExtensionManager* ext)
 {
     ItemManager& itemManager = ext->itemManager();
-    itemManager.registerClass<SimpleControllerItem>(N_("SimpleControllerItem"));
+    itemManager.registerClass<SimpleControllerItem, ControllerItem>(N_("SimpleControllerItem"));
     itemManager.addCreationPanel<SimpleControllerItem>();
 }
 

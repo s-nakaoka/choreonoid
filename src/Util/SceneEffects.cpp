@@ -4,13 +4,14 @@
 */
 
 #include "SceneEffects.h"
+#include "SceneNodeClassRegistry.h"
 
 using namespace std;
 using namespace cnoid;
 
 
-SgFog::SgFog(int polymorhicId)
-    : SgPreprocessed(polymorhicId)
+SgFog::SgFog(int classId)
+    : SgPreprocessed(classId)
 {
     color_.setOnes();
     visibilityRange_ = 0.0f;
@@ -18,7 +19,7 @@ SgFog::SgFog(int polymorhicId)
 
 
 SgFog::SgFog()
-    : SgFog(findPolymorphicId<SgFog>())
+    : SgFog(findClassId<SgFog>())
 {
 
 }
@@ -38,29 +39,29 @@ Referenced* SgFog::doClone(CloneMap*) const
 }
 
 
-SgOutlineGroup::SgOutlineGroup(int polymorhicId)
-    : SgGroup(polymorhicId)
+SgOutline::SgOutline(int classId)
+    : SgGroup(classId)
 {
     lineWidth_ = 1.0;
     color_ << 1.0, 0.0, 0.0;
 }
 
 
-SgOutlineGroup::SgOutlineGroup()
-    : SgOutlineGroup(findPolymorphicId<SgOutlineGroup>())
+SgOutline::SgOutline()
+    : SgOutline(findClassId<SgOutline>())
 {
 
 }
 
 
-Referenced* SgOutlineGroup::doClone(CloneMap*) const
+Referenced* SgOutline::doClone(CloneMap*) const
 {
-    return new SgOutlineGroup(*this);
+    return new SgOutline(*this);
 }
 
 
 SgLightweightRenderingGroup::SgLightweightRenderingGroup()
-    : SgGroup(findPolymorphicId<SgLightweightRenderingGroup>())
+    : SgGroup(findClassId<SgLightweightRenderingGroup>())
 {
 
 }
@@ -76,9 +77,10 @@ namespace {
 
 struct NodeTypeRegistration {
     NodeTypeRegistration() {
-        SgNode::registerType<SgFog, SgPreprocessed>();
-        SgNode::registerType<SgOutlineGroup, SgGroup>();
-        SgNode::registerType<SgLightweightRenderingGroup, SgGroup>();
+        SceneNodeClassRegistry::instance()
+            .registerClass<SgFog, SgPreprocessed>()
+            .registerClass<SgOutline, SgGroup>()
+            .registerClass<SgLightweightRenderingGroup, SgGroup>();
     }
 } registration;
 

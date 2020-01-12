@@ -1,5 +1,5 @@
 #include "TargetItemPicker.h"
-#include "ItemTreeView.h"
+#include "View.h"
 #include "RootItem.h"
 #include "Archive.h"
 #include <cnoid/ConnectionSet>
@@ -21,14 +21,14 @@ public:
     bool isBeforeAnyItemChangeNotification;
     View* view;
     ScopedConnectionSet viewConnections;
-    ItemTreeView* itemTreeView;
+    RootItem* rootItem;
     ScopedConnection itemSelectionChangeConnection;
     ScopedConnection itemAddedConnection;
 
     Impl(TargetItemPickerBase* self, View* view);
     void activate(bool doUpdate);
     void deactivate();
-    void onItemSelectionChanged();
+    void onSelectedItemsChanged(const ItemList<>& items);
     void setTargetItem(Item* item, bool doNotify, bool updateEvenIfEmpty);
     void onItemAddedWhenNoTargetItemSpecified(Item* item);
     void onTargetItemDisconnectedFromRoot(Item* item);
@@ -51,7 +51,7 @@ TargetItemPickerBase::Impl::Impl(TargetItemPickerBase* self, View* view)
     isActive = false;
     isBeforeAnyItemChangeNotification = true;
     
-    itemTreeView = ItemTreeView::instance();
+    rootItem = RootItem::instance();
 
     if(view){
         viewConnections.add(
@@ -74,13 +74,13 @@ TargetItemPickerBase::~TargetItemPickerBase()
 void TargetItemPickerBase::Impl::activate(bool doUpdate)
 {
     itemSelectionChangeConnection.reset(
-        itemTreeView->sigSelectionChanged().connect(
-            [&](const ItemList<>&){ onItemSelectionChanged(); }));
+        rootItem->sigSelectedItemsChanged().connect(
+            [&](const ItemList<>& items){ onSelectedItemsChanged(items); }));
 
     isActive = true;
 
     if(doUpdate){
-        onItemSelectionChanged();
+        onSelectedItemsChanged(rootItem->selectedItems());
     }
 }
 
@@ -98,13 +98,14 @@ void TargetItemPickerBase::Impl::deactivate()
         setTargetItem(nullptr, true, true);
     }
 }
-        
 
-void TargetItemPickerBase::Impl::onItemSelectionChanged()
+
+void TargetItemPickerBase::Impl::onSelectedItemsChanged(const ItemList<>& items)
 {
-    tmpSelectedItems = itemTreeView->selectedItems();
-    self->extractTargetItemCandidates(tmpSelectedItems, true);
-    setTargetItem(tmpSelectedItems.toSingle(true), true, false);
+    tmpSelectedItems = items;
+    auto candidate = self->extractTargetItemCandidates(
+        tmpSelectedItems, rootItem->focusedItem(), true);
+    setTargetItem(candidate, true, false);
     tmpSelectedItems.clear();
 }
 
@@ -117,8 +118,6 @@ Item* TargetItemPickerBase::getTargetItem()
 
 void TargetItemPickerBase::Impl::setTargetItem(Item* item, bool doNotify, bool updateEvenIfEmpty)
 {
-    bool isChanged;
-    
     if((item != targetItem && (item || updateEvenIfEmpty)) || isBeforeAnyItemChangeNotification){
         targetItemConnection.disconnect();
         targetItem = item;
@@ -138,20 +137,10 @@ void TargetItemPickerBase::Impl::setTargetItem(Item* item, bool doNotify, bool u
     }
 
     if(!targetItem && !updateEvenIfEmpty){
-        ItemList<> items;
-        items.extractChildItems(RootItem::instance());
-        self->extractTargetItemCandidates(items, false);
-
-        ItemPtr candidate;
-        if(preferredTargetItem){
-            auto iter = std::find(items.begin(), items.end(), preferredTargetItem);
-            if(iter != items.end()){
-                candidate = preferredTargetItem;
-            }
+        auto items = rootItem->descendantItems();
+        auto candidate = self->extractTargetItemCandidates(items, preferredTargetItem, false);
+        if(candidate == preferredTargetItem){
             preferredTargetItem.reset();
-        }
-        if(!candidate){
-            candidate = items.toSingle(true);
         }
         if(candidate){
             setTargetItem(candidate, true, false);
@@ -160,7 +149,7 @@ void TargetItemPickerBase::Impl::setTargetItem(Item* item, bool doNotify, bool u
 
         if(!targetItem && !itemAddedConnection.connected()){
             itemAddedConnection.reset(
-                RootItem::instance()->sigItemAdded().connect(
+                rootItem->sigItemAdded().connect(
                     [&](Item* item){ onItemAddedWhenNoTargetItemSpecified(item); }));
         }
     }
@@ -172,8 +161,7 @@ void TargetItemPickerBase::Impl::onItemAddedWhenNoTargetItemSpecified(Item* item
     if(!targetItem){
         ItemList<> items;
         items.push_back(item);
-        self->extractTargetItemCandidates(items, false);
-        if(auto candidate = items.toSingle(true)){
+        if(auto candidate = self->extractTargetItemCandidates(items, nullptr, false)){
             setTargetItem(candidate, true, false);
         }
     }

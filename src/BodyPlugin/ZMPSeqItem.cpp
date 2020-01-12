@@ -8,6 +8,7 @@
 #include "BodyMotionItem.h"
 #include "BodyMotionEngine.h"
 #include <cnoid/ItemManager>
+#include <cnoid/PutPropertyFunction>
 #include <fmt/format.h>
 #include "gettext.h"
 
@@ -72,7 +73,7 @@ TimeSyncItemEngine* createZMPSeqEngine(BodyItem* bodyItem, AbstractSeqItem* seqI
 
 void ZMPSeqItem::initializeClass(ExtensionManager* ext)
 {
-    ext->itemManager().registerClass<ZMPSeqItem>(N_("ZMPSeqItem"));
+    ext->itemManager().registerClass<ZMPSeqItem, Vector3SeqItem>(N_("ZMPSeqItem"));
     
     BodyMotionItem::addExtraSeqItemFactory(ZMPSeq::key(), createZMPSeqItem);
     BodyMotionEngine::addExtraSeqEngineFactory(ZMPSeq::key(), createZMPSeqEngine);

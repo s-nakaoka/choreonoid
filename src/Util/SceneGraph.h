@@ -127,37 +127,17 @@ typedef std::vector<SgNode*> SgNodePath;
 
 class CNOID_EXPORT SgNode : public SgObject
 {
-    static int registerNodeType(const std::type_info& nodeType, const std::type_info& superType);
-
-    int polymorhicId_;
-
 public:
     SgNode();
     SgNode(const SgNode& org);
-
-    template <class NodeType, class SuperType> struct registerType {
-        registerType() {
-            SgNode::registerNodeType(typeid(NodeType), typeid(SuperType));
-        }
-    };
-
-    template <class NodeType, class SuperType> int registerType_() {
-        return SgNode::registerNodeType(typeid(NodeType), typeid(SuperType));
-    }
-    
-    static int findPolymorphicId(const std::type_info& nodeType);
-    
-    template <class NodeType> static int findPolymorphicId() {
-        return findPolymorphicId(typeid(NodeType));
-    }
-
-    static int findSuperTypePolymorphicId(int polymorhicId);
-    static int numPolymorphicTypes();
-        
     ~SgNode();
-    int polymorhicId() const { return polymorhicId_; }
-    virtual const BoundingBox& boundingBox() const;
 
+    int classId() const { return classId_; }
+    static int findClassId(const std::type_info& nodeType);
+    template <class NodeType> static int findClassId() {
+        return findClassId(typeid(NodeType));
+    }
+    
     SgNode* cloneNode() const {
         return static_cast<SgNode*>(this->clone());
     }
@@ -165,13 +145,33 @@ public:
         return static_cast<SgNode*>(this->clone(cloneMap));
     }
 
+    virtual const BoundingBox& boundingBox() const;
     virtual bool isGroup() const;
 
     SgNodePath findNode(const std::string& name, Affine3& out_T);
 
+    //! \deprecated Use SceneNodeClassRegistry::registerClass
+    template <class NodeType, class SuperType>
+    struct registerType {
+        registerType() {
+            SgNode::registerNodeType(typeid(NodeType), typeid(SuperType));
+        }
+    };
+
+    //! \deprecated Use SceneNodeClassRegistry::classId
+    template <class NodeType> static int findPolymorphicId() {
+        return findClassId(typeid(NodeType));
+    }
+
 protected:
     SgNode(int polymorhicId);
     virtual Referenced* doClone(CloneMap* cloneMap) const override;
+
+private:
+    int classId_;
+
+    //! \deprecated
+    static int registerNodeType(const std::type_info& nodeType, const std::type_info& superType);    
 };
 
 
@@ -489,6 +489,7 @@ class SgPlot;
 class SgPointSet;
 class SgLineSet;
 class SgOverlay;
+class SgViewportOverlay;
 class SgLight;
 class SgDirectionalLight;
 class SgPointLight;
@@ -497,7 +498,7 @@ class SgCamera;
 class SgPerspectiveCamera;
 class SgOrthographicCamera;
 class SgFog;
-class SgOutlineGroup;
+class SgOutline;
 class SgLightweightRenderingGroup;
 
 }
