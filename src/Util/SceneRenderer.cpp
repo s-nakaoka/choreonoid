@@ -8,7 +8,6 @@
 #include "SceneCameras.h"
 #include "SceneLights.h"
 #include "SceneEffects.h"
-#include "PolymorphicFunctionSet.h"
 #include <cnoid/stdx/variant>
 #include <set>
 #include <unordered_map>
@@ -55,7 +54,7 @@ struct PreproNode
 
 class PreproTreeExtractor
 {
-    PolymorphicFunctionSet<SgNode> functions;
+    PolymorphicSceneNodeFunctionSet functions;
     PreproNode* node;
     bool found;
 
@@ -276,6 +275,12 @@ bool SceneRenderer::doPick(int /* x */, int /* y */)
 }
 
 
+bool SceneRenderer::isRenderingPickingImage() const
+{
+    return false;
+}
+
+
 void SceneRenderer::setProperty(PropertyKey key, bool value)
 {
     impl->setProperty(key, value);
@@ -425,10 +430,10 @@ PreproTreeExtractor::PreproTreeExtractor()
     functions.setFunction<SgGroup>(
         [&](SgNode* node){ visitGroup(static_cast<SgGroup*>(node)); });
 
-    functions.setFunction<SgSwitch>(
-        [&](SgSwitch* node){
-            if(node->isTurnedOn()){
-                functions.dispatchAs<SgGroup>(node);
+    functions.setFunction<SgSwitchableGroup>(
+        [&](SgSwitchableGroup* group){
+            if(group->isTurnedOn()){
+                functions.dispatchAs<SgGroup>(group);
             }
         });
 

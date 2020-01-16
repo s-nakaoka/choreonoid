@@ -7,6 +7,7 @@
 #include <cnoid/SimulatorItem>
 #include <cnoid/ItemManager>
 #include <cnoid/MessageView>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/EigenUtil>
 #include <cnoid/EigenArchive>
@@ -21,7 +22,7 @@ void
 DynamicTCSimulatorItem::initializeClass(ExtensionManager* ext)
 {
     ItemManager& im = ext->itemManager();
-    im.registerClass<DynamicTCSimulatorItem>("DynamicTCSimulatorItem");
+    im.registerClass<DynamicTCSimulatorItem, SubSimulatorItem>("DynamicTCSimulatorItem");
     im.addCreationPanel<DynamicTCSimulatorItem>();
 }
 

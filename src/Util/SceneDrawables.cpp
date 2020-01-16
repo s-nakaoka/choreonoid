@@ -5,6 +5,7 @@
 
 #include "SceneDrawables.h"
 #include "CloneMap.h"
+#include "SceneNodeClassRegistry.h"
 
 using namespace std;
 using namespace cnoid;
@@ -13,13 +14,15 @@ namespace {
 
 const bool USE_FACES_FOR_BOUNDING_BOX_CALCULATION = true;
 
-struct NodeTypeRegistration {
-    NodeTypeRegistration() {
-        SgNode::registerType<SgShape, SgNode>();
-        SgNode::registerType<SgPlot, SgNode>();
-        SgNode::registerType<SgPointSet, SgPlot>();
-        SgNode::registerType<SgLineSet, SgPlot>();
-        SgNode::registerType<SgOverlay, SgGroup>();
+struct NodeClassRegistration {
+    NodeClassRegistration() {
+        SceneNodeClassRegistry::instance()
+            .registerClass<SgShape, SgNode>()
+            .registerClass<SgPlot, SgNode>()
+            .registerClass<SgPointSet, SgPlot>()
+            .registerClass<SgLineSet, SgPlot>()
+            .registerClass<SgOverlay, SgGroup>()
+            .registerClass<SgViewportOverlay, SgOverlay>();
     }
 } registration;
 
@@ -554,15 +557,15 @@ void SgPolygonMesh::updateBoundingBox()
 }
 
 
-SgShape::SgShape(int polymorhicId)
-    : SgNode(polymorhicId)
+SgShape::SgShape(int classId)
+    : SgNode(classId)
 {
 
 }
 
 
 SgShape::SgShape()
-    : SgShape(findPolymorphicId<SgShape>())
+    : SgShape(findClassId<SgShape>())
 {
 
 }
@@ -705,8 +708,8 @@ SgTexture* SgShape::getOrCreateTexture()
 }
 
 
-SgPlot::SgPlot(int polymorhicId)
-    : SgNode(polymorhicId)
+SgPlot::SgPlot(int classId)
+    : SgNode(classId)
 {
 
 }
@@ -898,15 +901,15 @@ SgColorArray* SgPlot::getOrCreateColors()
 }
 
 
-SgPointSet::SgPointSet(int polymorhicId)
-    : SgPlot(polymorhicId)
+SgPointSet::SgPointSet(int classId)
+    : SgPlot(classId)
 {
     pointSize_ = 0.0;
 }
 
 
 SgPointSet::SgPointSet()
-    : SgPointSet(findPolymorphicId<SgPointSet>())
+    : SgPointSet(findClassId<SgPointSet>())
 {
 
 }
@@ -925,15 +928,15 @@ Referenced* SgPointSet::doClone(CloneMap* cloneMap) const
 }
 
 
-SgLineSet::SgLineSet(int polymorhicId)
-    : SgPlot(polymorhicId)
+SgLineSet::SgLineSet(int classId)
+    : SgPlot(classId)
 {
     lineWidth_ = 0.0;
 }
 
 
 SgLineSet::SgLineSet()
-    : SgLineSet(findPolymorphicId<SgLineSet>())
+    : SgLineSet(findClassId<SgLineSet>())
 {
     lineWidth_ = 0.0;
 }
@@ -952,15 +955,15 @@ Referenced* SgLineSet::doClone(CloneMap* cloneMap) const
 }
     
 
-SgOverlay::SgOverlay(int polymorhicId)
-    : SgGroup(polymorhicId)
+SgOverlay::SgOverlay(int classId)
+    : SgGroup(classId)
 {
 
 }
 
 
 SgOverlay::SgOverlay()
-    : SgOverlay(findPolymorphicId<SgOverlay>())
+    : SgGroup(findClassId<SgOverlay>())
 {
 
 }
@@ -985,7 +988,40 @@ Referenced* SgOverlay::doClone(CloneMap* cloneMap) const
 }
 
 
-void SgOverlay::calcViewVolume(double /* viewportWidth */, double /* viewportHeight */, ViewVolume& io_volume)
+SgViewportOverlay::SgViewportOverlay(int classId)
+    : SgOverlay(classId)
+{
+
+}
+
+
+SgViewportOverlay::SgViewportOverlay()
+    : SgOverlay(findClassId<SgViewportOverlay>())
+{
+
+}
+
+
+SgViewportOverlay::SgViewportOverlay(const SgViewportOverlay& org, CloneMap* cloneMap)
+    : SgOverlay(org, cloneMap)
+{
+
+}
+
+
+SgViewportOverlay::~SgViewportOverlay()
+{
+
+}
+
+
+Referenced* SgViewportOverlay::doClone(CloneMap* cloneMap) const
+{
+    return new SgViewportOverlay(*this, cloneMap);
+}
+
+
+void SgViewportOverlay::calcViewVolume(double /* viewportWidth */, double /* viewportHeight */, ViewVolume& io_volume)
 {
     io_volume.left = -1.0;
     io_volume.right = 1.0;

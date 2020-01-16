@@ -7,10 +7,10 @@
 #include "FcpFileLoader.h"
 #include "PoseSeqItem.h"
 #include <cnoid/RootItem>
+#include <cnoid/ItemList>
 #include <cnoid/AppConfig>
 #include <cnoid/MainWindow>
 #include <cnoid/MessageView>
-#include <cnoid/ItemTreeView>
 #include <cnoid/MenuManager>
 #include <cnoid/Tokenizer>
 #include <cnoid/stdx/filesystem>
@@ -258,10 +258,10 @@ void invokeFaceControllerPatternFileImportDialog()
             dialog.hide();
             MessageView::mainInstance()->flush();
 
-            ItemTreeView* itv = ItemTreeView::mainInstance(); 
-            Item* parentItem = itv->selectedItem<Item>();
+            auto rootItem = RootItem::instance();
+            Item* parentItem = rootItem->selectedItems().toSingle();;
             if(!parentItem){
-                parentItem = RootItem::instance();
+                parentItem = rootItem;
             }
             QStringList poseseqFiles = dialog.selectedFiles();
             AppConfig::archive()->write(

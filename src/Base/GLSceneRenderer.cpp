@@ -22,7 +22,7 @@ int rendererType_ = GLSceneRenderer::GLSL_RENDERER;
 
 namespace cnoid {
 
-class GLSceneRendererImpl
+class GLSceneRenderer::Impl
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -38,8 +38,8 @@ public:
     ostream* os_;
     ostream& os(){ return *os_; };
 
-    GLSceneRendererImpl(GLSceneRenderer* self, SgGroup* sceneRoot);
-    ~GLSceneRendererImpl();
+    Impl(GLSceneRenderer* self, SgGroup* sceneRoot);
+    ~Impl();
     void onSceneGraphUpdated(const SgUpdate& update);
 };
 
@@ -77,11 +77,11 @@ GLSceneRenderer::GLSceneRenderer(SgGroup* sceneRoot)
         sceneRoot = new SgGroup;
         sceneRoot->setName("Root");
     }
-    impl = new GLSceneRendererImpl(this, sceneRoot);
+    impl = new Impl(this, sceneRoot);
 }
 
 
-GLSceneRendererImpl::GLSceneRendererImpl(GLSceneRenderer* self, SgGroup* sceneRoot)
+GLSceneRenderer::Impl::Impl(GLSceneRenderer* self, SgGroup* sceneRoot)
     : self(self),
       sceneRoot(sceneRoot)
 {
@@ -90,6 +90,8 @@ GLSceneRendererImpl::GLSceneRendererImpl(GLSceneRenderer* self, SgGroup* sceneRo
     scene = new SgGroup();
     sceneRoot->addChild(scene);
 
+    int invaid = std::numeric_limits<int>::min();
+    viewport << invaid, invaid, invaid, invaid;
     aspectRatio = 1.0f;
     backgroundColor << 0.1f, 0.1f, 0.3f; // dark blue
     defaultColor << 1.0f, 1.0f, 1.0f;
@@ -105,7 +107,7 @@ GLSceneRenderer::~GLSceneRenderer()
 }
 
 
-GLSceneRendererImpl::~GLSceneRendererImpl()
+GLSceneRenderer::Impl::~Impl()
 {
 
 }
@@ -182,10 +184,13 @@ GLSceneRenderer::PolygonMode GLSceneRenderer::polygonMode() const
 
 void GLSceneRenderer::updateViewportInformation(int x, int y, int width, int height)
 {
-    if(height > 0){
-        impl->aspectRatio = (double)width / height;
+    auto& vp = impl->viewport;
+    if(x != vp[0] || y != vp[1] || width != vp[2] || height != vp[3]){
+        if(height > 0){
+            impl->aspectRatio = (double)width / height;
+        }
+        vp << x, y, width, height;
     }
-    impl->viewport << x, y, width, height;
 }
 
 
@@ -313,13 +318,13 @@ bool GLSceneRenderer::unproject(double x, double y, double z, Vector3& out_proje
 }
 
 
-void GLSceneRenderer::setPickingBufferImageOutputEnabled(bool)
+void GLSceneRenderer::setPickingImageOutputEnabled(bool)
 {
 
 }
     
 
-bool GLSceneRenderer::getPickingBufferImage(Image&)
+bool GLSceneRenderer::getPickingImage(Image&)
 {
     return false;
 }

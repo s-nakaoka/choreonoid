@@ -4,11 +4,19 @@
 */
 
 #include "SubSimulatorItem.h"
+#include <cnoid/ItemManager>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include "gettext.h"
 
-using namespace std::placeholders;
 using namespace cnoid;
+
+
+void SubSimulatorItem::initializeClass(ExtensionManager* ext)
+{
+    ext->itemManager().registerAbstractClass<SubSimulatorItem>();
+}
+
 
 SubSimulatorItem::SubSimulatorItem()
 {
@@ -50,8 +58,7 @@ void SubSimulatorItem::finalizeSimulation()
 
 void SubSimulatorItem::doPutProperties(PutPropertyFunction& putProperty)
 {
-    putProperty(_("Enabled"), isEnabled(),
-                std::bind(&SubSimulatorItem::setEnabled, this, _1));
+    putProperty(_("Enabled"), isEnabled(), [&](bool on){ return setEnabled(on); });
 }
 
 

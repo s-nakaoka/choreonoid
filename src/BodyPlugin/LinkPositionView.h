@@ -2,8 +2,8 @@
   @author Shin'ichiro Nakaoka
 */
 
-#ifndef CNOID_BODYPLUGIN_POSITION_VIEW_H
-#define CNOID_BODYPLUGIN_POSITION_VIEW_H
+#ifndef CNOID_BODY_PLUGIN_LINK_POSITION_VIEW_H
+#define CNOID_BODY_PLUGIN_LINK_POSITION_VIEW_H
 
 #include <cnoid/View>
 #include <functional>
@@ -15,14 +15,14 @@ namespace cnoid {
 
 class LinkKinematicsKit;
 
-class CNOID_EXPORT PositionView : public View
+class CNOID_EXPORT LinkPositionView : public View
 {
 public:
     static void initializeClass(ExtensionManager* ext);
-    static PositionView* instance();
+    static LinkPositionView* instance();
 
-    PositionView();
-    virtual ~PositionView();
+    LinkPositionView();
+    virtual ~LinkPositionView();
 
     void setCoordinateModeLabels(
         const char* worldModeLabel, const char* modelModeLabel, const char* localModeLabel);
@@ -35,6 +35,7 @@ public:
 protected:
     virtual void onActivated() override;
     virtual void onDeactivated() override;
+    virtual void onAttachedMenuRequest(MenuManager& menuManager) override;
     virtual bool storeState(Archive& archive) override;
     virtual bool restoreState(const Archive& archive) override;
 

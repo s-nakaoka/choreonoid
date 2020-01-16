@@ -332,7 +332,9 @@ Link* Body::findUniqueEndLink() const
     Link* link = rootLink_;
     while(true){
         if(!link->child_){
-            endLink = link;
+            if(link != rootLink_){
+                endLink = link;
+            }
             break;
         }
         if(link->child_->sibling_){
@@ -790,4 +792,42 @@ BodyInterface* Body::bodyInterface()
     };
 
     return &interface;
+}
+
+
+template<> double Body::info(const std::string& key) const
+{
+    return impl->info->get(key).toDouble();
+}
+
+
+template<> double Body::info(const std::string& key, const double& defaultValue) const
+{
+    double value;
+    if(impl->info->read(key, value)){
+        return value;
+    }
+    return defaultValue;
+}
+
+
+template<> bool Body::info(const std::string& key, const bool& defaultValue) const
+{
+    bool value;
+    if(impl->info->read(key, value)){
+        return value;
+    }
+    return defaultValue;
+}
+
+
+template<> void Body::setInfo(const std::string& key, const double& value)
+{
+    impl->info->write(key, value);
+}
+
+
+template<> void Body::setInfo(const std::string& key, const bool& value)
+{
+    impl->info->write(key, value);
 }

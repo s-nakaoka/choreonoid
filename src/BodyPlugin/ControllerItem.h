@@ -19,6 +19,8 @@ class Body;
 class CNOID_EXPORT ControllerItem : public Item
 {
 public:
+    static void initializeClass(ExtensionManager* ext);
+    
     // for the backward compatibility
     typedef ControllerIO Target;
 
@@ -94,8 +96,7 @@ private:
     bool isNoDelayMode_;
     std::string optionString_;
 
-    friend class SimulatorItemImpl;
-
+    friend class SimulatorItem;
     void setSimulatorItem(SimulatorItem* item);
 };
         

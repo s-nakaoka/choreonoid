@@ -5,10 +5,12 @@
 
 #include "BodyTrackingCameraItem.h"
 #include <cnoid/ItemManager>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/InteractiveCameraTransform>
 #include <cnoid/SceneCameras>
 #include <cnoid/SceneView>
+#include <cnoid/SceneWidget>
 #include <cnoid/BodyItem>
 #include <cnoid/SceneRenderer>
 #include <cnoid/SceneBar>

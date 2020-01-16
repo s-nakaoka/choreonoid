@@ -6,6 +6,7 @@
 #define CNOID_UTIL_POLYMORPHIC_FUNCTION_SET_H
 
 #include <functional>
+#include "HierarchicalClassRegistry.h"
 #include <vector>
 
 namespace cnoid {
@@ -17,41 +18,58 @@ public:
     typedef std::function<void(ObjectBase* obj)> Function;
     
 private:
+    HierarchicalClassRegistry<ObjectBase>& registry;
+    int validDispatchTableSize;
     std::vector<Function> dispatchTable;
     std::vector<bool> isFixed;
-    bool isDirty;
 
 public:
-    PolymorphicFunctionSet() {
-        const int n = ObjectBase::numPolymorphicTypes();
-        dispatchTable.resize(n);
-        isFixed.resize(n, false);
-        isDirty = true;
+    PolymorphicFunctionSet(HierarchicalClassRegistry<ObjectBase>& registry)
+        : registry(registry)
+    {
+        validDispatchTableSize = 0;
     }
 
-    template <class Object>
-    void setFunction(Function func){
-        int id = ObjectBase::template findPolymorphicId<Object>();
+    bool empty() const {
+        return dispatchTable.empty();
+    }
+
+    void setFunction(const std::type_info& type, Function func)
+    {
+        int id = registry.classId(type);
         if(id >= 0){
+            if(validDispatchTableSize > id + 1){
+                validDispatchTableSize = id + 1;
+            }
             if(id >= static_cast<int>(dispatchTable.size())){
                 dispatchTable.resize(id + 1);
                 isFixed.resize(id + 1, false);
             }
             dispatchTable[id] = func;
             isFixed[id] = true;
-            isDirty = true;
         }
     }
 
     template <class Object>
-    void setFunction(std::function<void(Object* obj)> func){
+    void setFunction(Function func)
+    {
+        setFunction(typeid(Object), func);
+    }
+
+    template <class Object>
+    void setFunction(std::function<void(Object* obj)> func)
+    {
         setFunction<Object>([func](ObjectBase* obj){ func(static_cast<Object*>(obj)); });
     }
 
     template <class Object>
-    void resetFunction(bool doUpdate = false){
-        int id = ObjectBase::template findPolymorphicId<Object>();
+    void resetFunction(bool doUpdate = false)
+    {
+        int id = registry.template classId<Object>();
         if(id >= 0 && id < dispatchTable.size()){
+            if(validDispatchTableSize > id){
+                validDispatchTableSize = id;
+            }
             dispatchTable[id] = nullptr;
             isFixed[id] = false;
             if(doUpdate){
@@ -60,59 +78,84 @@ public:
         }
     }
 
-    void updateDispatchTable() {
-
-        const size_t numTypes = ObjectBase::numPolymorphicTypes();
-        if(dispatchTable.size() == numTypes && !isDirty){
-            return;
+    bool updateDispatchTable(int idToCheck = 0)
+    {
+        const size_t numClasses = registry.numRegisteredClasses();
+        if(numClasses == validDispatchTableSize){
+            return idToCheck < numClasses;
         }
         
-        if(dispatchTable.size() < numTypes){
-            dispatchTable.resize(numTypes);
-            isFixed.resize(numTypes, false);
+        if(dispatchTable.size() != numClasses){
+            dispatchTable.resize(numClasses);
+            isFixed.resize(numClasses, false);
         }
-    
+
         const int n = dispatchTable.size();
-        for(int i=0; i < n; ++i){
+        for(int i = validDispatchTableSize; i < n; ++i){
             if(!isFixed[i]){
                 dispatchTable[i] = nullptr;
             }
         }
-        for(int i=0; i < n; ++i){
-            if(!dispatchTable[i]){
-                int id = i;
-                while(true){
-                    int superTypeId = ObjectBase::findSuperTypePolymorphicId(id);
-                    if(superTypeId < 0){
-                        break;
-                    }
-                    if(dispatchTable[superTypeId]){
-                        dispatchTable[i] = dispatchTable[superTypeId];
-                        break;
-                    }
-                    id = superTypeId;
-                }
+
+        for(int i = validDispatchTableSize; i < n; ++i){
+            setSuperClassFunction(i);
+        }
+        validDispatchTableSize = n;
+        
+        return idToCheck < validDispatchTableSize;
+    }
+
+    int setSuperClassFunction(int id)
+    {
+        if(dispatchTable[id]){
+            return id;
+        }
+        int superClassId = registry.superClassId(id);
+        if(superClassId < 0){
+            return -1;
+        }
+        int functionId = setSuperClassFunction(superClassId);
+        if(functionId >= 0){
+            dispatchTable[id] = dispatchTable[functionId];
+        }
+        return functionId;
+    }
+
+    inline void dispatch(ObjectBase* obj, const int id)
+    {
+        if(id >= validDispatchTableSize){
+            if(!updateDispatchTable(id)){
+                return;
             }
+        }
+        auto& function = dispatchTable[id];
+        if(function){
+            function(obj);
         }
     }
 
-    inline void dispatch(ObjectBase* obj){
-        const int id = obj->polymorhicId();
-        if(id >= static_cast<int>(dispatchTable.size())){
-            updateDispatchTable();
-        }
-        const auto& func = dispatchTable[id];
-        if(func){
-            func(obj);
-        } 
+    inline void dispatch(ObjectBase* obj)
+    {
+        dispatch(obj, obj->classId());
     }
 
     template <class Object>
     inline void dispatchAs(Object* obj){
-        const auto& func = dispatchTable[ObjectBase::template findPolymorphicId<Object>()];
-        if(func){
-            func(obj);
+        dispatch(obj, registry.template classId<Object>(0));
+    }
+
+    class Dispatcher {
+    public:
+        Dispatcher(PolymorphicFunctionSet<ObjectBase>& pfs) : pfs(pfs) { }
+        template<class Object> void dispatchAs(Object* obj){
+            pfs.dispatchAs<Object>(obj);
         }
+    private:
+        PolymorphicFunctionSet<ObjectBase>& pfs;
+    };
+
+    Dispatcher dispatcher(){
+        return Dispatcher(*this);
     }
 };
 

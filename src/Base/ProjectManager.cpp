@@ -41,16 +41,18 @@ Action* homeRelativeCheck = nullptr;
 MainWindow* mainWindow = nullptr;
 MessageView* mv = nullptr;
 
+Signal<void(int recursiveLevel)> sigProjectAboutToBeLoaded;
+Signal<void(int recursiveLevel)> sigProjectLoaded;
+
 }
 
 namespace cnoid {
 
-class ProjectManagerImpl
+class ProjectManager::Impl
 {
 public:
-    ProjectManagerImpl(ProjectManager* self);
-    ProjectManagerImpl(ProjectManager* self, ExtensionManager* ext);
-    ~ProjectManagerImpl();
+    Impl(ProjectManager* self);
+    Impl(ProjectManager* self, ExtensionManager* ext);
         
     template <class TObject>
     bool restoreObjectStates(
@@ -108,19 +110,13 @@ void ProjectManager::initializeClass(ExtensionManager* ext)
 }
 
 
-bool ProjectManager::isProjectBeingLoaded()
-{
-    return projectBeingLoadedCounter > 0;
-}
-
-        
 ProjectManager::ProjectManager()
 {
-    impl = new ProjectManagerImpl(this);
+    impl = new Impl(this);
 }
 
 
-ProjectManagerImpl::ProjectManagerImpl(ProjectManager* self)
+ProjectManager::Impl::Impl(ProjectManager* self)
     : self(self)
 {
     
@@ -129,13 +125,13 @@ ProjectManagerImpl::ProjectManagerImpl(ProjectManager* self)
 
 ProjectManager::ProjectManager(ExtensionManager* ext)
 {
-    impl = new ProjectManagerImpl(this, ext);
+    impl = new Impl(this, ext);
 }
 
 
 // The constructor for the main instance
-ProjectManagerImpl::ProjectManagerImpl(ProjectManager* self, ExtensionManager* ext)
-    : ProjectManagerImpl(self)
+ProjectManager::Impl::Impl(ProjectManager* self, ExtensionManager* ext)
+    : Impl(self)
 {
     MappingPtr config = AppConfig::archive()->openMapping("ProjectManager");
     
@@ -181,14 +177,26 @@ ProjectManager::~ProjectManager()
 }
 
 
-ProjectManagerImpl::~ProjectManagerImpl()
+SignalProxy<void(int recursiveLevel)> ProjectManager::sigProjectAboutToBeLoaded()
 {
+    return ::sigProjectAboutToBeLoaded;
+}
 
+
+SignalProxy<void(int recursiveLevel)> ProjectManager::sigProjectLoaded()
+{
+    return ::sigProjectLoaded;
+}
+
+
+bool ProjectManager::isLoadingProject() const
+{
+    return projectBeingLoadedCounter > 0;
 }
 
 
 template <class TObject>
-bool ProjectManagerImpl::restoreObjectStates
+bool ProjectManager::Impl::restoreObjectStates
 (Archive* projectArchive, Archive* states, const vector<TObject*>& objects, const char* nameSuffix)
 {
     bool restored = false;
@@ -220,9 +228,11 @@ ItemList<> ProjectManager::loadProject(const std::string& filename, Item* parent
 }
 
 
-ItemList<> ProjectManagerImpl::loadProject(const std::string& filename, Item* parentItem, bool isInvokingApplication)
+ItemList<> ProjectManager::Impl::loadProject(const std::string& filename, Item* parentItem, bool isInvokingApplication)
 {
     ItemList<> loadedItems;
+    
+    ::sigProjectAboutToBeLoaded(projectBeingLoadedCounter);
     
     ++projectBeingLoadedCounter;
     
@@ -351,7 +361,11 @@ ItemList<> ProjectManagerImpl::loadProject(const std::string& filename, Item* pa
             if(loaded){
                 if(!isSubProject){
                     self->setCurrentProjectName(getBasename(filename));
-                    lastAccessedProjectFile = filename;
+                    if(archive->get("isNewProjectTemplate", false)){
+                        lastAccessedProjectFile.clear();
+                    } else {
+                        lastAccessedProjectFile = filename;
+                    }
                 }
 
                 mv->flush();
@@ -378,6 +392,8 @@ ItemList<> ProjectManagerImpl::loadProject(const std::string& filename, Item* pa
 
     --projectBeingLoadedCounter;
 
+    ::sigProjectLoaded(projectBeingLoadedCounter);
+    
     return loadedItems;
 }
 
@@ -392,7 +408,7 @@ void ProjectManager::setCurrentProjectName(const std::string& name)
 }
         
 
-template<class TObject> bool ProjectManagerImpl::storeObjects
+template<class TObject> bool ProjectManager::Impl::storeObjects
 (Archive& parentArchive, const char* key, vector<TObject*> objects)
 {
     bool result = true;
@@ -427,7 +443,7 @@ void ProjectManager::saveProject(const string& filename, Item* item)
 }
 
 
-void ProjectManagerImpl::saveProject(const string& filename, Item* item)
+void ProjectManager::Impl::saveProject(const string& filename, Item* item)
 {
     YAMLWriter writer(filename);
     if(!writer.isOpen()){
@@ -533,7 +549,7 @@ void ProjectManager::overwriteCurrentProject()
 }
 
 
-void ProjectManagerImpl::overwriteCurrentProject()
+void ProjectManager::Impl::overwriteCurrentProject()
 {
     if(lastAccessedProjectFile.empty()){
         openDialogToSaveProject();
@@ -543,7 +559,7 @@ void ProjectManagerImpl::overwriteCurrentProject()
 }
 
     
-void ProjectManagerImpl::onProjectOptionsParsed(boost::program_options::variables_map& v)
+void ProjectManager::Impl::onProjectOptionsParsed(boost::program_options::variables_map& v)
 {
     if(v.count("project")){
         vector<string> projectFileNames = v["project"].as<vector<string>>();
@@ -554,7 +570,7 @@ void ProjectManagerImpl::onProjectOptionsParsed(boost::program_options::variable
 }
 
 
-void ProjectManagerImpl::onInputFileOptionsParsed(std::vector<std::string>& inputFiles)
+void ProjectManager::Impl::onInputFileOptionsParsed(std::vector<std::string>& inputFiles)
 {
     auto iter = inputFiles.begin();
     while(iter != inputFiles.end()){
@@ -568,7 +584,7 @@ void ProjectManagerImpl::onInputFileOptionsParsed(std::vector<std::string>& inpu
 }
 
 
-void ProjectManagerImpl::openDialogToLoadProject()
+void ProjectManager::Impl::openDialogToLoadProject()
 {
     QFileDialog dialog(MainWindow::instance());
     dialog.setWindowTitle(_("Open a Choreonoid project file"));
@@ -593,7 +609,7 @@ void ProjectManagerImpl::openDialogToLoadProject()
 }
 
 
-void ProjectManagerImpl::openDialogToSaveProject()
+void ProjectManager::Impl::openDialogToSaveProject()
 {
     QFileDialog dialog(MainWindow::instance());
     dialog.setWindowTitle(_("Save a choreonoid project file"));
@@ -609,7 +625,7 @@ void ProjectManagerImpl::openDialogToSaveProject()
     dialog.setNameFilters(filters);
 
     dialog.setDirectory(AppConfig::archive()->get("currentFileDialogDirectory", shareDirectory()).c_str());
-    if(!currentProjectName.empty()){
+    if(!currentProjectName.empty() && !lastAccessedProjectFile.empty()){
         dialog.selectFile(currentProjectName.c_str());
     }
 
@@ -626,14 +642,14 @@ void ProjectManagerImpl::openDialogToSaveProject()
 }
 
 
-void ProjectManagerImpl::onPerspectiveCheckToggled(bool on)
+void ProjectManager::Impl::onPerspectiveCheckToggled(bool on)
 {
     AppConfig::archive()->openMapping("ProjectManager")
         ->write("storePerspective", perspectiveCheck->isChecked());
 }
 
 
-void ProjectManagerImpl::onHomeRelativeCheckToggled(bool on)
+void ProjectManager::Impl::onHomeRelativeCheckToggled(bool on)
 {
     AppConfig::archive()->openMapping("ProjectManager")
         ->write("useHomeRelative", homeRelativeCheck->isChecked());
@@ -646,7 +662,7 @@ void ProjectManager::setArchiver(
     std::function<bool(Archive&)> storeFunction,
     std::function<void(const Archive&)> restoreFunction)
 {
-    ProjectManagerImpl::ArchiverInfo& info = impl->archivers[moduleName][name];
+    Impl::ArchiverInfo& info = impl->archivers[moduleName][name];
     info.storeFunction = storeFunction;
     info.restoreFunction = restoreFunction;
 }

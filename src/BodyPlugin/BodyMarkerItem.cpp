@@ -9,6 +9,7 @@
 #include <cnoid/BodyItem>
 #include <cnoid/SceneGraph>
 #include <cnoid/SceneMarkers>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/EigenArchive>
 #include <fmt/format.h>
@@ -50,7 +51,7 @@ public:
     Position T_node;
     Position localPosition;
     SceneMarkerPtr marker;
-    SgSwitchPtr markerSwitch;
+    SgSwitchableGroupPtr switchableMarker;
     SgUpdate markerUpdate;
     ScopedConnection connection;
     Selection markerType;
@@ -108,9 +109,9 @@ BodyMarkerItemImpl::BodyMarkerItemImpl(BodyMarkerItem* self)
     markerType.select(BodyMarkerItem::CROSS_MARKER);
 
     marker = new SceneMarker;
-    markerSwitch = new SgSwitch;
-    markerSwitch->turnOff();
-    markerSwitch->addChild(marker);
+    switchableMarker = new SgSwitchableGroup;
+    switchableMarker->turnOff();
+    switchableMarker->addChild(marker);
 }
 
 
@@ -162,7 +163,7 @@ SgNode* BodyMarkerItem::getScene()
     if(impl->marker->empty()){
         impl->marker->updateMarker();
     }
-    return impl->markerSwitch;
+    return impl->switchableMarker;
 }
 
 
@@ -266,13 +267,13 @@ bool BodyMarkerItemImpl::updateTarget()
             connection.reset(
                 bodyItem->sigKinematicStateChanged().connect(
                     [&](){ updateMarkerPosition(); } ));
-            markerSwitch->turnOn();
+            switchableMarker->turnOn();
             updateMarkerPosition();
         }
     }
 
     if(!isValid){
-        markerSwitch->turnOff(true);
+        switchableMarker->turnOff(true);
     }
 
     return isValid;

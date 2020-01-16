@@ -4,6 +4,7 @@
 */
 
 #include "SceneGraph.h"
+#include "SceneNodeClassRegistry.h"
 #include "CloneMap.h"
 #include "Exception.h"
 #include <unordered_map>
@@ -104,74 +105,26 @@ void SgObject::removeParent(SgObject* parent)
 }
 
 
-namespace {
-std::mutex polymorphicIdMutex;
-typedef std::unordered_map<std::type_index, int> PolymorphicIdMap;
-PolymorphicIdMap polymorphicIdMap;
-std::vector<int> superTypePolymorphicIdMap;
+int SgNode::findClassId(const std::type_info& nodeType)
+{
+    return SceneNodeClassRegistry::instance().classId(nodeType);
 }
+
 
 int SgNode::registerNodeType(const std::type_info& nodeType, const std::type_info& superType)
 {
-    std::lock_guard<std::mutex> guard(polymorphicIdMutex);
-
-    int superTypeId;
-    PolymorphicIdMap::iterator iter = polymorphicIdMap.find(superType);
-    if(iter == polymorphicIdMap.end()){
-        superTypeId = polymorphicIdMap.size();
-        polymorphicIdMap[superType] = superTypeId;
-    } else {
-        superTypeId = iter->second;
-    }
-    int id;
-    if(nodeType == superType){
-        id = superTypeId;
-    } else {
-        id = polymorphicIdMap.size();
-        polymorphicIdMap[nodeType] = id;
-        if(id >= static_cast<int>(superTypePolymorphicIdMap.size())){
-            superTypePolymorphicIdMap.resize(id + 1, -1);
-        }
-        superTypePolymorphicIdMap[id] = superTypeId;
-    }
-
-    return id;
-}
-
-int SgNode::findPolymorphicId(const std::type_info& nodeType)
-{
-    std::lock_guard<std::mutex> guard(polymorphicIdMutex);
-
-    auto iter = polymorphicIdMap.find(nodeType);
-    if(iter != polymorphicIdMap.end()){
-        return iter->second;
-    }
-    return -1;
-}
-
-
-int SgNode::findSuperTypePolymorphicId(int polymorhicId)
-{
-    std::lock_guard<std::mutex> guard(polymorphicIdMutex);
-    return superTypePolymorphicIdMap[polymorhicId];
-}
-
-
-int SgNode::numPolymorphicTypes()
-{
-    std::lock_guard<std::mutex> guard(polymorphicIdMutex);
-    return polymorphicIdMap.size();
+    return SceneNodeClassRegistry::instance().registerClassAsTypeInfo(nodeType, superType);
 }
 
 
 SgNode::SgNode()
 {
-    polymorhicId_ = findPolymorphicId<SgNode>();
+    classId_ = findClassId<SgNode>();
 }
 
 
-SgNode::SgNode(int polymorhicId)
-    : polymorhicId_(polymorhicId)
+SgNode::SgNode(int classId)
+    : classId_(classId)
 {
 
 }
@@ -179,7 +132,7 @@ SgNode::SgNode(int polymorhicId)
 
 SgNode::SgNode(const SgNode& org)
     : SgObject(org),
-      polymorhicId_(org.polymorhicId_)
+      classId_(org.classId_)
 {
 
 }
@@ -255,14 +208,14 @@ SgNodePath SgNode::findNode(const std::string& name, Affine3& out_T)
 
 
 SgGroup::SgGroup()
-    : SgNode(findPolymorphicId<SgGroup>())
+    : SgNode(findClassId<SgGroup>())
 {
     isBboxCacheValid = false;
 }
 
 
-SgGroup::SgGroup(int polymorhicId)
-    : SgNode(polymorhicId)
+SgGroup::SgGroup(int classId)
+    : SgNode(classId)
 {
     isBboxCacheValid = false;
 }
@@ -280,6 +233,10 @@ SgGroup::SgGroup(const SgGroup& org, CloneMap* cloneMap)
         }
     } else {
         // shallow copy
+        /**
+           \todo Stop the shallow copy of the child nodes.
+           Only the attributes of this node should be copied when the clone map is not used.
+        */
         for(auto& child : org){
             addChild(child, false);
         }
@@ -465,6 +422,38 @@ void SgGroup::moveChildrenTo(SgGroup* group, bool doNotify)
 }
 
 
+SgGroup* SgGroup::nextChainedGroup()
+{
+    SgGroup* nextGroup = nullptr;
+    if(children.size() == 1){
+        nextGroup = dynamic_cast<SgGroup*>(children.front().get());
+    }
+    return nextGroup;
+}
+
+
+void SgGroup::insertChainedGroup(SgGroup* group)
+{
+    moveChildrenTo(group);
+    addChild(group);
+}
+
+
+void SgGroup::removeChainedGroup(SgGroup* group)
+{
+    SgGroup* parent = this;
+    auto next = nextChainedGroup();
+    while(next){
+        if(next == group){
+            parent->removeChild(next);
+            next->moveChildrenTo(parent);
+            break;
+        }
+        next = next->nextChainedGroup();
+    }
+}
+
+
 void SgGroup::throwTypeMismatchError()
 {
     throw type_mismatch_error();
@@ -472,7 +461,7 @@ void SgGroup::throwTypeMismatchError()
 
 
 SgInvariantGroup::SgInvariantGroup()
-    : SgGroup(findPolymorphicId<SgInvariantGroup>())
+    : SgGroup(findClassId<SgInvariantGroup>())
 {
 
 }
@@ -491,8 +480,8 @@ Referenced* SgInvariantGroup::doClone(CloneMap* cloneMap) const
 }
 
 
-SgTransform::SgTransform(int polymorhicId)
-    : SgGroup(polymorhicId)
+SgTransform::SgTransform(int classId)
+    : SgGroup(classId)
 {
 
 }
@@ -514,8 +503,8 @@ const BoundingBox& SgTransform::untransformedBoundingBox() const
 }
 
 
-SgPosTransform::SgPosTransform(int polymorhicId)
-    : SgTransform(polymorhicId),
+SgPosTransform::SgPosTransform(int classId)
+    : SgTransform(classId),
       T_(Affine3::Identity())
 {
 
@@ -523,14 +512,14 @@ SgPosTransform::SgPosTransform(int polymorhicId)
 
 
 SgPosTransform::SgPosTransform()
-    : SgPosTransform(findPolymorphicId<SgPosTransform>())
+    : SgPosTransform(findClassId<SgPosTransform>())
 {
 
 }
 
 
 SgPosTransform::SgPosTransform(const Affine3& T)
-    : SgTransform(findPolymorphicId<SgPosTransform>()),
+    : SgTransform(findClassId<SgPosTransform>()),
       T_(T)
 {
 
@@ -573,22 +562,30 @@ void SgPosTransform::getTransform(Affine3& out_T) const
 }
 
 
-SgScaleTransform::SgScaleTransform(int polymorhicId)
-    : SgTransform(polymorhicId)
+SgScaleTransform::SgScaleTransform(int classId)
+    : SgTransform(classId)
 {
     scale_.setOnes();
 }
 
 
 SgScaleTransform::SgScaleTransform()
-    : SgScaleTransform(findPolymorphicId<SgScaleTransform>())
+    : SgScaleTransform(findClassId<SgScaleTransform>())
+{
+
+}
+
+
+SgScaleTransform::SgScaleTransform(double scale)
+    : SgTransform(findClassId<SgScaleTransform>()),
+      scale_(scale, scale, scale)
 {
 
 }
 
 
 SgScaleTransform::SgScaleTransform(const Vector3& scale)
-    : SgTransform(findPolymorphicId<SgScaleTransform>()),
+    : SgTransform(findClassId<SgScaleTransform>()),
       scale_(scale)
 {
 
@@ -609,8 +606,30 @@ Referenced* SgScaleTransform::doClone(CloneMap* cloneMap) const
 }
         
 
-SgAffineTransform::SgAffineTransform(int polymorhicId)
-    : SgTransform(polymorhicId),
+const BoundingBox& SgScaleTransform::boundingBox() const
+{
+    if(isBboxCacheValid){
+        return bboxCache;
+    }
+    bboxCache.clear();
+    for(const_iterator p = begin(); p != end(); ++p){
+        bboxCache.expandBy((*p)->boundingBox());
+    }
+    untransformedBboxCache = bboxCache;
+    bboxCache.transform(Affine3(scale_.asDiagonal()));
+    isBboxCacheValid = true;
+    return bboxCache;
+}
+
+
+void SgScaleTransform::getTransform(Affine3& out_T) const
+{
+    out_T = scale_.asDiagonal();
+}
+
+
+SgAffineTransform::SgAffineTransform(int classId)
+    : SgTransform(classId),
       T_(Affine3::Identity())
 {
 
@@ -618,14 +637,14 @@ SgAffineTransform::SgAffineTransform(int polymorhicId)
 
 
 SgAffineTransform::SgAffineTransform()
-    : SgAffineTransform(findPolymorphicId<SgAffineTransform>())
+    : SgAffineTransform(findClassId<SgAffineTransform>())
 {
 
 }
 
 
 SgAffineTransform::SgAffineTransform(const Affine3& T)
-    : SgTransform(findPolymorphicId<SgAffineTransform>()),
+    : SgTransform(findClassId<SgAffineTransform>()),
       T_(T)
 {
 
@@ -668,37 +687,48 @@ void SgAffineTransform::getTransform(Affine3& out_T) const
 }
 
 
-const BoundingBox& SgScaleTransform::boundingBox() const
+SgAutoScale::SgAutoScale()
+    : SgAutoScale(1.0)
 {
-    if(isBboxCacheValid){
-        return bboxCache;
-    }
-    bboxCache.clear();
-    for(const_iterator p = begin(); p != end(); ++p){
-        bboxCache.expandBy((*p)->boundingBox());
-    }
-    untransformedBboxCache = bboxCache;
-    bboxCache.transform(Affine3(scale_.asDiagonal()));
-    isBboxCacheValid = true;
-    return bboxCache;
+
 }
 
 
-void SgScaleTransform::getTransform(Affine3& out_T) const
+SgAutoScale::SgAutoScale(double pixelSizeRatio)
+    : SgGroup(findClassId<SgAutoScale>())
 {
-    out_T = scale_.asDiagonal();
+    pixelSizeRatio_ = pixelSizeRatio;
+}
+      
+
+SgAutoScale::SgAutoScale(int classId)
+    : SgGroup(classId)
+{
+    pixelSizeRatio_ = 1.0;
 }
 
 
-SgSwitch::SgSwitch()
-    : SgGroup(findPolymorphicId<SgSwitch>())
-{
-    isTurnedOn_ = true;
-}
-
-
-SgSwitch::SgSwitch(const SgSwitch& org, CloneMap* cloneMap)
+SgAutoScale::SgAutoScale(const SgAutoScale& org, CloneMap* cloneMap)
     : SgGroup(org, cloneMap)
+{
+    pixelSizeRatio_ = org.pixelSizeRatio_;
+}
+
+
+Referenced* SgAutoScale::doClone(CloneMap* cloneMap) const
+{
+    return new SgAutoScale(*this, cloneMap);
+}
+
+
+SgSwitch::SgSwitch(bool on)
+{
+    isTurnedOn_ = on;
+}
+
+
+SgSwitch::SgSwitch(const SgSwitch& org)
+    : SgObject(org)
 {
     isTurnedOn_ = org.isTurnedOn_;
 }
@@ -706,21 +736,91 @@ SgSwitch::SgSwitch(const SgSwitch& org, CloneMap* cloneMap)
 
 Referenced* SgSwitch::doClone(CloneMap* cloneMap) const
 {
-    return new SgSwitch(*this, cloneMap);
+    return new SgSwitch(*this);
 }
 
 
 void SgSwitch::setTurnedOn(bool on, bool doNotify)
 {
-    isTurnedOn_ = on;
-    if(doNotify){
-        notifyUpdate();
+    if(on != isTurnedOn_){
+        isTurnedOn_ = on;
+        if(doNotify){
+            notifyUpdate();
+        }
+    }
+}    
+
+
+SgSwitchableGroup::SgSwitchableGroup()
+    : SgGroup(findClassId<SgSwitchableGroup>())
+{
+    isTurnedOn_ = true;
+}
+
+
+SgSwitchableGroup::SgSwitchableGroup(SgSwitch* switchObject)
+    : SgSwitchableGroup()
+{
+    setSwitch(switchObject);
+}
+
+
+SgSwitchableGroup::SgSwitchableGroup(const SgSwitchableGroup& org, CloneMap* cloneMap)
+    : SgGroup(org, cloneMap)
+{
+    if(org.switchObject){
+        if(cloneMap){
+            switchObject = cloneMap->getClone<SgSwitch>(org.switchObject);
+        } else {
+            switchObject = org.switchObject;
+        }
+    } 
+    isTurnedOn_ = org.isTurnedOn_;
+}
+
+
+SgSwitchableGroup::~SgSwitchableGroup()
+{
+    if(switchObject){
+        switchObject->removeParent(this);
+    }
+}
+
+
+void SgSwitchableGroup::setSwitch(SgSwitch* newSwitchObject)
+{
+    if(switchObject){
+        switchObject->removeParent(this);
+    }
+    switchObject = newSwitchObject;
+    if(newSwitchObject){
+        newSwitchObject->addParent(this);
+    }
+}
+        
+        
+Referenced* SgSwitchableGroup::doClone(CloneMap* cloneMap) const
+{
+    return new SgSwitchableGroup(*this, cloneMap);
+}
+
+
+void SgSwitchableGroup::setTurnedOn(bool on, bool doNotify)
+{
+    if(switchObject){
+        switchObject->setTurnedOn(on, doNotify);
+
+    } else if(on != isTurnedOn_){
+        isTurnedOn_ = on;
+        if(doNotify){
+            notifyUpdate();
+        }
     }
 }
 
 
 SgUnpickableGroup::SgUnpickableGroup()
-    : SgGroup(findPolymorphicId<SgUnpickableGroup>())
+    : SgGroup(findClassId<SgUnpickableGroup>())
 {
 
 }
@@ -739,8 +839,8 @@ Referenced* SgUnpickableGroup::doClone(CloneMap* cloneMap) const
 }
 
 
-SgPreprocessed::SgPreprocessed(int polymorhicId)
-    : SgNode(polymorhicId)
+SgPreprocessed::SgPreprocessed(int classId)
+    : SgNode(classId)
 {
 
 }
@@ -755,18 +855,19 @@ SgPreprocessed::SgPreprocessed(const SgPreprocessed& org)
 
 namespace {
 
-struct NodeTypeRegistration {
-    NodeTypeRegistration() {
-        SgNode::registerType<SgNode, SgNode>();
-        SgNode::registerType<SgGroup, SgNode>();
-        SgNode::registerType<SgInvariantGroup, SgGroup>();
-        SgNode::registerType<SgTransform, SgGroup>();
-        SgNode::registerType<SgAffineTransform, SgTransform>();
-        SgNode::registerType<SgPosTransform, SgTransform>();
-        SgNode::registerType<SgScaleTransform, SgTransform>();
-        SgNode::registerType<SgSwitch, SgGroup>();
-        SgNode::registerType<SgUnpickableGroup, SgGroup>();
-        SgNode::registerType<SgPreprocessed, SgNode>();
+struct NodeClassRegistration {
+    NodeClassRegistration() {
+        SceneNodeClassRegistry::instance()
+            .registerClass<SgGroup, SgNode>()
+            .registerClass<SgInvariantGroup, SgGroup>()
+            .registerClass<SgTransform, SgGroup>()
+            .registerClass<SgAffineTransform, SgTransform>()
+            .registerClass<SgPosTransform, SgTransform>()
+            .registerClass<SgScaleTransform, SgTransform>()
+            .registerClass<SgAutoScale, SgGroup>()
+            .registerClass<SgSwitchableGroup, SgGroup>()
+            .registerClass<SgUnpickableGroup, SgGroup>()
+            .registerClass<SgPreprocessed, SgNode>();
     }
 } registration;
 

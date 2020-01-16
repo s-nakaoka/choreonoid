@@ -11,6 +11,7 @@ set(sources
   Config.cpp
   Referenced.cpp
   CloneMap.cpp # This must be before any class using CloneMap::getFlagId.
+  HierarchicalClassRegistry.cpp
   ConnectionSet.cpp
   FileUtil.cpp
   ExecutablePath.cpp
@@ -29,11 +30,12 @@ set(sources
   Selection.cpp
   DataMap.cpp
   AbstractSeq.cpp
-  Vector3Seq.cpp
   MultiValueSeq.cpp
-  MultiVector3Seq.cpp
   MultiSE3Seq.cpp
   MultiSE3MatrixSeq.cpp
+  MultiVector3Seq.cpp
+  Vector3Seq.cpp
+  ReferencedObjectSeq.cpp
   GeneralSeqReader.cpp
   PlainSeqFileLoader.cpp
   RangeLimiter.cpp
@@ -43,6 +45,8 @@ set(sources
   CoordinateFrameSetGroup.cpp
   MultiCoordinateFrameSet.cpp
   BoundingBox.cpp
+  SceneNodeClassRegistry.cpp # This must be before any scene graph classes
+  PolymorphicSceneNodeFunctionSet.cpp
   SceneGraph.cpp
   SceneDrawables.cpp
   SceneCameras.cpp
@@ -51,7 +55,6 @@ set(sources
   SceneMarkers.cpp
   SceneRenderer.cpp
   CoordinateAxesOverlay.cpp # This must be after SceneRenderer.cpp
-  SceneProvider.cpp
   SceneUtil.cpp
   AbstractSceneLoader.cpp
   SceneLoader.cpp
@@ -62,7 +65,6 @@ set(sources
   Image.cpp
   ImageIO.cpp
   ImageConverter.cpp
-  ImageProvider.cpp
   PointSetUtil.cpp
   CollisionDetector.cpp
   YAMLSceneReader.cpp
@@ -92,9 +94,10 @@ set(headers
   Referenced.h
   CloneMap.h
   CloneableReferenced.h
+  HierarchicalClassRegistry.h
+  PolymorphicFunctionSet.h
   PolymorphicReferencedArray.h
   PolymorphicPointerArray.h
-  PolymorphicFunctionSet.h
   Signal.h
   ConnectionSet.h
   Exception.h
@@ -128,11 +131,12 @@ set(headers
   AbstractSeq.h
   Seq.h
   MultiSeq.h
-  Vector3Seq.h
   MultiValueSeq.h
-  MultiVector3Seq.h
   MultiSE3Seq.h
   MultiSE3MatrixSeq.h
+  MultiVector3Seq.h
+  Vector3Seq.h
+  ReferencedObjectSeq.h
   PlainSeqFileLoader.h
   RangeLimiter.h
   GaussianFilter.h
@@ -143,6 +147,8 @@ set(headers
   CoordinateFrameSetGroup.h
   MultiCoordinateFrameSet.h
   BoundingBox.h
+  SceneNodeClassRegistry.h
+  PolymorphicSceneNodeFunctionSet.h
   SceneGraph.h
   SceneDrawables.h
   SceneCameras.h
@@ -151,7 +157,6 @@ set(headers
   SceneMarkers.h
   SceneRenderer.h
   CoordinateAxesOverlay.h
-  SceneProvider.h
   SceneUtil.h
   AbstractSceneLoader.h
   SceneLoader.h
@@ -164,7 +169,6 @@ set(headers
   Image.h
   ImageIO.h
   ImageConverter.h
-  ImageProvider.h
   PointSetUtil.h
   Collision.h
   CollisionDetector.h
@@ -200,7 +204,7 @@ if(UNIX)
     ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
     ${GETTEXT_LIBRARIES}
     fmt::fmt
-    m
+    m dl
     )
 
   if(CMAKE_COMPILER_IS_GNUCC AND (NOT CMAKE_CXX_STANDARD LESS 17))
@@ -215,7 +219,7 @@ if(UNIX)
   
 elseif(MSVC)
   set_target_properties(${target} PROPERTIES COMPILE_DEFINITIONS "YAML_DECLARE_STATIC")
-  set(libraries ${LIBYAML_LIBRARIES} libpng jpeg zlib winmm ${GETTEXT_LIBRARIES} fmt::fmt)
+  set(libraries ${LIBYAML_LIBRARIES} ${PNG_LIBRARY} ${JPEG_LIBRARY} zlib winmm ${GETTEXT_LIBRARIES} fmt::fmt)
   find_file(XINPUT_DLL "XInput1_4.dll")
   if(XINPUT_DLL)
     target_link_libraries(${target} ${libraries} XInput)

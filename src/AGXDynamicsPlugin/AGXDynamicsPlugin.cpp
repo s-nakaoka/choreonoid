@@ -2,7 +2,8 @@
 #include <cnoid/Plugin>
 #include <cnoid/MenuManager>
 #include <cnoid/MessageView>
-#include <cnoid/ItemTreeView>
+#include <cnoid/RootItem>
+#include <cnoid/ItemList>
 #include <agxSDK/Simulation.h>
 #include <iostream>
 
@@ -29,7 +30,7 @@ public:
     }
 private:
     void onSaveSimulationToAGXFileTriggered(){
-        ItemList<SimulatorItem> simItems = ItemTreeView::mainInstance()->selectedItems<SimulatorItem>();
+        auto simItems = RootItem::instance()->selectedItems<SimulatorItem>();
         for(size_t i=0; i < simItems.size(); ++i){
             SimulatorItem* simItem = simItems[i];
             AGXSimulatorItem* agxSimItem = dynamic_cast<AGXSimulatorItem*>(simItem);
@@ -42,7 +43,7 @@ private:
         }
     }
     void onInitializeAGXSimulationTriggered(){
-        ItemList<SimulatorItem> simItems = ItemTreeView::mainInstance()->selectedItems<SimulatorItem>();
+        auto simItems = RootItem::instance()->selectedItems<SimulatorItem>();
         for(size_t i=0; i < simItems.size(); ++i){
             SimulatorItem* simItem = simItems[i];
             AGXSimulatorItem* agxSimItem = dynamic_cast<AGXSimulatorItem*>(simItem);

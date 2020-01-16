@@ -4,11 +4,12 @@
 */
 
 #include "SimulationScriptItem.h"
+#include <cnoid/ItemManager>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include "gettext.h"
 
 using namespace std;
-using namespace std::placeholders;
 using namespace cnoid;
 
 namespace cnoid {
@@ -25,6 +26,13 @@ public:
     SimulationScriptItemImpl(SimulationScriptItem* self);
     SimulationScriptItemImpl(SimulationScriptItem* self, const SimulationScriptItemImpl& org);
 };
+
+}
+
+
+void SimulationScriptItem::initializeClass(ExtensionManager* ext)
+{
+    ext->itemManager().registerAbstractClass<SimulationScriptItem, ScriptItem>();
 }
 
 
@@ -112,7 +120,7 @@ void SimulationScriptItem::doPutProperties(PutPropertyFunction& putProperty)
     ScriptItem::doPutProperties(putProperty);
     
     putProperty(_("Timing"), impl->executionTiming,
-                std::bind((bool(Selection::*)(int))&Selection::select, &impl->executionTiming, _1));
+                [&](int which){ return impl->executionTiming.select(which); });
     putProperty(_("Delay"), impl->executionDelay, changeProperty(impl->executionDelay));
     putProperty(_("Simulation only"), impl->isOnlyExecutedAsSimulationScript,
                 changeProperty(impl->isOnlyExecutedAsSimulationScript));

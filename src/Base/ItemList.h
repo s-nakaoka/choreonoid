@@ -11,6 +11,8 @@
 
 namespace cnoid {
 
+class Item;
+
 class CNOID_EXPORT ItemListBase
 {
 public:
@@ -22,7 +24,7 @@ public:
 };
     
 
-template<class ItemType = Item>
+template<class ItemType>
 class ItemList : public PolymorphicPointerArray<ItemType, ref_ptr<ItemType>>, public ItemListBase
 {
     typedef PolymorphicPointerArray<ItemType, ref_ptr<ItemType> > ArrayBase;
@@ -44,12 +46,13 @@ public:
             ArrayBase::front().get() : nullptr;
     }
 
+    //! \deprecated Use Item::descendantItems
     bool extractSubTreeItems(const Item* root){
         ArrayBase::clear();
         return ItemListBase::extractSubTreeItemsSub(const_cast<Item*>(root));
     }
 
-    //! \deprecated Use extractSubTreeItems.
+    //! \deprecated Use Item::descendantItems.
     bool extractChildItems(const Item* item){
         return extractSubTreeItems(item);
     }

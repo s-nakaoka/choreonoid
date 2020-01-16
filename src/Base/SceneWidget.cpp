@@ -42,6 +42,7 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QGridLayout>
+#include <QPainter>
 #include <fmt/format.h>
 #include <set>
 #include <iostream>
@@ -59,6 +60,8 @@ namespace {
 
 const bool TRACE_FUNCTIONS = false;
 
+const int ThreashToStartPointerMoveEventForEditableNode = 0;
+
 const int NUM_SHADOWS = 2;
 
 enum { FLOOR_GRID = 0, XZ_GRID = 1, YZ_GRID = 2 };
@@ -68,7 +71,7 @@ Signal<void()> sigVSyncModeChanged;
 bool isLowMemoryConsumptionMode;
 Signal<void(bool on)> sigLowMemoryConsumptionModeChanged;
 
-class EditableExtractor : public PolymorphicFunctionSet<SgNode>
+class EditableExtractor : public PolymorphicSceneNodeFunctionSet
 {
 public:
     vector<SgNode*> editables;
@@ -184,11 +187,17 @@ public:
         box->addWidget(&label);
         setLayout(box);
     }
-    void setImage(const Image& image){
+    void setImage(const Image& image, int cursorX, int cursorY){
         if(image.numComponents() == 4){
             pixmap.convertFromImage(
                 QImage(image.pixels(), image.width(), image.height(), QImage::Format_RGBA8888));
             pixmap.setDevicePixelRatio(devicePixelRatio());
+
+            QPainter painter(&pixmap);
+            painter.setPen(Qt::white);
+            painter.drawLine(cursorX - 4, cursorY, cursorX + 4, cursorY);
+            painter.drawLine(cursorX, cursorY - 4, cursorX, cursorY + 4);
+            
             label.setPixmap(pixmap);
         }
     }
@@ -234,13 +243,13 @@ public:
     Signal<void()> sigStateChanged;
     LazyCaller emitSigStateChangedLater;
 
-    bool needToUpdatedViewportInformation;
+    bool needToUpdateViewportInformation;
     bool isEditMode;
 
     Selection viewpointControlMode;
     bool isFirstPersonMode() const { return (viewpointControlMode.which() != SceneWidget::THIRD_PERSON_MODE); }
         
-    enum DragMode { NO_DRAGGING, EDITING, VIEW_ROTATION, VIEW_TRANSLATION, VIEW_ZOOM } dragMode;
+    enum DragMode { NO_DRAGGING, ABOUT_TO_EDIT, EDITING, VIEW_ROTATION, VIEW_TRANSLATION, VIEW_ZOOM } dragMode;
 
     bool isDraggingView() const {
         return (dragMode == VIEW_ROTATION ||
@@ -272,6 +281,8 @@ public:
 
     SceneWidgetEvent latestEvent;
     Vector3 lastClickedPoint;
+    int mousePressX;
+    int mousePressY;
 
     SceneWidgetEditable* eventFilter;
     ReferencedPtr eventFilterRef;
@@ -302,7 +313,7 @@ public:
     Signal<void(bool isFocused)> sigWidgetFocusChanged;
     Signal<void()> sigAboutToBeDestroyed;
 
-    ImageWindow* pickingBufferImageWindow;
+    ImageWindow* pickingImageWindow;
 
 #ifdef ENABLE_SIMULATION_PROFILING
     int profiling_mode;
@@ -364,7 +375,7 @@ public:
     void onEntityAdded(SgNode* node);
     void onEntityRemoved(SgNode* node);
 
-    void showPickingBufferImageWindow();
+    void showPickingImageWindow();
     void onUpsideDownToggled(bool on);
         
     void updateLatestEvent(QKeyEvent* event);
@@ -567,7 +578,7 @@ SceneWidgetImpl::SceneWidgetImpl(SceneWidget* self)
     setAutoFillBackground(false);
     setMouseTracking(true);
 
-    needToUpdatedViewportInformation = true;
+    needToUpdateViewportInformation = true;
     isEditMode = false;
     viewpointControlMode.resize(2);
     viewpointControlMode.setSymbol(SceneWidget::THIRD_PERSON_MODE, "thirdPerson");
@@ -655,7 +666,7 @@ SceneWidgetImpl::SceneWidgetImpl(SceneWidget* self)
     sigLowMemoryConsumptionModeChanged.connect(
         [&](bool on){ onLowMemoryConsumptionModeChanged(on); });
 
-    pickingBufferImageWindow = nullptr;
+    pickingImageWindow = nullptr;
 
 #ifdef ENABLE_SIMULATION_PROFILING
     profiling_mode = 1;
@@ -676,8 +687,8 @@ SceneWidgetImpl::~SceneWidgetImpl()
     delete indicatorLabel;
     delete config;
 
-    if(pickingBufferImageWindow){
-        delete pickingBufferImageWindow;
+    if(pickingImageWindow){
+        delete pickingImageWindow;
     }
 }
 
@@ -756,7 +767,7 @@ void SceneWidgetImpl::resizeGL(int width, int height)
     if(TRACE_FUNCTIONS){
         os << "SceneWidgetImpl::resizeGL()" << endl;
     }
-    needToUpdatedViewportInformation = true;
+    needToUpdateViewportInformation = true;
 }
 
 
@@ -805,11 +816,11 @@ void SceneWidgetImpl::paintGL()
         os << "SceneWidgetImpl::paintGL() " << counter++ << endl;
     }
 
-    if(needToUpdatedViewportInformation){
+    if(needToUpdateViewportInformation){
         int viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
         renderer->updateViewportInformation(viewport[0], viewport[1], viewport[2], viewport[3]);
-        needToUpdatedViewportInformation = false;
+        needToUpdateViewportInformation = false;
     }
 
     bool isLightweightViewChangeActive = false;
@@ -1113,15 +1124,15 @@ void SceneWidgetImpl::viewAll()
 }
 
 
-void SceneWidgetImpl::showPickingBufferImageWindow()
+void SceneWidgetImpl::showPickingImageWindow()
 {
     auto glslRenderer = dynamic_cast<GLSLSceneRenderer*>(renderer);
     if(glslRenderer){
-        if(!pickingBufferImageWindow){
+        if(!pickingImageWindow){
             auto vp = renderer->viewport();
-            pickingBufferImageWindow = new ImageWindow(vp[2], vp[3]);
+            pickingImageWindow = new ImageWindow(vp[2], vp[3]);
         }
-        pickingBufferImageWindow->show();
+        pickingImageWindow->show();
     }
 }
 
@@ -1157,33 +1168,37 @@ void SceneWidgetImpl::updateLatestEvent(QMouseEvent* event)
 
 void SceneWidgetImpl::updateLatestEventPath(bool forceFullPicking)
 {
-    if(needToUpdatedViewportInformation ||
+    if(needToUpdateViewportInformation ||
        (!forceFullPicking && isLightweightViewChangeEnabled)){
         return;
     }
     
-    bool isPickingBufferVisualizationEnabled = pickingBufferImageWindow && pickingBufferImageWindow->isVisible();
-    renderer->setPickingBufferImageOutputEnabled(isPickingBufferVisualizationEnabled);
+    bool isPickingVisualizationEnabled = pickingImageWindow && pickingImageWindow->isVisible();
+    renderer->setPickingImageOutputEnabled(isPickingVisualizationEnabled);
 
     makeCurrent();
 
     const int r = devicePixelRatio();
-    bool picked = renderer->pick(r * latestEvent.x(), r * latestEvent.y());
+    int px = r * latestEvent.x();
+    int py = r * latestEvent.y();
+    bool picked = renderer->pick(px, py);
 
-    if(isPickingBufferVisualizationEnabled){
+    if(isPickingVisualizationEnabled){
         Image image;
-        if(renderer->getPickingBufferImage(image)){
-            pickingBufferImageWindow->setImage(image);
+        if(renderer->getPickingImage(image)){
+            pickingImageWindow->setImage(image, px, image.height() - py - 1);
         }
     }
 
     doneCurrent();
 
     latestEvent.nodePath_.clear();
+    latestEvent.pixelSizeRatio_ = 0.0;
     pointedEditablePath.clear();
 
     if(picked){
         latestEvent.point_ = renderer->pickedPoint();
+        latestEvent.pixelSizeRatio_ = renderer->projectedPixelSizeRatio(latestEvent.point_);
         latestEvent.nodePath_ = renderer->pickedNodePath();
 
         SgNodePath& path = latestEvent.nodePath_;
@@ -1305,10 +1320,18 @@ void SceneWidgetImpl::keyPressEvent(QKeyEvent* event)
         os << "SceneWidgetImpl::keyPressEvent()" << endl;
     }
 
+    /*
+    if(isEditMode && event->key() == Qt::Key_Alt){
+        setCursor(defaultCursor);
+        return;
+    }
+    */
+    
     updateLatestEvent(event);
     updateLatestEventPath();
 
     bool handled = false;
+
     if(isEditMode){
         handled = applyFunction(
             focusedEditablePath,
@@ -1378,10 +1401,17 @@ void SceneWidgetImpl::keyReleaseEvent(QKeyEvent* event)
         os << "SceneWidgetImpl::keyReleaseEvent()" << endl;
     }
 
+    /*
+    if(isEditMode && event->key() == Qt::Key_Alt){
+        setCursor(editModeCursor);
+        return;
+    }
+    */
+
     bool handled = false;
     
     updateLatestEvent(event);
-    
+
     if(event->key() == Qt::Key_Space){
         dragMode = NO_DRAGGING;
         handled = true;
@@ -1411,33 +1441,37 @@ void SceneWidgetImpl::mousePressEvent(QMouseEvent* event)
     updateLatestEvent(event);
     updateLatestEventPath();
     updateLastClickedPoint();
+    mousePressX = event->x();
+    mousePressY = event->y();
 
     bool handled = false;
     bool forceViewMode = (event->modifiers() & Qt::AltModifier);
 
     if(isEditMode && !forceViewMode){
-        if(event->button() == Qt::RightButton){
-            showEditModePopupMenu(event->globalPos());
-            handled = true;
-        } else {
-            if(eventFilter){
-                handled = eventFilter->onButtonPressEvent(latestEvent);
-            }
-            if(!handled){
-                handled = setFocusToPointedEditablePath(
-                    applyFunction(
-                        pointedEditablePath,
-                        [&](SceneWidgetEditable* editable){ return editable->onButtonPressEvent(latestEvent); }));
-            }
+        if(eventFilter){
+            handled = eventFilter->onButtonPressEvent(latestEvent);
             if(handled){
                 dragMode = EDITING;
+            }
+        }
+        if(!handled){
+            handled = setFocusToPointedEditablePath(
+                applyFunction(
+                    pointedEditablePath,
+                    [&](SceneWidgetEditable* editable){ return editable->onButtonPressEvent(latestEvent); }));
+            if(handled){
+                dragMode = ABOUT_TO_EDIT;
             }
         }
     }
 
     if(!handled){
-        if(!isEditMode && event->button() == Qt::RightButton){
-            showViewModePopupMenu(event->globalPos());
+        if(event->button() == Qt::RightButton){
+            if(isEditMode){
+                showEditModePopupMenu(event->globalPos());
+            } else {
+                showViewModePopupMenu(event->globalPos());
+            }
             handled = true;
         }
     }
@@ -1476,7 +1510,7 @@ void SceneWidgetImpl::mouseReleaseEvent(QMouseEvent* event)
     updateLatestEvent(event);
 
     bool handled = false;
-    if(isEditMode && dragMode == EDITING){
+    if(isEditMode && (dragMode == ABOUT_TO_EDIT || dragMode == EDITING)){
         if(eventFilter){
             handled = eventFilter->onButtonReleaseEvent(latestEvent);
         }
@@ -1496,20 +1530,30 @@ void SceneWidgetImpl::mouseMoveEvent(QMouseEvent* event)
 {
     updateLatestEvent(event);
 
-    bool handled = false;
-
     switch(dragMode){
 
+    case ABOUT_TO_EDIT:
     case EDITING:
+    {
+        bool handled = false;
         if(eventFilter){
             handled = eventFilter->onPointerMoveEvent(latestEvent);
         }
         if(!handled){
             if(focusedEditable){
-                handled = focusedEditable->onPointerMoveEvent(latestEvent);
+                if(dragMode == ABOUT_TO_EDIT){
+                    const int thresh = ThreashToStartPointerMoveEventForEditableNode;
+                    if(abs(event->x() - mousePressX) > thresh || abs(event->y() - mousePressY) > thresh){
+                        dragMode = EDITING;
+                    }
+                }
+                if(dragMode == EDITING){
+                    focusedEditable->onPointerMoveEvent(latestEvent);
+                }
             }
         }
         break;
+    }
 
     case VIEW_ROTATION:
         dragViewRotation();
@@ -1628,7 +1672,7 @@ void SceneWidgetImpl::wheelEvent(QWheelEvent* event)
     latestEvent.wheelSteps_ = s;
 
     bool handled = false;
-    if(isEditMode){
+    if(isEditMode && !(event->modifiers() & Qt::AltModifier)){
         if(eventFilter){
             handled = eventFilter->onScrollEvent(latestEvent);
         }
@@ -1640,11 +1684,9 @@ void SceneWidgetImpl::wheelEvent(QWheelEvent* event)
         }
     }    
 
-    if(interactiveCameraTransform){
-        if(!handled || !isEditMode){
-            if(event->orientation() == Qt::Vertical){
-                zoomView(0.25 * s);
-            }
+    if(interactiveCameraTransform && !handled){
+        if(event->orientation() == Qt::Vertical){
+            zoomView(0.25 * s);
         }
     }
 }
@@ -3389,9 +3431,9 @@ ConfigDialog::ConfigDialog(SceneWidgetImpl* impl)
     fpsTestIterationSpin.setValue(1);
     hbox->addWidget(&fpsTestIterationSpin);
 
-    auto pickingBufferButton = new PushButton(_("Show the picking buffer image (for debug)"));
-    pickingBufferButton->sigClicked().connect([=](){ impl->showPickingBufferImageWindow(); });
-    hbox->addWidget(pickingBufferButton);
+    auto pickingImageButton = new PushButton(_("Show the image for picking (for debug)"));
+    pickingImageButton->sigClicked().connect([=](){ impl->showPickingImageWindow(); });
+    hbox->addWidget(pickingImageButton);
     
     hbox->addStretch();
     vbox->addLayout(hbox);

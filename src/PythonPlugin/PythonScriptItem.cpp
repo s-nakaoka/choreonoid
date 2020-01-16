@@ -6,6 +6,7 @@
 #include "PythonScriptItem.h"
 #include "PythonScriptItemImpl.h"
 #include <cnoid/ItemManager>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/FileUtil>
 #include <cnoid/LazyCaller>
@@ -17,7 +18,7 @@ using namespace cnoid;
 
 void PythonScriptItem::initializeClass(ExtensionManager* ext)
 {
-    ext->itemManager().registerClass<PythonScriptItem>(N_("PythonScriptItem"));
+    ext->itemManager().registerClass<PythonScriptItem, ScriptItem>(N_("PythonScriptItem"));
     ext->itemManager().addLoader<PythonScriptItem>(
         _("Python Script"), "PYTHON-SCRIPT-FILE", "py",
         [](PythonScriptItem* item, const std::string& filename, std::ostream&, Item*){

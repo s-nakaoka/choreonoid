@@ -93,7 +93,6 @@ public:
     shared_ptr<PinDragIK> pinDragIK;
     unique_ptr<LinkKinematicsKitManager> linkKinematicsKitManager;
 
-    bool isEditable;
     bool isCallingSlotsOnKinematicStateEdited;
     bool isFkRequested;
     bool isVelFkRequested;
@@ -113,6 +112,7 @@ public:
 
     KinematicsBar* kinematicsBar;
     EditableSceneBodyPtr sceneBody;
+    bool isSceneBodyDraggableByDefault;
 
     Signal<void()> sigModelUpdated;
 
@@ -129,7 +129,7 @@ public:
     void initBody(bool calledFromCopyConstructor);
     bool loadModelFile(const std::string& filename);
     void setBody(Body* body);
-    void setCurrentBaseLink(Link* link);
+    void setCurrentBaseLink(Link* link, bool forceUpdate = false);
     void appendKinematicStateToHistory();
     bool undoKinematicState();
     bool redoKinematicState();
@@ -151,7 +151,8 @@ public:
     void doAssign(Item* srcItem);
     bool onStaticModelPropertyChanged(bool on);
     void createSceneBody();
-    bool onEditableChanged(bool on);
+    bool isSceneBodyDraggable() const;
+    void setSceneBodyDraggable(bool on, bool doNotify);
     void tryToAttachToBodyItem(BodyItem* bodyItem);
     bool attachToBodyItem(AttachmentDevice* attachment, BodyItem* bodyItem, HolderDevice* holder);
     void clearBodyAttachment();
@@ -232,9 +233,9 @@ BodyItem::BodyItem()
 BodyItemImpl::BodyItemImpl(BodyItem* self)
     : BodyItemImpl(self, new Body)
 {
-    isEditable = true;
     isCollisionDetectionEnabled = true;
     isSelfCollisionDetectionEnabled = false;
+    isSceneBodyDraggableByDefault = true;
 }
 
 
@@ -250,13 +251,13 @@ BodyItemImpl::BodyItemImpl(BodyItem* self, const BodyItemImpl& org)
     : BodyItemImpl(self, org.body->clone())
 {
     if(org.currentBaseLink){
-        setCurrentBaseLink(body->link(org.currentBaseLink->index()));
+        setCurrentBaseLink(body->link(org.currentBaseLink->index()), true);
     }
     zmp = org.zmp;
-    isEditable = org.isEditable;
     isOriginalModelStatic = org.isOriginalModelStatic;
     isCollisionDetectionEnabled = org.isCollisionDetectionEnabled;
     isSelfCollisionDetectionEnabled = org.isSelfCollisionDetectionEnabled;
+    isSceneBodyDraggableByDefault = org.isSceneBodyDraggableByDefault;
 
     initialState = org.initialState;
 }
@@ -313,7 +314,7 @@ void BodyItemImpl::initBody(bool calledFromCopyConstructor)
     isOriginalModelStatic = body->isStaticModel();
 
     if(!calledFromCopyConstructor){
-        setCurrentBaseLink(body->rootLink());
+        setCurrentBaseLink(nullptr, true);
         zmp.setZero();
         self->storeInitialState();
     }
@@ -338,6 +339,10 @@ bool BodyItemImpl::loadModelFile(const std::string& filename)
         body = newBody;
         body->initializePosition();
         body->setCurrentTimeFunction([](){ return TimeBar::instance()->time(); });
+
+        if(!sceneBody){
+            isSceneBodyDraggableByDefault = !body->isStaticModel();
+        }
     }
 
     initBody(false);
@@ -378,16 +383,13 @@ void BodyItem::setName(const std::string& name)
 
 bool BodyItem::isEditable() const
 {
-    return impl->isEditable;
+    return impl->isSceneBodyDraggable();
 }
 
-    
+
 void BodyItem::setEditable(bool on)
 {
-    if(on != impl->isEditable){
-        impl->isEditable = on;
-        notifyUpdate();
-    }
+    impl->setSceneBodyDraggable(on, true);
 }
 
 
@@ -423,13 +425,13 @@ Link* BodyItem::currentBaseLink() const
 
 void BodyItem::setCurrentBaseLink(Link* link)
 {
-    impl->setCurrentBaseLink(link);
+    impl->setCurrentBaseLink(link, false);
 }
 
 
-void BodyItemImpl::setCurrentBaseLink(Link* link)
+void BodyItemImpl::setCurrentBaseLink(Link* link, bool forceUpdate)
 {
-    if(link != currentBaseLink){
+    if(link != currentBaseLink || forceUpdate){
         if(link){
             fkTraverse.find(link, true, true);
         } else {
@@ -735,11 +737,17 @@ std::shared_ptr<InverseKinematics> BodyItem::getDefaultIK(Link* targetLink)
 
 std::shared_ptr<InverseKinematics> BodyItemImpl::getDefaultIK(Link* targetLink)
 {
+    if(!targetLink){
+        return nullptr;
+    }
+
+    if(bodyAttachment && targetLink == body->rootLink()){
+        return make_shared<MyCompositeBodyIK>(this);
+    }
+    
     std::shared_ptr<InverseKinematics> ik;
-
     const Mapping& setupMap = *body->info()->findMapping("defaultIKsetup");
-
-    if(targetLink && setupMap.isValid()){
+    if(setupMap.isValid()){
         const Listing& setup = *setupMap.findListing(targetLink->name());
         if(setup.isValid() && !setup.empty()){
             Link* baseLink = body->link(setup[0].toString());
@@ -762,7 +770,6 @@ std::shared_ptr<InverseKinematics> BodyItemImpl::getDefaultIK(Link* targetLink)
             }
         }
     }
-
     return ik;
 }
 
@@ -1218,6 +1225,31 @@ bool BodyItemImpl::onStaticModelPropertyChanged(bool on)
     }
     return false;
 }
+
+
+SignalProxy<void()> BodyItem::sigLocationChanged()
+{
+    return impl->sigKinematicStateChanged.signal();
+}
+
+
+Position BodyItem::getLocation() const
+{
+    return impl->body->rootLink()->position();
+}
+
+
+void BodyItem::setLocation(const Position& T)
+{
+    impl->body->rootLink()->setPosition(T);
+    notifyKinematicStateChange(true);
+}
+
+
+bool BodyItem::isLocationEditable() const
+{
+    return const_cast<BodyItem*>(this)->parentBodyItem() == nullptr;
+}
         
 
 EditableSceneBody* BodyItem::sceneBody()
@@ -1233,6 +1265,7 @@ void BodyItemImpl::createSceneBody()
 {
     sceneBody = new EditableSceneBody(self);
     sceneBody->setSceneDeviceUpdateConnection(true);
+    sceneBody->setDraggable(isSceneBodyDraggableByDefault);
 }
 
 
@@ -1248,10 +1281,24 @@ EditableSceneBody* BodyItem::existingSceneBody()
 }
 
 
-bool BodyItemImpl::onEditableChanged(bool on)
+bool BodyItemImpl::isSceneBodyDraggable() const
 {
-    self->setEditable(on);
-    return true;
+    return sceneBody ? sceneBody->isDraggable() : isSceneBodyDraggableByDefault;
+}
+
+    
+void BodyItemImpl::setSceneBodyDraggable(bool on, bool doNotify)
+{
+    if(on != isSceneBodyDraggable()){
+        if(sceneBody){
+            sceneBody->setDraggable(on);
+        } else {
+            isSceneBodyDraggableByDefault = on;
+        }
+        if(doNotify){
+            self->notifyUpdate();
+        }
+    }
 }
 
 
@@ -1422,8 +1469,8 @@ void BodyItemImpl::doPutProperties(PutPropertyFunction& putProperty)
                 [&](bool on){ return enableCollisionDetection(on); });
     putProperty(_("Self-collision detection"), isSelfCollisionDetectionEnabled,
                 [&](bool on){ return enableSelfCollisionDetection(on); });
-    putProperty(_("Editable"), isEditable,
-                [&](bool on){ return onEditableChanged(on); });
+    putProperty(_("Draggable"), isSceneBodyDraggable(),
+                [&](bool on){ setSceneBodyDraggable(on, false); return true; });
 }
 
 
@@ -1438,7 +1485,9 @@ bool BodyItemImpl::store(Archive& archive)
     archive.setDoubleFormat("% .6f");
 
     archive.writeRelocatablePath("modelFile", self->filePath());
-    archive.write("currentBaseLink", (currentBaseLink ? currentBaseLink->name() : ""), DOUBLE_QUOTED);
+    if(currentBaseLink){
+        archive.write("currentBaseLink", currentBaseLink->name(), DOUBLE_QUOTED);
+    }
 
     /// \todo Improve the following for current / initial position representations
     write(archive, "rootPosition", body->rootLink()->p());
@@ -1500,7 +1549,7 @@ bool BodyItemImpl::store(Archive& archive)
 
     archive.write("collisionDetection", isCollisionDetectionEnabled);
     archive.write("selfCollisionDetection", isSelfCollisionDetectionEnabled);
-    archive.write("isEditable", isEditable);
+    archive.write("isSceneBodyDraggable", isSceneBodyDraggable());
 
     if(linkKinematicsKitManager){
         MappingPtr kinematicsNode = new Mapping;
@@ -1605,7 +1654,9 @@ bool BodyItemImpl::restore(const Archive& archive)
     read(archive, "zmp", zmp);
         
     body->calcForwardKinematics();
-    setCurrentBaseLink(body->link(archive.get("currentBaseLink", "")));
+    string baseLinkName;
+    archive.read("currentBaseLink", baseLinkName);
+    setCurrentBaseLink(body->link(baseLinkName));
 
     bool staticModel;
     if(archive.read("staticModel", staticModel)){
@@ -1620,8 +1671,11 @@ bool BodyItemImpl::restore(const Archive& archive)
         enableSelfCollisionDetection(on);
     }
 
-    archive.read("isEditable", isEditable);
-
+    if(archive.read("isSceneBodyDraggable", isSceneBodyDraggableByDefault) ||
+       archive.read("isEditable", isSceneBodyDraggableByDefault)){
+        setSceneBodyDraggable(isSceneBodyDraggableByDefault, false);
+    }
+       
     auto kinematicsNode = archive.findMapping("linkKinematics");
     if(kinematicsNode->isValid()){
         getOrCreateLinkKinematicsKitManager()->restoreState(*kinematicsNode);

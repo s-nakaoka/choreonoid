@@ -3,6 +3,7 @@
 */
 
 #include "MulticopterPluginHeader.h"
+#include <cnoid/PutPropertyFunction>
 #include <fmt/format.h>
 
 using namespace std;
@@ -14,7 +15,7 @@ using namespace Multicopter;
 void MulticopterSimulatorItem::initializeClass(ExtensionManager* ext)
 {
     ItemManager& im = ext->itemManager();
-    im.registerClass<MulticopterSimulatorItem>("MulticopterSimulatorItem");
+    im.registerClass<MulticopterSimulatorItem, SubSimulatorItem>("MulticopterSimulatorItem");
     im.addCreationPanel<MulticopterSimulatorItem>();
 }
 

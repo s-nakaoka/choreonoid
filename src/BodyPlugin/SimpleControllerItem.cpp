@@ -7,6 +7,7 @@
 #include <cnoid/BodyItem>
 #include <cnoid/Body>
 #include <cnoid/Link>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/MessageView>
 #include <cnoid/ExecutablePath>
@@ -15,8 +16,10 @@
 #include <cnoid/ProjectManager>
 #include <cnoid/ItemManager>
 #include <QLibrary>
+#include <cnoid/stdx/filesystem>
 #include <fmt/format.h>
 #include <set>
+#include <bitset>
 #include "gettext.h"
 
 using namespace std;
@@ -150,7 +153,7 @@ public:
 void SimpleControllerItem::initializeClass(ExtensionManager* ext)
 {
     ItemManager& itemManager = ext->itemManager();
-    itemManager.registerClass<SimpleControllerItem>(N_("SimpleControllerItem"));
+    itemManager.registerClass<SimpleControllerItem, ControllerItem>(N_("SimpleControllerItem"));
     itemManager.addCreationPanel<SimpleControllerItem>();
 }
 
@@ -266,6 +269,7 @@ void SimpleControllerItemImpl::setController(const std::string& name)
             }
         }
     }
+
     controllerModuleName = modulePath.string();
     controllerModuleFilename.clear();
 
@@ -937,18 +941,18 @@ void SimpleControllerItem::doPutProperties(PutPropertyFunction& putProperty)
 
 void SimpleControllerItemImpl::doPutProperties(PutPropertyFunction& putProperty)
 {
-    FilePathProperty moduleProperty(
-        controllerModuleName,
-        { format(_("Simple Controller Module (*.{})"), DLL_EXTENSION) });
-
+    FilePathProperty moduleProperty(controllerModuleName);
     if(baseDirectoryType.is(CONTROLLER_DIRECTORY)){
         moduleProperty.setBaseDirectory(controllerDirectory.string());
     } else if(baseDirectoryType.is(PROJECT_DIRECTORY)){
         moduleProperty.setBaseDirectory(ProjectManager::instance()->currentProjectDirectory());
     }
+    moduleProperty.setFilters({ format(_("Simple Controller Module (*.{})"), DLL_EXTENSION) });
+    moduleProperty.setExtensionRemovalModeForFileDialogSelection(true);
 
     putProperty(_("Controller module"), moduleProperty,
-                [&](const string& name){ setController(name); return true; });
+                [&](const FilePathProperty& property){ setController(property.filename()); return true; });
+    
     putProperty(_("Base directory"), baseDirectoryType, changeProperty(baseDirectoryType));
 
     putProperty(_("Reloading"), doReloading, [&](bool on){ return onReloadingChanged(on); });

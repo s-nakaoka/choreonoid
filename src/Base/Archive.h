@@ -16,6 +16,7 @@ namespace cnoid {
 class Item;
 class View;
 class ViewManager;
+class ProjectManager;
 class ArchiveSharedData;
 
 class CNOID_EXPORT Archive : public Mapping
@@ -88,9 +89,9 @@ private:
     // called from ItemTreeArchiver
     void callPostProcesses();
 
-    friend class ItemTreeArchiverImpl;
+    friend class ItemTreeArchiver;
     friend class ViewManager;
-    friend class ProjectManagerImpl;
+    friend class ProjectManager;
 
     stdx::filesystem::path projectDirPath;
 };

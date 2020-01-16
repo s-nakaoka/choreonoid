@@ -14,6 +14,7 @@
 #include <fmt/format.h>
 #include <GL/glu.h>
 #include <unordered_map>
+#include <deque>
 #include <mutex>
 #include <regex>
 #include <iostream>
@@ -80,7 +81,7 @@ public:
     VertexResource(const VertexResource&) = delete;
     VertexResource& operator=(const VertexResource&) = delete;
 
-    VertexResource(GLSLSceneRendererImpl* renderer, SgObject* obj)
+    VertexResource(GLSLSceneRenderer::Impl* renderer, SgObject* obj)
         : sceneObject(obj)
     {
         connection.reset(
@@ -202,7 +203,7 @@ typedef std::unordered_map<SgObjectPtr, GLResourcePtr, SgObjectPtrHash> GLResour
 
 class ScopedShaderProgramActivator
 {
-    GLSLSceneRendererImpl* renderer;
+    GLSLSceneRenderer::Impl* renderer;
     ShaderProgram* prevProgram;
     NolightingProgram* prevNolightingProgram;
     LightingProgram* prevLightingProgram;
@@ -210,7 +211,7 @@ class ScopedShaderProgramActivator
     bool changed;
     
 public:
-    ScopedShaderProgramActivator(ShaderProgram& program, GLSLSceneRendererImpl* renderer);
+    ScopedShaderProgramActivator(ShaderProgram& program, GLSLSceneRenderer::Impl* renderer);
     ScopedShaderProgramActivator(ScopedShaderProgramActivator&&) noexcept;
     ScopedShaderProgramActivator(const ScopedShaderProgramActivator&) = delete;
     ScopedShaderProgramActivator& operator=(const ScopedShaderProgramActivator&) = delete;
@@ -221,21 +222,22 @@ public:
 
 namespace cnoid {
 
-class GLSLSceneRendererImpl
+class GLSLSceneRenderer::Impl
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         
     GLSLSceneRenderer* self;
 
-    PolymorphicFunctionSet<SgNode> renderingFunctions;
+    PolymorphicSceneNodeFunctionSet renderingFunctions;
 
     GLuint defaultFBO;
     GLuint fboForPicking;
     GLuint colorBufferForPicking;
     GLuint depthBufferForPicking;
-    int pickingBufferWidth;
-    int pickingBufferHeight;
+    GLuint depthBufferForOverlay;
+    int pickingImageWidth;
+    int pickingImageHeight;
 
     ShaderProgram* currentProgram;
     NolightingProgram* currentNolightingProgram;
@@ -250,9 +252,15 @@ public:
 
     vector<ScopedShaderProgramActivator> programStack;
 
-    bool isActuallyRendering;
-    bool isPicking;
-    bool isPickingBufferImageOutputEnabled;
+    /**
+       This variable is incremented at every frame of rendering.
+       The number is used to execute some operation onece at each rendering frame.
+    */
+    unsigned int renderingFrameId;
+    
+    bool isRenderingVisibleImage;
+    bool isRenderingPickingImage;
+    bool isPickingImageOutputEnabled;
     bool isShadowCastingEnabled;
     bool isRenderingShadowMap;
     bool isLightweightRenderingBeingProcessed;
@@ -262,25 +270,14 @@ public:
     bool isBoundingBoxRenderingForLightweightRenderingGroupEnabled;
     
     Affine3Array modelMatrixStack; // stack of the model matrices
+    Affine3Array modelMatrixBuffer; // Model matriices used later are stored in this buffer
     Affine3 viewTransform;
     Matrix4 projectionMatrix;
     Matrix4 PV;
 
-    vector<function<void()>> postRenderingFunctions;
-
-    struct RenderingFunction {
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        Affine3 position; // corresponds to the model matrix
-        ReferencedPtr object; // object to render
-        int id; // some id related with the object
-        typedef function<void(Referenced* object, Affine3& position, int id)> Func;
-        Func func;
-
-        RenderingFunction(Referenced* object, const Affine3& position, int id, const Func& func)
-            : position(position), object(object), id(id), func(func) { }
-        void operator()(){ func(object, position, id); }
-    };
-    vector<RenderingFunction, Eigen::aligned_allocator<RenderingFunction>> transparentRenderingFunctions;
+    deque<function<void()>> transparentRenderingQueue;
+    deque<function<void()>> overlayRenderingQueue;
+    bool needToUpdateOverlayDepthBufferSize;
     
     std::set<int> shadowLightIndices;
 
@@ -330,9 +327,12 @@ public:
     GLdouble pickY;
     typedef std::shared_ptr<SgNodePath> SgNodePathPtr;
     SgNodePath currentNodePath;
+    SgNodePath emptyNodePath;
+
     vector<SgNodePathPtr> pickingNodePathList;
     SgNodePath pickedNodePath;
     Vector3 pickedPoint;
+    int overlayPickIndex0;
 
     ostream* os_;
     ostream& os() { return *os_; }
@@ -348,8 +348,8 @@ public:
         }
     }
     
-    GLSLSceneRendererImpl(GLSLSceneRenderer* self);
-    ~GLSLSceneRendererImpl();
+    Impl(GLSLSceneRenderer* self);
+    ~Impl();
     void initialize();
     void onExtensionAdded(std::function<void(GLSLSceneRenderer* renderer)> func);
     void updateDefaultFramebufferObject();
@@ -363,31 +363,36 @@ public:
     void renderCamera(SgCamera* camera, const Affine3& cameraPosition);
     void renderLights(LightingProgram* program);
     void renderFog(LightingProgram* program);
+    void renderTransparentObjects();
+    void renderOverlayObjects();    
     void endRendering();
     void renderSceneGraphNodes();
     void pushProgram(ShaderProgram& program);
     void popProgram();
-    inline void setPickColor(int id);
-    inline int pushPickId(SgNode* node, bool doSetColor = true);
-    void popPickId();
+    inline void setPickColor(int pickIndex);
+    inline int pushPickNode(SgNode* node, bool doSetColor = true);
+    void popPickNode();
     void renderGroup(SgGroup* group);
     void renderTransform(SgTransform* transform);
-    void renderSwitch(SgSwitch* node);
+    void renderAutoScale(SgAutoScale* autoScale);
+    void renderSwitchableGroup(SgSwitchableGroup* group);
     void renderUnpickableGroup(SgUnpickableGroup* group);
     VertexResource* getOrCreateVertexResource(SgObject* obj);
     void drawVertexResource(VertexResource* resource, GLenum primitiveMode, const Affine3& position);
     void drawBoundingBox(VertexResource* resource, const BoundingBox& bbox);
     void renderShape(SgShape* shape);
-    void renderShapeMain(SgShape* shape, const Affine3& position, int pickId);
+    void renderShapeMain(SgShape* shape, const Affine3& position, int pickIndex);
     void applyCullingMode(SgMesh* mesh);
     void renderPointSet(SgPointSet* pointSet);        
     void renderLineSet(SgLineSet* lineSet);        
     void renderOverlay(SgOverlay* overlay);
-    void renderOutlineGroup(SgOutlineGroup* outline);
-    void renderOutlineGroupMain(SgOutlineGroup* outline, const Affine3& T);
+    void renderOverlayMain(SgOverlay* overlay, const Affine3& T, const SgNodePath& nodePath);
+    void renderViewportOverlay(SgViewportOverlay* overlay);
+    void renderViewportOverlayMain(SgViewportOverlay* overlay);
+    void renderOutline(SgOutline* outline);
+    void renderOutlineEdge(SgOutline* outline, const Affine3& T);
     void renderLightweightRenderingGroup(SgLightweightRenderingGroup* group);
     void flushNolightingTransformMatrices();
-    void renderTransparentObjects();
     void renderMaterial(const SgMaterial* material);
     bool renderTexture(SgTexture* texture);
     bool loadTextureImage(TextureResource* resource, const Image& image);
@@ -423,19 +428,19 @@ public:
 GLSLSceneRenderer::GLSLSceneRenderer(SgGroup* sceneRoot)
     : GLSceneRenderer(sceneRoot)
 {
-    impl = new GLSLSceneRendererImpl(this);
+    impl = new Impl(this);
     impl->initialize();
 }
 
 
-GLSLSceneRendererImpl::GLSLSceneRendererImpl(GLSLSceneRenderer* self)
+GLSLSceneRenderer::Impl::Impl(GLSLSceneRenderer* self)
     : self(self)
 {
 
 }
 
 
-void GLSLSceneRendererImpl::initialize()
+void GLSLSceneRenderer::Impl::initialize()
 {
     {
         std::lock_guard<std::mutex> guard(extensionMutex);
@@ -446,17 +451,18 @@ void GLSLSceneRendererImpl::initialize()
     fboForPicking = 0;
     colorBufferForPicking = 0;
     depthBufferForPicking = 0;
-    pickingBufferWidth = 0;
-    pickingBufferHeight = 0;
+    pickingImageWidth = 0;
+    pickingImageHeight = 0;
 
     currentProgram = nullptr;
     currentNolightingProgram = nullptr;
     currentLightingProgram = nullptr;
     currentMaterialLightingProgram = nullptr;
 
-    isActuallyRendering = false;
-    isPicking = false;
-    isPickingBufferImageOutputEnabled = false;
+    renderingFrameId = 1;
+    isRenderingVisibleImage = false;
+    isRenderingPickingImage = false;
+    isPickingImageOutputEnabled = false;
     isShadowCastingEnabled = true;
     isRenderingShadowMap = false;
     isLowMemoryConsumptionMode = false;
@@ -470,11 +476,12 @@ void GLSLSceneRendererImpl::initialize()
     currentResourceMap = &resourceMaps[0];
     nextResourceMap = &resourceMaps[1];
 
-    backFaceCullingMode = GLSceneRenderer::ENABLE_BACK_FACE_CULLING;
-
     modelMatrixStack.reserve(16);
     viewTransform.setIdentity();
     projectionMatrix.setIdentity();
+
+    depthBufferForOverlay = 0;
+    needToUpdateOverlayDepthBufferSize = true;
 
     lightingMode = GLSceneRenderer::FULL_LIGHTING;
     defaultSmoothShading = true;
@@ -492,6 +499,8 @@ void GLSLSceneRendererImpl::initialize()
 
     stateFlag.resize(NUM_STATE_FLAGS, false);
 
+    backFaceCullingMode = GLSceneRenderer::ENABLE_BACK_FACE_CULLING;
+
     pickedPoint.setZero();
 
     clearGLState();
@@ -502,8 +511,10 @@ void GLSLSceneRendererImpl::initialize()
         [&](SgGroup* node){ renderGroup(node); });
     renderingFunctions.setFunction<SgTransform>(
         [&](SgTransform* node){ renderTransform(node); });
-    renderingFunctions.setFunction<SgSwitch>(
-        [&](SgSwitch* node){ renderSwitch(node); });
+    renderingFunctions.setFunction<SgAutoScale>(
+        [&](SgAutoScale* node){ renderAutoScale(node); });
+    renderingFunctions.setFunction<SgSwitchableGroup>(
+        [&](SgSwitchableGroup* node){ renderSwitchableGroup(node); });
     renderingFunctions.setFunction<SgUnpickableGroup>(
         [&](SgUnpickableGroup* node){ renderUnpickableGroup(node); });
     renderingFunctions.setFunction<SgShape>(
@@ -514,8 +525,10 @@ void GLSLSceneRendererImpl::initialize()
         [&](SgLineSet* node){ renderLineSet(node); });
     renderingFunctions.setFunction<SgOverlay>(
         [&](SgOverlay* node){ renderOverlay(node); });
-    renderingFunctions.setFunction<SgOutlineGroup>(
-        [&](SgOutlineGroup* node){ renderOutlineGroup(node); });
+    renderingFunctions.setFunction<SgViewportOverlay>(
+        [&](SgViewportOverlay* node){ renderViewportOverlay(node); });
+    renderingFunctions.setFunction<SgOutline>(
+        [&](SgOutline* node){ renderOutline(node); });
     renderingFunctions.setFunction<SgLightweightRenderingGroup>(
         [&](SgLightweightRenderingGroup* node){ renderLightweightRenderingGroup(node); });
 
@@ -533,7 +546,7 @@ GLSLSceneRenderer::~GLSLSceneRenderer()
 }
 
 
-GLSLSceneRendererImpl::~GLSLSceneRendererImpl()
+GLSLSceneRenderer::Impl::~Impl()
 {
     // clear handles to avoid the deletion of them without the corresponding GL context
     for(int i=0; i < 2; ++i){
@@ -575,7 +588,7 @@ void GLSLSceneRenderer::applyExtensions()
 }
 
 
-void GLSLSceneRendererImpl::onExtensionAdded(std::function<void(GLSLSceneRenderer* renderer)> func)
+void GLSLSceneRenderer::Impl::onExtensionAdded(std::function<void(GLSLSceneRenderer* renderer)> func)
 {
     std::lock_guard<std::mutex> guard(newExtensionMutex);
     newExtendFunctions.push_back(func);
@@ -612,7 +625,7 @@ void GLSLSceneRenderer::setOutputStream(std::ostream& os)
 }
 
 
-void GLSLSceneRendererImpl::updateDefaultFramebufferObject()
+void GLSLSceneRenderer::Impl::updateDefaultFramebufferObject()
 {
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, reinterpret_cast<GLint*>(&defaultFBO));
     phongShadowLightingProgram.setDefaultFramebufferObject(defaultFBO);
@@ -625,7 +638,7 @@ bool GLSLSceneRenderer::initializeGL()
 }
 
 
-bool GLSLSceneRendererImpl::initializeGL()
+bool GLSLSceneRenderer::Impl::initializeGL()
 {
     if(ogl_LoadFunctions() == ogl_LOAD_FAILED){
         return false;
@@ -694,14 +707,19 @@ bool GLSLSceneRendererImpl::initializeGL()
 
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_DITHER);
-
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     isResourceClearRequested = true;
-
     isCurrentFogUpdated = false;
 
     return true;
+}
+
+
+void GLSLSceneRenderer::setViewport(int x, int y, int width, int height)
+{
+    glViewport(x, y, width, height);
+    updateViewportInformation(x, y, width, height);
 }
 
 
@@ -718,10 +736,10 @@ void GLSLSceneRenderer::flush()
 }
 
 
-void GLSLSceneRenderer::setViewport(int x, int y, int width, int height)
+void GLSLSceneRenderer::updateViewportInformation(int x, int y, int width, int height)
 {
-    glViewport(x, y, width, height);
-    updateViewportInformation(x, y, width, height);
+    GLSceneRenderer::updateViewportInformation(x, y, width, height);
+    impl->needToUpdateOverlayDepthBufferSize = true;
 }
 
 
@@ -742,7 +760,7 @@ void GLSLSceneRenderer::onSceneGraphUpdated(const SgUpdate& update)
 
 
 ScopedShaderProgramActivator::ScopedShaderProgramActivator
-(ShaderProgram& program, GLSLSceneRendererImpl* renderer)
+(ShaderProgram& program, GLSLSceneRenderer::Impl* renderer)
     : renderer(renderer)
 {
     if(&program == renderer->currentProgram){
@@ -797,7 +815,7 @@ ScopedShaderProgramActivator::~ScopedShaderProgramActivator()
 }
 
 
-void GLSLSceneRendererImpl::pushProgram(ShaderProgram& program)
+void GLSLSceneRenderer::Impl::pushProgram(ShaderProgram& program)
 {
     programStack.emplace_back(program, this);
 }
@@ -808,7 +826,7 @@ void GLSLSceneRenderer::pushShaderProgram(ShaderProgram& program)
 }
 
 
-void GLSLSceneRendererImpl::popProgram()
+void GLSLSceneRenderer::Impl::popProgram()
 {
     programStack.pop_back();
 }
@@ -826,7 +844,7 @@ void GLSLSceneRenderer::doRender()
 }
 
 
-void GLSLSceneRendererImpl::doRender()
+void GLSLSceneRenderer::Impl::doRender()
 {
     updateDefaultFramebufferObject();
     
@@ -868,7 +886,7 @@ void GLSLSceneRendererImpl::doRender()
         break;
     }
 
-    isActuallyRendering = true;
+    isRenderingVisibleImage = true;
     const Vector3f& c = self->backgroundColor();
     glClearColor(c[0], c[1], c[2], 1.0f);
 
@@ -891,7 +909,7 @@ void GLSLSceneRendererImpl::doRender()
 }
 
 
-void GLSLSceneRendererImpl::setupFullLightingRendering()
+void GLSLSceneRenderer::Impl::setupFullLightingRendering()
 {
     isTextureBeingRendered = isTextureEnabled;
 
@@ -900,14 +918,18 @@ void GLSLSceneRendererImpl::setupFullLightingRendering()
         pushProgram(phongLightingProgram);
             
     } else {
+        isRenderingVisibleImage = false;
+        isRenderingShadowMap = true;
+
         auto& program = phongShadowLightingProgram;
-        Array4i vp = self->viewport();
+
         int w, h;
         program.getShadowMapSize(w, h);
-        self->setViewport(0, 0, w, h);
+        Array4i vp = self->viewport();
+        glViewport(0, 0, w, h);
+        self->GLSceneRenderer::updateViewportInformation(0, 0, w, h);
+        
         pushProgram(program.shadowMapProgram());
-        isRenderingShadowMap = true;
-        isActuallyRendering = false;
         
         int shadowMapIndex = 0;
         set<int>::iterator iter = shadowLightIndices.begin();
@@ -923,8 +945,10 @@ void GLSLSceneRendererImpl::setupFullLightingRendering()
         
         popProgram();
         isRenderingShadowMap = false;
-        self->setViewport(vp[0], vp[1], vp[2], vp[3]);
-    
+
+        glViewport(0, 0, vp[2], vp[3]);
+        self->GLSceneRenderer::updateViewportInformation(0, 0, vp[2], vp[3]);
+        
         program.activateMainRenderingPass();
         pushProgram(program);
     }
@@ -937,7 +961,7 @@ bool GLSLSceneRenderer::doPick(int x, int y)
 }
 
 
-bool GLSLSceneRendererImpl::doPick(int x, int y)
+bool GLSLSceneRenderer::Impl::doPick(int x, int y)
 {
     int vx, vy, width, height;
     self->getViewport(vx, vy, width, height);
@@ -947,51 +971,50 @@ bool GLSLSceneRendererImpl::doPick(int x, int y)
     }
     glBindFramebuffer(GL_FRAMEBUFFER, fboForPicking);
 
-    if(width != pickingBufferWidth || height != pickingBufferHeight){
+    if(width != pickingImageWidth || height != pickingImageHeight){
         // color buffer
-        if(colorBufferForPicking){
-            glDeleteRenderbuffers(1, &colorBufferForPicking);
+        if(!colorBufferForPicking){
+            glGenRenderbuffers(1, &colorBufferForPicking);
         }
-        glGenRenderbuffers(1, &colorBufferForPicking);
         glBindRenderbuffer(GL_RENDERBUFFER, colorBufferForPicking);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorBufferForPicking);
             
         // depth buffer
-        if(depthBufferForPicking){
-            glDeleteRenderbuffers(1, &depthBufferForPicking);
+        if(!depthBufferForPicking){
+            glGenRenderbuffers(1, &depthBufferForPicking);
         }
-        glGenRenderbuffers(1, &depthBufferForPicking);
         glBindRenderbuffer(GL_RENDERBUFFER, depthBufferForPicking);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBufferForPicking);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, width, height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthBufferForPicking);
 
-        pickingBufferWidth = width;
-        pickingBufferHeight = height;
+        pickingImageWidth = width;
+        pickingImageHeight = height;
     }
-    
+
     self->extractPreprocessedNodes();
 
-    if(!isPickingBufferImageOutputEnabled){
+    if(!isPickingImageOutputEnabled){
         glScissor(x, y, 1, 1);
         glEnable(GL_SCISSOR_TEST);
     }
 
-    isPicking = true;
-    isActuallyRendering = false;
+    isRenderingPickingImage = true;
+    isRenderingVisibleImage = false;
     beginRendering();
     pushProgram(solidColorProgram);
     currentNodePath.clear();
     pickingNodePathList.clear();
+    overlayPickIndex0 = std::numeric_limits<int>::max();
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     renderScene();
     
     popProgram();
-    isPicking = false;
+    isRenderingPickingImage = false;
 
-    if(!isPickingBufferImageOutputEnabled){
+    if(!isPickingImageOutputEnabled){
         glDisable(GL_SCISSOR_TEST);
     }
 
@@ -1002,19 +1025,25 @@ bool GLSLSceneRendererImpl::doPick(int x, int y)
 
     GLfloat color[4];
     glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, color);
-    if(isPickingBufferImageOutputEnabled){
+    if(isPickingImageOutputEnabled){
         color[2] = 0.0f;
     }
-    int id = (int)(color[0] * 255) + ((int)(color[1] * 255) << 8) + ((int)(color[2] * 255) << 16) - 1;
+    int pickIndex = (int)(color[0] * 255) + ((int)(color[1] * 255) << 8) + ((int)(color[2] * 255) << 16) - 1;
 
     pickedNodePath.clear();
 
-    if(id > 0 && id < static_cast<int>(pickingNodePathList.size())){
+    if(pickIndex >= 0 && pickIndex < static_cast<int>(pickingNodePathList.size())){
         GLfloat depth;
-        glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+        if(pickIndex < overlayPickIndex0){
+            glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+        } else {
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthBufferForOverlay);
+            glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthBufferForPicking);
+        }
         Vector3 projected;
         if(self->unproject(x, y, depth, pickedPoint)){
-            pickedNodePath = *pickingNodePathList[id];
+            pickedNodePath = *pickingNodePathList[pickIndex];
         }
     }
 
@@ -1025,23 +1054,23 @@ bool GLSLSceneRendererImpl::doPick(int x, int y)
 }
 
 
-void GLSLSceneRenderer::setPickingBufferImageOutputEnabled(bool on)
+void GLSLSceneRenderer::setPickingImageOutputEnabled(bool on)
 {
-    impl->isPickingBufferImageOutputEnabled = on;
+    impl->isPickingImageOutputEnabled = on;
 }
 
 
-bool GLSLSceneRenderer::getPickingBufferImage(Image& out_image)
+bool GLSLSceneRenderer::getPickingImage(Image& out_image)
 {
-    if(!impl->isPickingBufferImageOutputEnabled){
+    if(!impl->isPickingImageOutputEnabled){
         return false;
     }
     
     glBindFramebuffer(GL_FRAMEBUFFER, impl->fboForPicking);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, impl->fboForPicking);
     glReadBuffer(GL_COLOR_ATTACHMENT0);
-    int w = impl->pickingBufferWidth;
-    int h = impl->pickingBufferHeight;
+    int w = impl->pickingImageWidth;
+    int h = impl->pickingImageHeight;
     out_image.setSize(w, h, 4);
     glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, out_image.pixels());
     out_image.applyVerticalFlip();
@@ -1052,30 +1081,28 @@ bool GLSLSceneRenderer::getPickingBufferImage(Image& out_image)
 }
 
 
-void GLSLSceneRendererImpl::renderScene()
+void GLSLSceneRenderer::Impl::renderScene()
 {
-    SgCamera* camera = self->currentCamera();
-    if(camera){
+    if(auto camera = self->currentCamera()){
+
         renderCamera(camera, self->currentCameraPosition());
 
-        postRenderingFunctions.clear();
-        transparentRenderingFunctions.clear();
+        transparentRenderingQueue.clear();
+        overlayRenderingQueue.clear();
 
         renderSceneGraphNodes();
 
-        for(auto&& func : postRenderingFunctions){
-            func();
-        }
-        postRenderingFunctions.clear();
-        
-        if(!transparentRenderingFunctions.empty()){
+        if(!transparentRenderingQueue.empty()){
             renderTransparentObjects();
+        }
+        if(!overlayRenderingQueue.empty()){
+            renderOverlayObjects();
         }
     }
 }
 
 
-bool GLSLSceneRendererImpl::renderShadowMap(int lightIndex)
+bool GLSLSceneRenderer::Impl::renderShadowMap(int lightIndex)
 {
     SgLight* light;
     Affine3 T;
@@ -1095,7 +1122,7 @@ bool GLSLSceneRendererImpl::renderShadowMap(int lightIndex)
 }
     
 
-void GLSLSceneRendererImpl::renderCamera(SgCamera* camera, const Affine3& cameraPosition)
+void GLSLSceneRenderer::Impl::renderCamera(SgCamera* camera, const Affine3& cameraPosition)
 {
     if(SgPerspectiveCamera* pers = dynamic_cast<SgPerspectiveCamera*>(camera)){
         double aspectRatio = self->aspectRatio();
@@ -1126,12 +1153,18 @@ void GLSLSceneRendererImpl::renderCamera(SgCamera* camera, const Affine3& camera
 
     modelMatrixStack.clear();
     modelMatrixStack.push_back(Affine3::Identity());
+    modelMatrixBuffer.clear();
 }
 
 
-void GLSLSceneRendererImpl::beginRendering()
+void GLSLSceneRenderer::Impl::beginRendering()
 {
-    isCheckingUnusedResources = isPicking ? false : doUnusedResourceCheck;
+    ++renderingFrameId;
+    if(renderingFrameId == 0){
+        renderingFrameId = 1;
+    }
+    
+    isCheckingUnusedResources = isRenderingPickingImage ? false : doUnusedResourceCheck;
 
     if(isResourceClearRequested){
         resourceMaps[0].clear();
@@ -1149,7 +1182,7 @@ void GLSLSceneRendererImpl::beginRendering()
 }
 
 
-void GLSLSceneRendererImpl::endRendering()
+void GLSLSceneRenderer::Impl::endRendering()
 {
     if(isCheckingUnusedResources){
         currentResourceMap->clear();
@@ -1158,7 +1191,7 @@ void GLSLSceneRendererImpl::endRendering()
 }
 
 
-void GLSLSceneRendererImpl::renderSceneGraphNodes()
+void GLSLSceneRenderer::Impl::renderSceneGraphNodes()
 {
     currentProgram->initializeFrameRendering();
 
@@ -1177,7 +1210,7 @@ void GLSLSceneRenderer::renderLights(LightingProgram* program)
 }
 
 
-void GLSLSceneRendererImpl::renderLights(LightingProgram* program)
+void GLSLSceneRenderer::Impl::renderLights(LightingProgram* program)
 {
     int lightIndex = 0;
 
@@ -1218,7 +1251,7 @@ void GLSLSceneRenderer::renderFog(LightingProgram* program)
 }
 
 
-void GLSLSceneRendererImpl::renderFog(LightingProgram* program)
+void GLSLSceneRenderer::Impl::renderFog(LightingProgram* program)
 {
     SgFog* fog = nullptr;
     if(self->isFogEnabled()){
@@ -1248,6 +1281,77 @@ void GLSLSceneRendererImpl::renderFog(LightingProgram* program)
     }
     isCurrentFogUpdated = false;
     prevFog = fog;
+}
+
+
+void GLSLSceneRenderer::dispatchToTransparentPhase
+(ReferencedPtr object, int id,
+ const std::function<void(Referenced* object, const Affine3& position, int id)>& renderingFunction)
+{
+    int matrixIndex = impl->modelMatrixBuffer.size();
+    impl->modelMatrixBuffer.push_back(impl->modelMatrixStack.back());
+
+    impl->transparentRenderingQueue.emplace_back(
+        [this, renderingFunction, object, matrixIndex, id](){
+            renderingFunction(object, impl->modelMatrixBuffer[matrixIndex], id); });
+}
+
+
+void GLSLSceneRenderer::Impl::renderTransparentObjects()
+{
+    if(!isRenderingPickingImage){
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE);
+    }
+
+    for(auto& func : transparentRenderingQueue){
+        func();
+    }
+
+    if(!isRenderingPickingImage){
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
+    }
+
+    transparentRenderingQueue.clear();
+}
+
+
+void GLSLSceneRenderer::Impl::renderOverlayObjects()
+{
+    if(!depthBufferForOverlay){
+        glGenRenderbuffers(1, &depthBufferForOverlay);
+    }
+    if(needToUpdateOverlayDepthBufferSize){
+        Array4i vp = self->viewport();
+        glBindRenderbuffer(GL_RENDERBUFFER, depthBufferForOverlay);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, vp[2], vp[3]);
+        needToUpdateOverlayDepthBufferSize = false;
+    }
+ 
+    GLuint defaultDepthBuffer;
+    glGetFramebufferAttachmentParameteriv(
+        GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
+        (GLint*)&defaultDepthBuffer);
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthBufferForOverlay);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    if(isRenderingPickingImage){
+        overlayPickIndex0 = pickingNodePathList.size();
+    }
+
+    for(auto& func : overlayRenderingQueue){
+        func();
+    }
+    overlayRenderingQueue.clear();
+
+    if(!transparentRenderingQueue.empty()){
+        renderTransparentObjects();
+    }
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, defaultDepthBuffer);
 }
 
 
@@ -1287,9 +1391,23 @@ Matrix4 GLSLSceneRenderer::modelViewProjectionMatrix() const
 }
 
 
-bool GLSLSceneRenderer::isPicking() const
+double GLSLSceneRenderer::projectedPixelSizeRatio(const Vector3& position) const
 {
-    return impl->isPicking;
+    auto vp = viewport();
+    Vector3 p2 = impl->viewTransform * position;
+    Vector4 p3(1.0, 0.0, p2.z(), 1.0);
+    Vector4 q = impl->projectionMatrix * p3;
+    double r = (q.x() / q[3]) * vp[2] / 2.0;
+    if(r < 0.0){
+        r = 0.0;
+    }
+    return r;
+}
+
+
+bool GLSLSceneRenderer::isRenderingPickingImage() const
+{
+    return impl->isRenderingPickingImage;
 }
 
 
@@ -1305,13 +1423,14 @@ const Vector3& GLSLSceneRenderer::pickedPoint() const
 }
 
 
-inline void GLSLSceneRendererImpl::setPickColor(int id)
+inline void GLSLSceneRenderer::Impl::setPickColor(int pickIndex)
 {
     Vector3f color;
+    int id = pickIndex + 1;
     color[0] = (id & 0xff) / 255.0;
     color[1] = ((id >> 8) & 0xff) / 255.0;
     color[2] = ((id >> 16) & 0xff) / 255.0;
-    if(isPickingBufferImageOutputEnabled){
+    if(isPickingImageOutputEnabled){
         color[2] = 1.0f;
     }
     solidColorProgram.setColor(color);
@@ -1319,28 +1438,28 @@ inline void GLSLSceneRendererImpl::setPickColor(int id)
         
 
 /**
-   @return id of the current object
+   @return the index of the current object in picking
 */
-inline int GLSLSceneRendererImpl::pushPickId(SgNode* node, bool doSetColor)
+inline int GLSLSceneRenderer::Impl::pushPickNode(SgNode* node, bool doSetColor)
 {
-    int id = 0;
+    int pickIndex = 0;
     
-    if(isPicking){
-        id = pickingNodePathList.size() + 1;
+    if(isRenderingPickingImage){
+        pickIndex = pickingNodePathList.size();
         currentNodePath.push_back(node);
         pickingNodePathList.push_back(std::make_shared<SgNodePath>(currentNodePath));
         if(doSetColor){
-            setPickColor(id);
+            setPickColor(pickIndex);
         }
     }
 
-    return id;
+    return pickIndex;
 }
 
 
-inline void GLSLSceneRendererImpl::popPickId()
+inline void GLSLSceneRenderer::Impl::popPickNode()
 {
-    if(isPicking){
+    if(isRenderingPickingImage){
         currentNodePath.pop_back();
     }
 }
@@ -1352,49 +1471,51 @@ void GLSLSceneRenderer::renderNode(SgNode* node)
 }
 
 
-void GLSLSceneRendererImpl::renderGroup(SgGroup* group)
+void GLSLSceneRenderer::Impl::renderGroup(SgGroup* group)
 {
-    pushPickId(group);
+    pushPickNode(group);
     renderChildNodes(group);
-    popPickId();
+    popPickNode();
 }
 
 
 void GLSLSceneRenderer::renderCustomGroup(SgGroup* group, std::function<void()> traverseFunction)
 {
-    impl->pushPickId(group);
+    impl->pushPickNode(group);
     traverseFunction();
-    impl->popPickId();
+    impl->popPickNode();
 }
 
 
-void GLSLSceneRendererImpl::renderSwitch(SgSwitch* node)
+void GLSLSceneRenderer::Impl::renderSwitchableGroup(SgSwitchableGroup* group)
 {
-    if(node->isTurnedOn()){
-        renderGroup(node);
-    }
-}
-
-
-void GLSLSceneRendererImpl::renderUnpickableGroup(SgUnpickableGroup* group)
-{
-    if(!isPicking){
+    if(group->isTurnedOn()){
         renderGroup(group);
     }
 }
 
 
-void GLSLSceneRendererImpl::renderTransform(SgTransform* transform)
+void GLSLSceneRenderer::Impl::renderUnpickableGroup(SgUnpickableGroup* group)
 {
-    Affine3 T;
-    transform->getTransform(T);
-    modelMatrixStack.push_back(modelMatrixStack.back() * T);
-    pushPickId(transform);
+    if(!isRenderingPickingImage){
+        renderGroup(group);
+    }
+}
 
-    renderChildNodes(transform);
 
-    popPickId();
-    modelMatrixStack.pop_back();
+void GLSLSceneRenderer::Impl::renderTransform(SgTransform* transform)
+{
+    if(!transform->empty()){
+        Affine3 T;
+        transform->getTransform(T);
+        modelMatrixStack.push_back(modelMatrixStack.back() * T);
+        pushPickNode(transform);
+
+        renderChildNodes(transform);
+
+        popPickNode();
+        modelMatrixStack.pop_back();
+    }
 }
 
 
@@ -1403,16 +1524,32 @@ void GLSLSceneRenderer::renderCustomTransform(SgTransform* transform, std::funct
     Affine3 T;
     transform->getTransform(T);
     impl->modelMatrixStack.push_back(impl->modelMatrixStack.back() * T);
-    impl->pushPickId(transform);
+    impl->pushPickNode(transform);
 
     traverseFunction();
 
-    impl->popPickId();
+    impl->popPickNode();
     impl->modelMatrixStack.pop_back();
-}    
+}
+
+
+void GLSLSceneRenderer::Impl::renderAutoScale(SgAutoScale* autoScale)
+{
+    double r = self->projectedPixelSizeRatio(modelMatrixStack.back().translation());
+
+    if(r > 0.0){
+        double s = autoScale->pixelSizeRatio() / r;
+        Vector3 scale(s, s, s);
+        Affine3 S(scale.asDiagonal());
+    
+        modelMatrixStack.push_back(modelMatrixStack.back() * S);
+        renderGroup(autoScale);
+        modelMatrixStack.pop_back();
+    }
+}
     
 
-VertexResource* GLSLSceneRendererImpl::getOrCreateVertexResource(SgObject* obj)
+VertexResource* GLSLSceneRenderer::Impl::getOrCreateVertexResource(SgObject* obj)
 {
     VertexResource* resource;
     auto p = currentResourceMap->find(obj);
@@ -1422,16 +1559,14 @@ VertexResource* GLSLSceneRendererImpl::getOrCreateVertexResource(SgObject* obj)
     } else {
         resource = static_cast<VertexResource*>(p->second.get());
     }
-
     if(isCheckingUnusedResources){
         nextResourceMap->insert(*p);
     }
-
     return resource;
 }
 
 
-void GLSLSceneRendererImpl::drawVertexResource(VertexResource* resource, GLenum primitiveMode, const Affine3& position)
+void GLSLSceneRenderer::Impl::drawVertexResource(VertexResource* resource, GLenum primitiveMode, const Affine3& position)
 {
     currentProgram->setTransform(PV, viewTransform, position, resource->pLocalTransform);
     glBindVertexArray(resource->vao);
@@ -1439,7 +1574,7 @@ void GLSLSceneRendererImpl::drawVertexResource(VertexResource* resource, GLenum 
 }
 
 
-void GLSLSceneRendererImpl::drawBoundingBox(VertexResource* resource, const BoundingBox& bbox)
+void GLSLSceneRenderer::Impl::drawBoundingBox(VertexResource* resource, const BoundingBox& bbox)
 {
     if(!resource->boundingBoxLines){
         auto lines = new SgLineSet;
@@ -1474,36 +1609,37 @@ void GLSLSceneRendererImpl::drawBoundingBox(VertexResource* resource, const Boun
 }
         
         
-void GLSLSceneRendererImpl::renderShape(SgShape* shape)
+void GLSLSceneRenderer::Impl::renderShape(SgShape* shape)
 {
     SgMesh* mesh = shape->mesh();
     if(mesh && mesh->hasVertices()){
         SgMaterial* material = shape->material();
-        if(material && material->transparency() > 0.0){
+        if(material && material->transparency() > 0.0 && !isRenderingPickingImage){
             if(!isRenderingShadowMap){
-                const Affine3& position = modelMatrixStack.back();
-                auto pickId = pushPickId(shape, false);
-                transparentRenderingFunctions.emplace_back(
-                    shape, position, pickId,
-                    [this](Referenced* object, Affine3& position, int id){
-                        renderShapeMain(static_cast<SgShape*>(object), position, id); });
-                popPickId();
+                SgShapePtr shapePtr = shape;
+                int matrixIndex = modelMatrixBuffer.size();
+                modelMatrixBuffer.push_back(modelMatrixStack.back());
+                auto pickIndex = pushPickNode(shape, false);
+                transparentRenderingQueue.emplace_back(
+                    [this, shapePtr, matrixIndex, pickIndex](){
+                        renderShapeMain(shapePtr, modelMatrixBuffer[matrixIndex], pickIndex); });
+                popPickNode();
             }
         } else {
-            auto pickId = pushPickId(shape, false);
-            renderShapeMain(shape, modelMatrixStack.back(), pickId);
-            popPickId();
+            auto pickIndex = pushPickNode(shape, false);
+            renderShapeMain(shape, modelMatrixStack.back(), pickIndex);
+            popPickNode();
         }
     }
 }
 
 
-void GLSLSceneRendererImpl::renderShapeMain(SgShape* shape, const Affine3& position, int pickId)
+void GLSLSceneRenderer::Impl::renderShapeMain(SgShape* shape, const Affine3& position, int pickIndex)
 {
     auto mesh = shape->mesh();
     
-    if(isPicking){
-        setPickColor(pickId);
+    if(isRenderingPickingImage){
+        setPickColor(pickIndex);
     } else {
         renderMaterial(shape->material());
         if(mesh->hasColors()){
@@ -1533,14 +1669,14 @@ void GLSLSceneRendererImpl::renderShapeMain(SgShape* shape, const Affine3& posit
         }
         drawVertexResource(resource, GL_TRIANGLES, position);
 
-        if(isNormalVisualizationEnabled && isActuallyRendering && resource->normalVisualization){
+        if(isNormalVisualizationEnabled && isRenderingVisibleImage && resource->normalVisualization){
             renderLineSet(resource->normalVisualization);
         }
     }
 }
 
 
-void GLSLSceneRendererImpl::applyCullingMode(SgMesh* mesh)
+void GLSLSceneRenderer::Impl::applyCullingMode(SgMesh* mesh)
 {
     if(!stateFlag[CULL_FACE]){
         bool enableCullFace;
@@ -1580,43 +1716,13 @@ void GLSLSceneRendererImpl::applyCullingMode(SgMesh* mesh)
 }
 
 
-void GLSLSceneRenderer::dispatchToTransparentPhase
-(Referenced* object, int id,
- std::function<void(Referenced* object, const Affine3& position, int id)> renderingFunction)
-{
-    impl->transparentRenderingFunctions.emplace_back(
-        object, impl->modelMatrixStack.back(), id, renderingFunction);
-}
-
-
-void GLSLSceneRendererImpl::renderTransparentObjects()
-{
-    if(!isPicking){
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDepthMask(GL_FALSE);
-    }
-
-    for(auto& func : transparentRenderingFunctions){
-        func();
-    }
-
-    if(!isPicking){
-        glDisable(GL_BLEND);
-        glDepthMask(GL_TRUE);
-    }
-
-    transparentRenderingFunctions.clear();
-}
-
-
-void GLSLSceneRendererImpl::renderMaterial(const SgMaterial* material)
+void GLSLSceneRenderer::Impl::renderMaterial(const SgMaterial* material)
 {
     currentProgram->setMaterial(material ? material : defaultMaterial);
 }
 
 
-bool GLSLSceneRendererImpl::renderTexture(SgTexture* texture)
+bool GLSLSceneRenderer::Impl::renderTexture(SgTexture* texture)
 {
     SgImage* sgImage = texture->image();
     if(!sgImage || sgImage->empty()){
@@ -1663,7 +1769,7 @@ bool GLSLSceneRendererImpl::renderTexture(SgTexture* texture)
 }
 
 
-bool GLSLSceneRendererImpl::loadTextureImage(TextureResource* resource, const Image& image)
+bool GLSLSceneRenderer::Impl::loadTextureImage(TextureResource* resource, const Image& image)
 {
     GLenum format = GL_RGB;
     switch(image.numComponents()){
@@ -1727,7 +1833,7 @@ void GLSLSceneRenderer::onImageUpdated(SgImage* image)
 }
 
 
-void GLSLSceneRendererImpl::makeVertexBufferObjects(SgShape* shape, VertexResource* resource)
+void GLSLSceneRenderer::Impl::makeVertexBufferObjects(SgShape* shape, VertexResource* resource)
 {
     auto mesh = shape->mesh();
 
@@ -1762,7 +1868,7 @@ void GLSLSceneRendererImpl::makeVertexBufferObjects(SgShape* shape, VertexResour
 
 
 template<typename value_type, GLenum gltype, GLboolean normalized, class VertexArrayWrapper>
-void GLSLSceneRendererImpl::writeMeshVerticesSub
+void GLSLSceneRenderer::Impl::writeMeshVerticesSub
 (SgMesh* mesh, VertexResource* resource, VertexArrayWrapper& vertices)
 {
     const auto& orgVertices = *mesh->vertices();
@@ -1794,7 +1900,7 @@ void GLSLSceneRendererImpl::writeMeshVerticesSub
 }
 
 
-void GLSLSceneRendererImpl::writeMeshVerticesFloat(SgMesh* mesh, VertexResource* resource)
+void GLSLSceneRenderer::Impl::writeMeshVerticesFloat(SgMesh* mesh, VertexResource* resource)
 {
     struct VertexArrayWrapper {
         SgVertexArray array;
@@ -1805,7 +1911,7 @@ void GLSLSceneRendererImpl::writeMeshVerticesFloat(SgMesh* mesh, VertexResource*
 }
 
 
-void GLSLSceneRendererImpl::writeMeshVerticesNormalizedShort(SgMesh* mesh, VertexResource* resource)
+void GLSLSceneRenderer::Impl::writeMeshVerticesNormalizedShort(SgMesh* mesh, VertexResource* resource)
 {
     /**
        GLshort type is used for storing vertex positions.
@@ -1852,7 +1958,7 @@ void GLSLSceneRendererImpl::writeMeshVerticesNormalizedShort(SgMesh* mesh, Verte
 
 
 template<typename value_type, GLenum gltype, GLint glsize, GLboolean normalized, class NormalArrayWrapper>
-bool GLSLSceneRendererImpl::writeMeshNormalsSub
+bool GLSLSceneRenderer::Impl::writeMeshNormalsSub
 (SgMesh* mesh, VertexResource* resource, NormalArrayWrapper& normals)
 {
     bool ready = false;
@@ -1932,7 +2038,7 @@ bool GLSLSceneRendererImpl::writeMeshNormalsSub
 }    
     
 
-void GLSLSceneRendererImpl::writeMeshNormalsFloat(SgMesh* mesh, VertexResource* resource)
+void GLSLSceneRenderer::Impl::writeMeshNormalsFloat(SgMesh* mesh, VertexResource* resource)
 {
     struct NormalArrayWrapper {
         SgNormalArray array;
@@ -1944,7 +2050,7 @@ void GLSLSceneRendererImpl::writeMeshNormalsFloat(SgMesh* mesh, VertexResource* 
 }
 
 
-void GLSLSceneRendererImpl::writeMeshNormalsShort(SgMesh* mesh, VertexResource* resource)
+void GLSLSceneRenderer::Impl::writeMeshNormalsShort(SgMesh* mesh, VertexResource* resource)
 {
     typedef Eigen::Matrix<GLshort,3,1> Vector3s;
 
@@ -1962,7 +2068,7 @@ void GLSLSceneRendererImpl::writeMeshNormalsShort(SgMesh* mesh, VertexResource* 
 }
 
 
-void GLSLSceneRendererImpl::writeMeshNormalsByte(SgMesh* mesh, VertexResource* resource)
+void GLSLSceneRenderer::Impl::writeMeshNormalsByte(SgMesh* mesh, VertexResource* resource)
 {
     typedef Eigen::Matrix<GLbyte,3,1> Vector3b;
 
@@ -1985,7 +2091,7 @@ void GLSLSceneRendererImpl::writeMeshNormalsByte(SgMesh* mesh, VertexResource* r
    the code is compiled by VC++2017 with the AVX2 option.
    VC++2015 and GCC do not cause such a problem.
 */
-void GLSLSceneRendererImpl::writeMeshNormalsPacked(SgMesh* mesh, VertexResource* resource)
+void GLSLSceneRenderer::Impl::writeMeshNormalsPacked(SgMesh* mesh, VertexResource* resource)
 {
     struct NormalArrayWrapper {
         vector<uint32_t> array;
@@ -2019,7 +2125,7 @@ void GLSLSceneRendererImpl::writeMeshNormalsPacked(SgMesh* mesh, VertexResource*
 
 
 template<typename value_type, GLenum gltype, GLboolean normalized, class TexCoordArrayWrapper>
-void GLSLSceneRendererImpl::writeMeshTexCoordsSub
+void GLSLSceneRenderer::Impl::writeMeshTexCoordsSub
 (SgMesh* mesh, SgTexture* texture, VertexResource* resource, TexCoordArrayWrapper& texCoords)
 {
     auto& triangleVertices = mesh->triangleVertices();
@@ -2077,7 +2183,7 @@ void GLSLSceneRendererImpl::writeMeshTexCoordsSub
 }
 
 
-void GLSLSceneRendererImpl::writeMeshTexCoordsFloat
+void GLSLSceneRenderer::Impl::writeMeshTexCoordsFloat
 (SgMesh* mesh, SgTexture* texture, VertexResource* resource)
 {
     struct TexCoordArrayWrapper {
@@ -2091,7 +2197,7 @@ void GLSLSceneRendererImpl::writeMeshTexCoordsFloat
 }
 
 
-void GLSLSceneRendererImpl::writeMeshTexCoordsHalfFloat
+void GLSLSceneRenderer::Impl::writeMeshTexCoordsHalfFloat
 (SgMesh* mesh, SgTexture* texture, VertexResource* resource)
 {
     typedef Eigen::Matrix<GLhalf,2,1> Vector2h;
@@ -2129,7 +2235,7 @@ void GLSLSceneRendererImpl::writeMeshTexCoordsHalfFloat
    values is common, and such data cannot be rendererd correctly with this implementation.
    As an alternative of lightweight implementation, writeMeshTexCoordsHalfFloat is available.
 */
-void GLSLSceneRendererImpl::writeMeshTexCoordsUnsignedShort
+void GLSLSceneRenderer::Impl::writeMeshTexCoordsUnsignedShort
 (SgMesh* mesh, SgTexture* texture, VertexResource* resource)
 {
     typedef Eigen::Matrix<GLushort,2,1> Vector2us;
@@ -2153,7 +2259,7 @@ void GLSLSceneRendererImpl::writeMeshTexCoordsUnsignedShort
 }
 
 
-void GLSLSceneRendererImpl::writeMeshColors(SgMesh* mesh, VertexResource* resource)
+void GLSLSceneRenderer::Impl::writeMeshColors(SgMesh* mesh, VertexResource* resource)
 {
     auto& triangleVertices = mesh->triangleVertices();
     const int totalNumVertices = triangleVertices.size();
@@ -2195,7 +2301,7 @@ void GLSLSceneRendererImpl::writeMeshColors(SgMesh* mesh, VertexResource* resour
 }
     
 
-void GLSLSceneRendererImpl::renderPointSet(SgPointSet* pointSet)
+void GLSLSceneRenderer::Impl::renderPointSet(SgPointSet* pointSet)
 {
     if(!pointSet->hasVertices()){
         return;
@@ -2215,14 +2321,14 @@ void GLSLSceneRendererImpl::renderPointSet(SgPointSet* pointSet)
 }
 
 
-void GLSLSceneRendererImpl::renderPlot
+void GLSLSceneRenderer::Impl::renderPlot
 (SgPlot* plot, GLenum primitiveMode, std::function<SgVertexArrayPtr()> getVertices)
 {
-    pushPickId(plot);
+    pushPickNode(plot);
 
     bool hasColors = plot->hasColors();
     
-    if(isPicking){
+    if(isRenderingPickingImage){
         solidColorProgram.setVertexColorEnabled(false);
     } else {
         if(!hasColors){
@@ -2289,7 +2395,7 @@ void GLSLSceneRendererImpl::renderPlot
 
     drawVertexResource(resource, primitiveMode, modelMatrixStack.back());
     
-    popPickId();
+    popPickNode();
 }
 
 
@@ -2308,7 +2414,7 @@ static SgVertexArrayPtr getLineSetVertices(SgLineSet* lineSet)
 }
 
 
-void GLSLSceneRendererImpl::renderLineSet(SgLineSet* lineSet)
+void GLSLSceneRenderer::Impl::renderLineSet(SgLineSet* lineSet)
 {
     if(isRenderingShadowMap){
         return;
@@ -2332,82 +2438,124 @@ void GLSLSceneRendererImpl::renderLineSet(SgLineSet* lineSet)
 }
 
 
-void GLSLSceneRendererImpl::renderOverlay(SgOverlay* overlay)
+void GLSLSceneRenderer::Impl::renderOverlay(SgOverlay* overlay)
 {
-    if(!isActuallyRendering){
-        return;
+    if(isRenderingVisibleImage || isRenderingPickingImage){
+        int matrixIndex = modelMatrixBuffer.size();
+        modelMatrixBuffer.push_back(modelMatrixStack.back());
+        const auto& nodePath = isRenderingPickingImage ? currentNodePath : emptyNodePath;
+        overlayRenderingQueue.emplace_back(
+            [this, overlay, matrixIndex, nodePath](){
+                renderOverlayMain(overlay, modelMatrixBuffer[matrixIndex], nodePath); });
     }
+}
 
+
+void GLSLSceneRenderer::Impl::renderOverlayMain(SgOverlay* overlay, const Affine3& T, const SgNodePath& nodePath)
+{
+    if(isRenderingPickingImage){
+        currentNodePath = nodePath;
+    }
     ScopedShaderProgramActivator programActivator(solidColorProgram, this);
-    
-    modelMatrixStack.push_back(Affine3::Identity());
+    modelMatrixStack.push_back(T);
+    renderGroup(overlay);
+    modelMatrixStack.pop_back();
+}
 
+
+void GLSLSceneRenderer::Impl::renderViewportOverlay(SgViewportOverlay* overlay)
+{
+    if(isRenderingVisibleImage){
+        overlayRenderingQueue.emplace_back(
+            [this, overlay](){ renderViewportOverlayMain(overlay); });
+    }
+}
+
+
+void GLSLSceneRenderer::Impl::renderViewportOverlayMain(SgViewportOverlay* overlay)
+{
     const Matrix4 PV0 = PV;
-    SgOverlay::ViewVolume v;
+    SgViewportOverlay::ViewVolume v;
     int x, y, width, height;
     self->getViewport(x, y, width, height);
     overlay->calcViewVolume(width, height, v);
     self->getOrthographicProjectionMatrix(v.left, v.right, v.bottom, v.top, v.zNear, v.zFar, PV);
-            
-    renderGroup(overlay);
+
+    pickedNodePath.clear();
+    renderOverlayMain(overlay, Affine3::Identity(), emptyNodePath);
 
     PV = PV0;
     modelMatrixStack.pop_back();
 }
 
 
-void GLSLSceneRendererImpl::renderOutlineGroup(SgOutlineGroup* outline)
+void GLSLSceneRenderer::Impl::renderOutline(SgOutline* outline)
 {
-    if(isPicking){
-        renderGroup(outline);
-    } else {
-        const Affine3& T = modelMatrixStack.back();
-        postRenderingFunctions.emplace_back(
-            [this, outline, T](){ renderOutlineGroupMain(outline, T); });
+    renderGroup(outline);
+
+    if(!isRenderingPickingImage && isRenderingVisibleImage){
+        int matrixIndex = modelMatrixBuffer.size();
+        modelMatrixBuffer.push_back(modelMatrixStack.back());
+        overlayRenderingQueue.emplace_back(
+            [this, outline, matrixIndex](){
+                renderOutlineEdge(outline, modelMatrixBuffer[matrixIndex]); });
     }
 }
 
 
-void GLSLSceneRendererImpl::renderOutlineGroupMain(SgOutlineGroup* outline, const Affine3& T)
+void GLSLSceneRenderer::Impl::renderOutlineEdge(SgOutline* outline, const Affine3& T)
 {
     modelMatrixStack.push_back(T);
 
     glClearStencil(0);
     glClear(GL_STENCIL_BUFFER_BIT);
     glEnable(GL_STENCIL_TEST);
-    glStencilFunc(GL_ALWAYS, 1, -1);
-    glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
-
-    renderChildNodes(outline);
-
-    glStencilFunc(GL_NOTEQUAL, 1, -1);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-    float orgLineWidth = lineWidth;
-    setLineWidth(outline->lineWidth()*2+1);
-    GLint polygonMode;
-    glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    ScopedShaderProgramActivator programActivator(solidColorProgram, this);
-    
-    solidColorProgram.setColor(outline->color());
-    solidColorProgram.setColorChangable(false);
     glDisable(GL_DEPTH_TEST);
+    
+    {
+        ScopedShaderProgramActivator programActivator(nolightingProgram, this);
 
-    renderChildNodes(outline);
+        glStencilFunc(GL_ALWAYS, 1, -1);
+        glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+        
+        renderChildNodes(outline);
+    }
 
-    glEnable(GL_DEPTH_TEST);
-    setLineWidth(orgLineWidth);
-    glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+    {
+        ScopedShaderProgramActivator programActivator(solidColorProgram, this);
+        solidColorProgram.setColor(outline->color());
+        solidColorProgram.setColorChangable(false);
+
+        glStencilFunc(GL_NOTEQUAL, 1, -1);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+        float orgLineWidth = lineWidth;
+        setLineWidth(outline->lineWidth()*2+1);
+
+        GLint polygonMode;
+        glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
+
+        renderChildNodes(outline);
+
+        setLineWidth(orgLineWidth);
+        glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+        solidColorProgram.setColorChangable(true);
+    }
+
     glDisable(GL_STENCIL_TEST);
-    solidColorProgram.setColorChangable(true);
+    glEnable(GL_DEPTH_TEST);
 
     modelMatrixStack.pop_back();
 }
 
 
-void GLSLSceneRendererImpl::renderLightweightRenderingGroup(SgLightweightRenderingGroup* group)
+void GLSLSceneRenderer::Impl::renderLightweightRenderingGroup(SgLightweightRenderingGroup* group)
 {
     if(isRenderingShadowMap){
         return;
@@ -2447,7 +2595,7 @@ void GLSLSceneRendererImpl::renderLightweightRenderingGroup(SgLightweightRenderi
 }
 
 
-void GLSLSceneRendererImpl::clearGLState()
+void GLSLSceneRenderer::Impl::clearGLState()
 {
     std::fill(stateFlag.begin(), stateFlag.end(), false);
     pointSize = defaultPointSize;    
@@ -2483,10 +2631,10 @@ void GLSLSceneRenderer::enableShadowAntiAliasing(bool on)
 }
 
 
-void GLSLSceneRendererImpl::setPointSize(float size)
+void GLSLSceneRenderer::Impl::setPointSize(float size)
 {
     if(!stateFlag[POINT_SIZE] || pointSize != size){
-        float s = isPicking ? std::max(size, MinLineWidthForPicking) : size;
+        float s = isRenderingPickingImage ? std::max(size, MinLineWidthForPicking) : size;
         solidColorProgram.setPointSize(s);
         pointSize = s;
         stateFlag[POINT_SIZE] = true;
@@ -2494,10 +2642,10 @@ void GLSLSceneRendererImpl::setPointSize(float size)
 }
 
 
-void GLSLSceneRendererImpl::setLineWidth(float width)
+void GLSLSceneRenderer::Impl::setLineWidth(float width)
 {
     if(!stateFlag[LINE_WIDTH] || lineWidth != width){
-        if(isPicking){
+        if(isRenderingPickingImage){
             glLineWidth(std::max(width, MinLineWidthForPicking));
         } else {
             glLineWidth(width);

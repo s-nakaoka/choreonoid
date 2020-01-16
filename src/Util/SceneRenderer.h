@@ -7,7 +7,7 @@
 #define CNOID_UTIL_SCENE_RENDERER_H
 
 #include "SceneGraph.h"
-#include "PolymorphicFunctionSet.h"
+#include "PolymorphicSceneNodeFunctionSet.h"
 #include "exportdecl.h"
 
 namespace cnoid {
@@ -31,12 +31,12 @@ public:
     virtual SgGroup* scene() = 0;
     virtual void clearScene();
 
-    typedef PolymorphicFunctionSet<SgNode> NodeFunctionSet;
+    //! \deprecated. USe PolymorphicSceneNodeFunctionSet
+    typedef PolymorphicSceneNodeFunctionSet NodeFunctionSet;
 
-    virtual NodeFunctionSet* renderingFunctions() = 0;
+    virtual PolymorphicSceneNodeFunctionSet* renderingFunctions() = 0;
     virtual void renderCustomGroup(SgGroup* group, std::function<void()> traverseFunction) = 0;
     virtual void renderCustomTransform(SgTransform* transform, std::function<void()> traverseFunction) = 0;
-
     virtual void renderNode(SgNode* node) = 0;
 
     int numCameras() const;
@@ -68,6 +68,7 @@ public:
 
     virtual const Affine3& currentModelTransform() const = 0;
     virtual const Matrix4& projectionMatrix() const = 0;
+    virtual double projectedPixelSizeRatio(const Vector3& position) const = 0;
 
     /**
        This function updates the information on preprocessed nodes such as
@@ -77,6 +78,8 @@ public:
     
     void render();
     bool pick(int x, int y);
+
+    virtual bool isRenderingPickingImage() const;
     
     virtual void flush() = 0;
 

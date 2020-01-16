@@ -5,6 +5,7 @@
 
 #include "ODESimulatorItem.h"
 #include <cnoid/ItemManager>
+#include <cnoid/PutPropertyFunction>
 #include <cnoid/Archive>
 #include <cnoid/EigenUtil>
 #include <cnoid/EigenArchive>
@@ -849,7 +850,7 @@ void ODEBody::alignToZAxisIn2Dmode()
 
 void ODESimulatorItem::initializeClass(ExtensionManager* ext)
 {
-    ext->itemManager().registerClass<ODESimulatorItem>(ITEM_NAME);
+    ext->itemManager().registerClass<ODESimulatorItem, SimulatorItem>(ITEM_NAME);
     ext->itemManager().addCreationPanel<ODESimulatorItem>();
 }
 

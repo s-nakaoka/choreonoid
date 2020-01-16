@@ -5,6 +5,7 @@
 #include "PyItemList.h"
 #include "PyQString.h"
 #include "../Item.h"
+#include "../RenderableItem.h"
 #include "../RootItem.h"
 #include "../FolderItem.h"
 #include "../SubProjectItem.h"
@@ -57,11 +58,11 @@ void exportPyItems(py::module m)
         .def("findChildItem", [](Item& self, const string& path){ return self.findChildItem(path); })
         .def("findSubItem", [](Item& self, const string& path){ return self.findSubItem(path); })
         .def_property_readonly("headItem", &Item::headItem)
-        .def("getDescendantItems", [](Item& self){ ItemList<Item> items; items.extractChildItems(&self); return items; })
-        .def("getDescendantItems", [](Item& self, py::object itemClass) {
-            ItemList<Item> items; items.extractChildItems(&self); return getPyNarrowedItemList(items, itemClass); })
+        .def("descendantItems", [](Item& self){ return self.descendantItems(); })
+        .def("descendantItems", [](Item& self, py::object itemClass) {
+                return getPyNarrowedItemList(self.descendantItems(), itemClass); })
         .def("duplicate", &Item::duplicate)
-        .def("duplicateAll", &Item::duplicateAll)
+        .def("duplicateSubTree", &Item::duplicateSubTree)
         .def("assign", &Item::assign)
         .def("load", [](Item& self, const string& filename){ return self.load(filename); })
         .def("load", [](Item& self, const string& filename, const string& format){ return self.load(filename, format); })
@@ -90,6 +91,9 @@ void exportPyItems(py::module m)
         .def("getNextItem", &Item::nextItem)
         .def("getParentItem", &Item::parentItem)
         .def("getHeadItem", &Item::headItem)
+        .def("getDescendantItems", [](Item& self){ return self.descendantItems(); })
+        .def("getDescendantItems", [](Item& self, py::object itemClass) {
+                return getPyNarrowedItemList(self.descendantItems(), itemClass); })
         .def("getFilePath", &Item::filePath)
         .def("getFileFormat", &Item::fileFormat)
         .def("getSigNameChanged", &Item::sigNameChanged)
@@ -115,6 +119,10 @@ void exportPyItems(py::module m)
         .def_static("getInstance", &RootItem::instance)
         ;
 
+    py::class_<RenderableItem>(m, "RenderableItem")
+        .def("getScene", (SgNode*(RenderableItem::*)()) &RenderableItem::getScene)
+        ;
+    
     PyItemList<RootItem>(m, "RootItemList");
 
     py::class_<FolderItem, FolderItemPtr, Item>(m, "FolderItem")
