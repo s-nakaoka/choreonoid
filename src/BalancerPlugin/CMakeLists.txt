@@ -17,34 +17,13 @@ set(sources
   WaistBalancer.cpp
 )
 
-set(headers
-  )
-
-make_gettext_mofiles(${target} mofiles)
-add_cnoid_plugin(${target} SHARED ${sources} ${headers} ${mofiles})
+choreonoid_make_gettext_mo_files(${target} mofiles)
+choreonoid_add_plugin(${target} ${sources} ${mofiles})
 
 add_dependencies(${target} CnoidPoseSeqPlugin)
 
 if(WIN32)
   set_target_properties(${target} PROPERTIES COMPILE_DEFINITIONS "CNOID_USE_GETTEXT_WRAPPER")
-  target_link_libraries(${target} CnoidBase CnoidPoseSeqPlugin )
-elseif(APPLE)
-  if(ENABLE_INSTALL_RPATH)
-    set_target_properties(${target} PROPERTIES COMPILE_DEFINITIONS "CNOID_USE_GETTEXT_WRAPPER")
-    target_link_libraries(${target}
-      ${QT_QTCORE_LIBRARY}
-      ${QT_QTGUI_LIBRARY}
-      libCnoidUtil.dylib
-      libCnoidBase.dylib
-      libCnoidBody.dylib
-      libCnoidBodyPlugin.dylib
-      libCnoidPoseSeqPlugin.dylib
-      )
-  else()
-    target_link_libraries(${target} CnoidBase CnoidPoseSeqPlugin)
-  endif()
-else()
-  target_link_libraries(${target} CnoidBase CnoidPoseSeqPlugin)
 endif()
 
-apply_common_setting_for_plugin(${target} "${headers}")
+target_link_libraries(${target} CnoidBase CnoidPoseSeqPlugin)
