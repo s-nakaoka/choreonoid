@@ -1,11 +1,8 @@
 #set(CMAKE_BUILD_TYPE Debug)
 #set_source_files_properties(STLSceneLoader.cpp PROPERTIES COMPILE_FLAGS "-O0 -g")
 
+set(CNOID_ENABLE_GETTEXT ${CHOREONOID_ENABLE_GETTEXT})
 configure_file(Config.h.in Config.h)
-
-if(INSTALL_SDK)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Config.h DESTINATION ${CNOID_HEADER_SUBDIR}/src/Util/)
-endif()
 
 set(sources
   Config.cpp
@@ -91,6 +88,7 @@ elseif(APPLE)
 endif()
 
 set(headers
+  ${CMAKE_CURRENT_BINARY_DIR}/Config.h
   Referenced.h
   CloneMap.h
   CloneableReferenced.h
@@ -195,7 +193,7 @@ link_directories(${LIBYAML_LIBRARY_DIRS})
 
 set(target CnoidUtil)
 make_gettext_mofiles(${target} mofiles)
-add_cnoid_library(${target} SHARED ${sources} ${headers} ${mofiles})
+choreonoid_add_library(${target} SHARED ${sources} ${mofiles} HEADERS ${headers})
 
 if(UNIX)
   set(libraries 
@@ -232,8 +230,6 @@ elseif(MSVC)
     endif()
   endif()
 endif()
-
-apply_common_setting_for_library(${target} "${headers}")
 
 if(ENABLE_PYTHON)
   add_subdirectory(pybind11)
