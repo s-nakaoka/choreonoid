@@ -22,11 +22,13 @@ class Item;
 typedef ref_ptr<Item> ItemPtr;
 
 class ItemManagerImpl;
+class ItemFileIO;
+class Mapping;
 
 class ItemCreationPanel : public QWidget
 {
 public:
-    ItemCreationPanel(QWidget* parent = 0) : QWidget(parent) { }
+    ItemCreationPanel(QWidget* parent = nullptr) : QWidget(parent) { }
 
     virtual bool initializePanel(Item* protoItem) = 0;
     virtual bool initializeItem(Item* protoItem) = 0;
@@ -35,7 +37,7 @@ protected:
     ItemCreationPanel* findPanelOnTheSameDialog(const std::string& name);
 };
 
-    
+
 class CNOID_EXPORT ItemManager
 {
 public:
@@ -57,6 +59,14 @@ private:
         virtual bool operator()(Item* protoItem, Item* parentItem) = 0;
     };
 
+    class OverwritingCheckFunctionBase
+    {
+    public:
+        ~OverwritingCheckFunctionBase();
+        virtual bool operator()(Item* item) = 0;
+    };
+
+public:
     class FileFunctionBase
     {
     public:
@@ -64,17 +74,9 @@ private:
         virtual bool operator()(Item* item, const std::string& filename, std::ostream& os, Item* parentItem) = 0;
     };
 
-    class OverwritingCheckFunctionBase
-    {
-    public:
-        ~OverwritingCheckFunctionBase();
-        virtual bool operator()(Item* item) = 0;
-    };
-        
-public:
     void bindTextDomain(const std::string& domain);
 
-    enum { PRIORITY_COMPATIBILITY, PRIORITY_CONVERSION = -10, PRIORITY_OPTIONAL = 0, PRIORITY_DEFAULT = 10, PRIORITY_FORCE = 20 };
+    enum { PRIORITY_CONVERSION = -10, PRIORITY_COMPATIBILITY = 0, PRIORITY_OPTIONAL = 0, PRIORITY_DEFAULT = 10 };
 
     template <class ItemType> class CreationPanelFilter : public CreationPanelFilterBase
     {
@@ -109,7 +111,6 @@ public:
     //! This function registers a singleton item class
     template <class ItemType, class SuperItemType = Item>
     ItemManager& registerClass(const std::string& className, ItemType* singletonInstance){
-        registerClassSub(className, typeid(ItemType), typeid(SuperItemType), Factory<ItemType>(), nullptr);
         registerClassSub(className, typeid(ItemType), typeid(SuperItemType), nullptr, singletonInstance);
         return *this;
     }
@@ -126,7 +127,7 @@ public:
         return static_cast<ItemType*>(getSingletonInstance(typeid(ItemType).name()));
     }
 
-    static ItemPtr create(const std::string& moduleName, const std::string& itemClassName);
+    static Item* singletonInstance(ItemFileIO* fileIO);
 
     template <class ItemType> ItemManager& addCreationPanel(ItemCreationPanel* panel = 0) {
         addCreationPanelSub(typeid(ItemType).name(), panel);
@@ -150,15 +151,18 @@ public:
     }
 
     template <class ItemType>
-    static ItemType* createNewItem(Item* parentItem){
-        return static_cast<ItemType*>(createNewItem_(typeid(ItemType), parentItem));
+    ItemManager& registerFileIO(ItemFileIO* fileIO) {
+        registerFileIO_(typeid(ItemType), fileIO);
+        return *this;
     }
+
+    static ItemFileIO* findFileIO(const std::type_info& type, const std::string& formatId);
 
     template <class ItemType>
     ItemManager& addLoader(
         const std::string& caption, const std::string& formatId, const std::string& extensions, 
         const typename FileFunction<ItemType>::Function& function, int priority = PRIORITY_DEFAULT) {
-        addLoaderSub(typeid(ItemType).name(), caption, formatId, [extensions](){ return extensions; },
+        addLoaderSub(typeid(ItemType), caption, formatId, [extensions](){ return extensions; },
                      std::make_shared<FileFunction<ItemType>>(function), priority);
         return *this;
     }
@@ -167,7 +171,7 @@ public:
     ItemManager& addLoader(
         const std::string& caption, const std::string& formatId, std::function<std::string()> getExtensions,
         const typename FileFunction<ItemType>::Function& function, int priority = PRIORITY_DEFAULT) {
-        addLoaderSub(typeid(ItemType).name(), caption, formatId, getExtensions,
+        addLoaderSub(typeid(ItemType), caption, formatId, getExtensions,
                      std::make_shared<FileFunction<ItemType>>(function), priority);
         return *this;
     }
@@ -176,7 +180,7 @@ public:
     ItemManager& addSaver(
         const std::string& caption, const std::string& formatId, const std::string& extensions,
         const typename FileFunction<ItemType>::Function& function, int priority = PRIORITY_DEFAULT){
-        addSaverSub(typeid(ItemType).name(), caption, formatId, [extensions](){ return extensions; },
+        addSaverSub(typeid(ItemType), caption, formatId, [extensions](){ return extensions; },
                     std::make_shared<FileFunction<ItemType>>(function), priority);
         return *this;
     }
@@ -185,7 +189,7 @@ public:
     ItemManager& addSaver(
         const std::string& caption, const std::string& formatId, std::function<std::string()> getExtensions,
         const typename FileFunction<ItemType>::Function& function, int priority = PRIORITY_DEFAULT){
-        addSaverSub(typeid(ItemType).name(), caption, formatId, getExtensions, 
+        addSaverSub(typeid(ItemType), caption, formatId, getExtensions, 
                     std::make_shared<FileFunction<ItemType>>(function), priority);
         return *this;
     }
@@ -214,6 +218,25 @@ public:
     
     void addMenuItemToImport(const std::string& caption, std::function<void()> slot);
 
+    static Item* createItem(const std::string& moduleName, const std::string& itemClassName);
+
+    /**
+       Create a new item interactively using the corresponding dialog
+       @param parentItem The item that will be a parent of the new item.
+       @doAddition The created item is actually added to the parent item if this flag is true.
+       @nextItem The position to insert the created item can be specifid by this parameter.
+    */
+    template <class ItemType>
+    static ItemType* createItemWithDialog(Item* parentItem, bool doAddition = true, Item* nextItem = nullptr){
+        return static_cast<ItemType*>(createItemWithDialog_(typeid(ItemType), parentItem, doAddition, nextItem));
+    }
+
+    template <class ItemType>
+    static ItemList<ItemType> loadItemsWithDialog(
+        Item* parentItem, bool doAddtion = true, Item* nextItem = nullptr){
+        return loadItemsWithDialog_(typeid(ItemType), parentItem, doAddtion, nextItem);
+    }
+
     static void reloadItems(const ItemList<>& items);
     static Item* findOriginalItemForReloadedItem(Item* item);
 
@@ -224,19 +247,24 @@ private:
     void addCreationPanelSub(const std::string& typeId, ItemCreationPanel* panel);
     void addCreationPanelFilterSub(
         const std::string& typeId, std::shared_ptr<CreationPanelFilterBase> filter, bool afterInitializionByPanels);
+    void registerFileIO_(const std::type_info& type, ItemFileIO* fileIO);
     void addLoaderSub(
-        const std::string& typeId, const std::string& caption, const std::string& formatId,
+        const std::type_info& type, const std::string& caption, const std::string& formatId,
         std::function<std::string()> getExtensions, std::shared_ptr<FileFunctionBase> function, int priority);
     void addSaverSub(
-        const std::string& typeId, const std::string& caption, const std::string& formatId,
+        const std::type_info& type, const std::string& caption, const std::string& formatId,
         std::function<std::string()> getExtensions, std::shared_ptr<FileFunctionBase> function, int priority);
 
     static Item* getSingletonInstance(const std::string& typeId);
 
-    static Item* createNewItem_(const std::type_info& type, Item* parentItem);
+    static Item* createItemWithDialog_(const std::type_info& type, Item* parentItem, bool doAddition, Item* nextItem);
+    static ItemList<Item> loadItemsWithDialog_(
+        const std::type_info& type, Item* parentItem, bool doAddtion, Item* nextItem);
 
     // The following static functions are called from functions in the Item class
-    static bool load(Item* item, const std::string& filename, Item* parentItem, const std::string& formatId);
+    static bool load(
+        Item* item, const std::string& filename, Item* parentItem, const std::string& formatId,
+        const Mapping* options = nullptr);
     static bool save(Item* item, const std::string& filename, const std::string& formatId);
     static bool overwrite(Item* item, bool forceOverwrite, const std::string& formatId); // overwrite
 

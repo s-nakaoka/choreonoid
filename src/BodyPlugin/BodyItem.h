@@ -17,7 +17,6 @@
 namespace cnoid {
 
 class BodyState;
-class BodyItemImpl;
 class LinkKinematicsKit;
 class InverseKinematics;
 class PinDragIK;
@@ -33,10 +32,12 @@ public:
     BodyItem(const BodyItem& org);
     virtual ~BodyItem();
 
-    bool loadModelFile(const std::string& filename);
     Body* body() const;
     void setBody(Body* body);
     virtual void setName(const std::string& name) override;
+
+    bool makeBodyStatic();
+    bool makeBodyDynamic();
 
     //! \deprecated. Use EditableSceneBody::isDraggable().
     bool isEditable() const;
@@ -44,8 +45,16 @@ public:
     void setEditable(bool on);
 
     // API for a composite body
+    // The following body and link pair is basically determined by
+    // the parent-child relationship in the item tree
     BodyItem* parentBodyItem();
-    Link* parentLink();
+    // True if the body is attached to the parent body with a holder device and an attachment device
+    bool isAttachedToParentBody() const;
+    // The current parent body can temporarily be changed by this function
+    void setTemporalParentBodyItem(BodyItem* parentBodyItem);
+    // The parent body item defined by the parent-child relationship in the item tree is restored
+    // if the relationship exists. Otherwise, the parent body item is cleared.
+    void resetParentBodyItem();
         
     void moveToOrigin();
     enum PresetPoseID { INITIAL_POSE, STANDARD_POSE };
@@ -149,6 +158,8 @@ public:
     EditableSceneBody* sceneBody();
     EditableSceneBody* existingSceneBody();
 
+    class Impl;
+
 protected:
     virtual Item* doDuplicate() const override;
     virtual void doAssign(Item* item) override;
@@ -158,13 +169,13 @@ protected:
     virtual bool restore(const Archive& archive) override;
             
 private:
-    friend class BodyItemImpl;
-    friend class PyBodyPlugin;
-    BodyItemImpl* impl;
+    Impl* impl;
     std::vector<CollisionLinkPairPtr> collisions_;
     std::vector<bool> collisionLinkBitSet_;
     std::vector<std::vector<CollisionLinkPairPtr>> collisionsOfLink_;
     Signal<void()> sigCollisionsUpdated_;
+
+    friend class PyBodyPlugin;
 };
 
 typedef ref_ptr<BodyItem> BodyItemPtr;

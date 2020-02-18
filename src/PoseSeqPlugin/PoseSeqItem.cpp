@@ -90,7 +90,7 @@ void PoseSeqItem::initializeClass(ExtensionManager* ext)
             return item->poseSeq()->exportSeqFileForFaceController(filename); },
         ItemManager::PRIORITY_CONVERSION);
 
-    ItemTreeView::instance()->setContextMenuFunctionFor<PoseSeqItem>(
+    ItemTreeView::instance()->customizeContextMenu<PoseSeqItem>(
         [](PoseSeqItem* item, MenuManager& menuManager, ItemFunctionDispatcher menuFunction){
             menuManager.addItem(_("Generate"))->sigTriggered().connect([item](){ item->updateTrajectory(true); });
             menuManager.addSeparator();
@@ -299,7 +299,7 @@ bool PoseSeqItem::convertSub(BodyPtr orgBody, const Mapping& convInfo)
                         linkInfo->R = orgLinkInfo.R;
                         linkInfo->setStationaryPoint(orgLinkInfo.isStationaryPoint());
                         if(orgLinkInfo.isTouching()){
-                            linkInfo->setTouching(orgLinkInfo.partingDirection());
+                            linkInfo->setTouching(orgLinkInfo.partingDirection(), orgLinkInfo.contactPoints());
                         }
                         linkInfo->setSlave(orgLinkInfo.isSlave());
                         if(orgLinkInfo.isBaseLink()){

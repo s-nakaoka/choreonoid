@@ -59,9 +59,12 @@ public:
     Body* parentBody() const {
         return rootLink_->parent() ? rootLink_->parent()->body() : nullptr;
     }
-
+    Link* parentBodyLink() const {
+        return rootLink_->parent() ? rootLink_->parent() : nullptr;
+    }
     void setParent(Link* parentBodyLink);
     void resetParent();
+    void syncPositionWithParentBody(bool doForwardKinematics = true);
 
     /**
        The number of all the links the body has.
