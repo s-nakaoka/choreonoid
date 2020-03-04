@@ -5,8 +5,6 @@
 
 #include "ForceSensor.h"
 
-#include <iostream>  // Added by Rafa
-
 using namespace cnoid;
 
 
@@ -96,8 +94,6 @@ const double* ForceSensor::readState(const double* buf)
 
 double* ForceSensor::writeState(double* out_buf) const
 {
-    // std::cout << "Rafa, in ForceSensor::writeState" << std::endl;
-  
     Eigen::Map<Vector6>(out_buf) << F_;
     return out_buf + 6;
 }

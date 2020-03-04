@@ -5,8 +5,6 @@
 
 #include "TactileSensor.h"
 
-#include <iostream>  // Rafa, this is temporal
-
 using namespace cnoid;
 
 
@@ -43,9 +41,6 @@ void TactileSensor::copyStateFrom(const DeviceState& other)
   copyStateFrom(static_cast<const TactileSensor&>(other));
 }
 
-
-// Device* TactileSensor::clone() const
-//Device* TactileSensor::doClone(BodyCloneMap*) const
 Referenced* TactileSensor::doClone(CloneMap*) const
 {
   return new TactileSensor(*this, false);
@@ -73,10 +68,7 @@ void TactileSensor::clearState()
 
 int TactileSensor::stateSize() const
 {
-  // std::cout << "Rafa, in TactileSensor::stateSize, forceData_->size() = " << forceData_->size() << std::endl;
-  
   return forceData_->size() * 5;
-  // return forceData_->size() * 2;  // Rafa, temporal implementation
 }
 
 
@@ -90,7 +82,6 @@ double* TactileSensor::writeState(double* out_buf) const
 {
   for (size_t i = 0; i < forceData_->size(); i++) {
     Eigen::Map<Vector2>(out_buf) << (*forceData_)[i].first;
-    //Eigen::Map<Vector2>(out_buf) << (*forceData_)[i];  // Rafa, temporal implementation
     out_buf = out_buf + 2;
     Eigen::Map<Vector3>(out_buf) << (*forceData_)[i].second;
     out_buf = out_buf + 3;

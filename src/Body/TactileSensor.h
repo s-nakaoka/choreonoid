@@ -22,7 +22,6 @@ class CNOID_EXPORT TactileSensor : public Device
   virtual const char* typeName() override;
   void copyStateFrom(const TactileSensor& other);
   virtual void copyStateFrom(const DeviceState& other) override;
-  // virtual Device* clone() const override;
   virtual DeviceState* cloneState() const override;
   virtual void forEachActualType(std::function<bool(const std::type_info& type)> func) override;
   virtual void clearState() override;
@@ -31,13 +30,11 @@ class CNOID_EXPORT TactileSensor : public Device
   virtual double* writeState(double* out_buf) const override;
 
   typedef std::vector< std::pair<Vector2, Vector3> > ForceData;
-  // typedef std::vector<Vector2> ForceData;  // Rafa, temporal implementation
   
   const ForceData& forceData() const { return *forceData_; }
   ForceData& forceData() { return *forceData_; }
 
  protected:
-  //virtual Device* doClone(BodyCloneMap* cloneMap) const override;
   virtual Referenced* doClone(CloneMap* cloneMap) const override;
   
  private:

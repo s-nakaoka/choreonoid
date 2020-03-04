@@ -8,8 +8,6 @@
 #include "LinkTraverse.h"
 #include <cnoid/EigenUtil>
 
-#include <iostream>  // Added by Rafa
-
 using namespace std;
 using namespace cnoid;
 
@@ -506,8 +504,6 @@ void ForwardDynamicsABM::calcABMPhase3()
 
 void ForwardDynamicsABM::updateForceSensors()
 {
-    // std::cout << "Rafa, in ForwardDynamicsABM::updateForceSensors" << std::endl;
-  
     const DeviceList<ForceSensor>& sensors = sensorHelper.forceSensors();
     for(size_t i=0; i < sensors.size(); ++i){
         ForceSensor* sensor = sensors[i];
@@ -539,12 +535,8 @@ void ForwardDynamicsABM::updateTactileSensors()
 
 	DyLink* link = static_cast<DyLink*>(sensor->link());
 
-	// std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, for sensor " << i << " link->name() = " << link->name() << std::endl;
-	
 	DyLink::ConstraintForceArray& forces = link->constraintForces();
 	if(!forces.empty()){
-
-	    // std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, forces are not empty" << std::endl;
 
             sensor->forceData().clear();
 	  
@@ -554,27 +546,8 @@ void ForwardDynamicsABM::updateTactileSensors()
 		Vector3 f_surf = link->R().transpose() * force_surf.force;
 		if (p_surf.z() < EPSILON) {
 		    std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), f_surf);
-		    // Vector2 xy_f = Vector2(p_surf.x(), p_surf.y());  // Rafa, temporal implementation
 		    sensor->forceData().push_back(xy_f);
 		    sensor->notifyStateChange();
-		    // Rafa commented this
-		    /*
-		    std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, in link "
-			      << link->name() << " at point ("
-			      << sensor->forceData().back().first.x() << ", "
-			      << sensor->forceData().back().first.y() << ") there is a force ("
-			      << sensor->forceData().back().second.x() << ", "
-			      << sensor->forceData().back().second.y() << ", "
-			      << sensor->forceData().back().second.z() << ")"
-			      << std::endl;
-		    */
-		    /*
-		    std::cout << "Rafa, in ForwardDynamicsABM::updateTactileSensors, in link "
-			      << link->name() << " at point ("
-			      << sensor->forceData().back().x() << ", "
-			      << sensor->forceData().back().y() << ") there is a force"
-			      << std::endl;  // Rafa, temporal implementation
-		    */
 		}
 	    }
 	}
