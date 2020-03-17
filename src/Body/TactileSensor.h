@@ -9,7 +9,7 @@
 #include "Device.h"
 #include <memory>
 #include "exportdecl.h"
-
+#include <iostream>
 namespace cnoid {
 
 class CNOID_EXPORT TactileSensor : public Device
@@ -33,6 +33,20 @@ class CNOID_EXPORT TactileSensor : public Device
   
   const ForceData& forceData() const { return *forceData_; }
   ForceData& forceData() { return *forceData_; }
+  
+  void setMaxX(double maxX);
+  void setMaxY(double maxY); 
+  void setMinX(double minX); 
+  void setMinY(double minY); 
+  void setRows(int rows); 
+  void setCols(int cols); 
+  
+  double maxX();
+  double maxY();
+  double minY();
+  double minX();
+  int rows();
+  int cols();
 
  protected:
   virtual Referenced* doClone(CloneMap* cloneMap) const override;
@@ -40,6 +54,12 @@ class CNOID_EXPORT TactileSensor : public Device
  private:
 
   std::shared_ptr<ForceData> forceData_;
+  double maxX_;
+  double maxY_;
+  double minX_;
+  double minY_;
+  int rows_;
+  int cols_;
 };
 
  typedef ref_ptr<TactileSensor> TactileSensorPtr;

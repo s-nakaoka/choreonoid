@@ -1196,6 +1196,12 @@ TactileSensorPtr VRMLBodyLoaderImpl::createTactileSensor(VRMLProtoInstance* node
   TactileSensorPtr sensor = new TactileSensor();
   readDeviceCommonParameters(*sensor, node);
 
+  sensor->setMaxX(getValue<SFFloat>(node, "maxX"));
+  sensor->setMaxY(getValue<SFFloat>(node, "maxY"));
+  sensor->setMinX(getValue<SFFloat>(node, "minX"));
+  sensor->setMinY(getValue<SFFloat>(node, "minY"));
+  sensor->setRows(getValue<SFInt32>(node, "rows"));
+  sensor->setCols(getValue<SFInt32>(node, "cols"));
   return sensor;
 }
 

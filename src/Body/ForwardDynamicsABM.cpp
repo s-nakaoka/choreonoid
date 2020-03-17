@@ -533,23 +533,60 @@ void ForwardDynamicsABM::updateTactileSensors()
 
         TactileSensor* sensor = sensors[i];
 
-	DyLink* link = static_cast<DyLink*>(sensor->link());
+		DyLink* link = static_cast<DyLink*>(sensor->link());
 
-	DyLink::ConstraintForceArray& forces = link->constraintForces();
-	if(!forces.empty()){
-
-            sensor->forceData().clear();
-	  
-	    for(size_t j=0; j < forces.size(); ++j){
-                const DyLink::ConstraintForce& force_surf = forces[j];
-		Vector3 p_surf = link->R().transpose() * (force_surf.point - link->p());
-		Vector3 f_surf = link->R().transpose() * force_surf.force;
-		if (p_surf.z() < EPSILON) {
-		    std::pair<Vector2, Vector3> xy_f = std::make_pair(Vector2(p_surf.x(), p_surf.y()), f_surf);
-		    sensor->forceData().push_back(xy_f);
-		    sensor->notifyStateChange();
+		DyLink::ConstraintForceArray& forces = link->constraintForces();
+		if(!forces.empty()){
+		
+		    sensor->forceData().clear();
+		    vector<tuple<double,double,double>> points;
+		    double xRange = sensor->maxX() - sensor->minX();
+			double yRange = sensor->maxY() - sensor->minY();
+			double xCellSize = xRange/sensor->cols();
+			double yCellSize = yRange/sensor->rows();
+			double currentX = sensor->minX();
+			double currentY = sensor->minY();
+			
+			for (int j = 0; j<sensor->rows()*sensor->cols(); j++){
+				points.push_back(make_tuple(currentX, currentY, 0));
+				currentX += xCellSize;
+				if ((j+1)%sensor->cols() == 0){
+					currentX = sensor->minX();
+					currentY += yCellSize;
+				}
+			}
+			
+			for(size_t j=0; j < forces.size(); ++j){
+		        const DyLink::ConstraintForce& force_surf = forces[j];
+				Vector3 p_surf = link->R().transpose() * (force_surf.point - link->p());
+				Vector3 f_surf = link->R().transpose() * force_surf.force;
+				if (p_surf.z() < sensor->p_local().z() + EPSILON) {
+					double x = p_surf.x();
+					double y = p_surf.y();
+					
+					//saturate
+					if (x>sensor->maxX()) x = sensor->maxX();
+					if (y>sensor->maxY()) y = sensor->maxY();
+					if (x<sensor->minX()) x = sensor->minX();
+					if (y<sensor->minY()) y = sensor->minY();
+					
+					double absX = x - sensor->minX();
+					double absY = y - sensor->minY();
+					int matrixX = floor(absX/xCellSize);
+					int matrixY = floor(absY/yCellSize);
+					if (matrixX >= sensor->cols()) matrixX = sensor->cols()-1;
+					if (matrixY >= sensor->rows()) matrixY = sensor->rows()-1;
+					
+					get<2>(points.at(matrixY*sensor->cols() + matrixX)) = get<2>(points.at(matrixY*sensor->cols() + matrixX)) + f_surf.z();
+				}
+			}
+			for (int j=0; j<points.size(); j++){
+				if (get<2>(points.at(j)) > 0){
+					std::pair<Vector2, Vector3> xy_f = std::make_pair( Vector2(get<0>(points.at(j)), get<1>(points.at(j))) , Vector3(0,0, get<2>(points.at(j))) );
+					sensor->forceData().push_back(xy_f);
+					sensor->notifyStateChange();
+				}
+			}
 		}
-	    }
-	}
     }
 }

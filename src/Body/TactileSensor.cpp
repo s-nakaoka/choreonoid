@@ -8,9 +8,10 @@
 using namespace cnoid;
 
 
-TactileSensor::TactileSensor()
+TactileSensor::TactileSensor() //: maxX_(0), maxY_(0), minX_(0), minY_(0), rows_(0), cols_(0)
 {
   forceData_ = std::make_shared<ForceData>();
+  maxX_ = maxY_ = minX_ = minY_ = rows_ = cols_ = 0;
 }
 
 
@@ -30,6 +31,12 @@ const char* TactileSensor::typeName()
 void TactileSensor::copyStateFrom(const TactileSensor& other)
 {
   forceData_ = other.forceData_;
+  maxX_ = other.maxX_;
+  maxY_ = other.maxY_;
+  minX_ = other.minX_;
+  minY_ = other.minY_;
+  rows_ = other.rows_;
+  cols_ = other.cols_;
 }
 
 
@@ -89,3 +96,17 @@ double* TactileSensor::writeState(double* out_buf) const
   
   return out_buf;
 }
+
+void TactileSensor::setMaxX(double maxX) {maxX_ = maxX;}
+void TactileSensor::setMaxY(double maxY) {maxY_ = maxY;}
+void TactileSensor::setMinX(double minX) {minX_ = minX;}
+void TactileSensor::setMinY(double minY) {minY_ = minY;}
+void TactileSensor::setRows(int rows) {rows_ = rows;}
+void TactileSensor::setCols(int cols) {cols_ = cols;}
+
+double TactileSensor::maxX() {return maxX_;}
+double TactileSensor::maxY() {return maxY_;}
+double TactileSensor::minY() {return minY_;}
+double TactileSensor::minX() {return minX_;}
+int TactileSensor::rows() {return rows_;}
+int TactileSensor::cols() {return cols_;}
