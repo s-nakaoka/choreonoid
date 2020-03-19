@@ -548,14 +548,13 @@ void ForwardDynamicsABM::updateTactileSensors()
 			double currentY = sensor->minY();
 			
 			for (int j = 0; j<sensor->rows()*sensor->cols(); j++){
-				points.push_back(make_tuple(currentX, currentY, 0));
+				points.push_back(make_tuple(currentX, currentY, -EPSILON));
 				currentX += xCellSize;
 				if ((j+1)%sensor->cols() == 0){
 					currentX = sensor->minX();
 					currentY += yCellSize;
 				}
 			}
-			
 			for(size_t j=0; j < forces.size(); ++j){
 		        const DyLink::ConstraintForce& force_surf = forces[j];
 				Vector3 p_surf = link->R().transpose() * (force_surf.point - link->p());
@@ -563,13 +562,11 @@ void ForwardDynamicsABM::updateTactileSensors()
 				if (p_surf.z() < sensor->p_local().z() + EPSILON) {
 					double x = p_surf.x();
 					double y = p_surf.y();
-					
 					//saturate
 					if (x>sensor->maxX()) x = sensor->maxX();
 					if (y>sensor->maxY()) y = sensor->maxY();
 					if (x<sensor->minX()) x = sensor->minX();
 					if (y<sensor->minY()) y = sensor->minY();
-					
 					double absX = x - sensor->minX();
 					double absY = y - sensor->minY();
 					int matrixX = floor(absX/xCellSize);
@@ -577,11 +574,16 @@ void ForwardDynamicsABM::updateTactileSensors()
 					if (matrixX >= sensor->cols()) matrixX = sensor->cols()-1;
 					if (matrixY >= sensor->rows()) matrixY = sensor->rows()-1;
 					
-					get<2>(points.at(matrixY*sensor->cols() + matrixX)) = get<2>(points.at(matrixY*sensor->cols() + matrixX)) + f_surf.z();
+					if (get<2>(points.at(matrixY*sensor->cols() + matrixX)) == -EPSILON){
+						get<2>(points.at(matrixY*sensor->cols() + matrixX)) = f_surf.z();
+					}
+					else{
+						get<2>(points.at(matrixY*sensor->cols() + matrixX)) = get<2>(points.at(matrixY*sensor->cols() + matrixX)) + f_surf.z();
+					}
 				}
 			}
 			for (int j=0; j<points.size(); j++){
-				if (get<2>(points.at(j)) > 0){
+				if (get<2>(points.at(j)) > -EPSILON){
 					std::pair<Vector2, Vector3> xy_f = std::make_pair( Vector2(get<0>(points.at(j)), get<1>(points.at(j))) , Vector3(0,0, get<2>(points.at(j))) );
 					sensor->forceData().push_back(xy_f);
 					sensor->notifyStateChange();
