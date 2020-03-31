@@ -61,7 +61,9 @@ SimulationBar::SimulationBar()
               _("Restore body positions from the initial world state"))->
         sigClicked().connect([&](){ onRestoreInitialClicked(); });
 
-    addButton(QIcon(":/Body/icons/start-simulation.png"), _("Start simulation from the beginning"))->
+    startButton =
+      addButton(QIcon(":/Body/icons/start-simulation.png"), _("Start simulation from the beginning"));
+    startButton ->
         sigClicked().connect([&](){ startSimulation(true); });
 
     addButton(QIcon(":/Body/icons/restart-simulation.png"),
@@ -72,7 +74,9 @@ SimulationBar::SimulationBar()
     pauseToggle->sigClicked().connect([&](){ onPauseSimulationClicked(); });
     pauseToggle->setChecked(false);
 
-    addButton(QIcon(":/Body/icons/stop-simulation.png"), _("Stop simulation"))->
+    stopButton =
+      addButton(QIcon(":/Body/icons/stop-simulation.png"), _("Stop simulation"));
+    stopButton ->
         sigClicked().connect([&](){ onStopSimulationClicked(); });
 
 }
@@ -240,4 +244,14 @@ void SimulationBar::pauseSimulation(SimulatorItem* simulator)
             simulator->restartSimulation();
         TimeBar::instance()->startPlaybackFromFillLevel();
     }
+}
+
+void SimulationBar::clickStartButton()
+{
+  startButton->click();
+}
+
+void SimulationBar::clickStopButton()
+{
+  stopButton->click();
 }

@@ -31,6 +31,9 @@ public:
 
     virtual ~SimulationBar();
 
+    void clickStartButton();
+    void clickStopButton();
+
 private:
     SimulationBar();
 
@@ -42,6 +45,9 @@ private:
     ToolButton* pauseToggle;
 
     Signal<void(SimulatorItem*)> sigSimulationAboutToStart_;
+
+    ToolButton* startButton;
+    ToolButton* stopButton;
 };
 
 }
