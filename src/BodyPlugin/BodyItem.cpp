@@ -1788,7 +1788,10 @@ bool BodyItem::Impl::restore(const Archive& archive)
         archive.loadFileTo(self);
     } else {
         // for the backward compatibiliy
-        archive.loadItemFile(self, "modelFile", "format");
+        if(!archive.loadItemFile(self, "modelFile", "format", "CHOREONOID-BODY"))
+        {
+          return false;
+        }
     }
 
     Vector3 p = Vector3::Zero();

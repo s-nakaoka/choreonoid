@@ -255,12 +255,15 @@ bool Archive::loadFileTo(Item* item) const
 }
 
 
-bool Archive::loadItemFile(Item* item, const std::string& fileNameKey, const std::string& fileFormatKey) const
+bool Archive::loadItemFile(Item* item, const std::string& fileNameKey, const std::string& fileFormatKey, const std::string & defaultFormat) const
 {
     string filename, format;
     if(readRelocatablePath(fileNameKey, filename)){
         if(!fileFormatKey.empty()){
             read(fileFormatKey, format);
+            if(format.empty()){
+              format = defaultFormat;
+            }
         }
         return item->load(filename, currentParentItem(), format, this);
     }
